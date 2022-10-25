@@ -1,0 +1,20 @@
+[
+  {
+    "directory": "/mnt/data/ubb/courses/proyecto-titulo/obelisk/builddir",
+    "command": "clang++ -Isrc/obelisk.p -Isrc -I../src -fcolor-diagnostics -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -Wextra -Wpedantic -std=c++17 -O0 -g -MD -MQ src/obelisk.p/obelisk.cpp.o -MF src/obelisk.p/obelisk.cpp.o.d -o src/obelisk.p/obelisk.cpp.o -c ../src/obelisk.cpp",
+    "file": "../src/obelisk.cpp",
+    "output": "src/obelisk.p/obelisk.cpp.o"
+  },
+  {
+    "directory": "/mnt/data/ubb/courses/proyecto-titulo/obelisk/builddir",
+    "command": "clang++ -Isrc/obelisk.p -Isrc -I../src -fcolor-diagnostics -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -Wextra -Wpedantic -std=c++17 -O0 -g -MD -MQ src/obelisk.p/lexer.cpp.o -MF src/obelisk.p/lexer.cpp.o.d -o src/obelisk.p/lexer.cpp.o -c ../src/lexer.cpp",
+    "file": "../src/lexer.cpp",
+    "output": "src/obelisk.p/lexer.cpp.o"
+  },
+  {
+    "directory": "/mnt/data/ubb/courses/proyecto-titulo/obelisk/builddir",
+    "command": "clang++ -Isrc/obelisk.p -Isrc -I../src -fcolor-diagnostics -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -Wextra -Wpedantic -std=c++17 -O0 -g -MD -MQ src/obelisk.p/parser.cpp.o -MF src/obelisk.p/parser.cpp.o.d -o src/obelisk.p/parser.cpp.o -c ../src/parser.cpp",
+    "file": "../src/parser.cpp",
+    "output": "src/obelisk.p/parser.cpp.o"
+  }
+]
