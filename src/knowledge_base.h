@@ -43,6 +43,11 @@ namespace obelisk
             const std::string errorMessage_;
 
         public:
+            KnowledgeBaseException() :
+                errorMessage_("an unknown error occured")
+            {
+            }
+
             KnowledgeBaseException(const std::string& errorMessage) :
                 errorMessage_(errorMessage)
             {

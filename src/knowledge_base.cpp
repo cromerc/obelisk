@@ -51,12 +51,15 @@ void obelisk::KnowledgeBase::createTable(std::function<const char*()> function)
     if (result != SQLITE_OK)
     {
         logSqliteError(result);
-        throw obelisk::KnowledgeBaseException("something happened");
-    }
-    if (tmp)
-    {
-        std::string errmsg(tmp);
-        throw obelisk::KnowledgeBaseException(errmsg);
+        if (tmp)
+        {
+            std::string errmsg(tmp);
+            throw obelisk::KnowledgeBaseException(errmsg);
+        }
+        else
+        {
+            throw obelisk::KnowledgeBaseException();
+        }
     }
 }
 
