@@ -3,6 +3,7 @@
 
 #include <sqlite3.h>
 
+#include <functional>
 #include <iostream>
 #include <string>
 
@@ -18,6 +19,8 @@ namespace obelisk
             int flags_;
             void logSqliteError(int result);
 
+            void createTable(std::function<const char*()> function);
+
         public:
             KnowledgeBase(const char* filename);
             KnowledgeBase(const char* filename, int flags);
@@ -30,23 +33,17 @@ namespace obelisk
             int addRules(std::string verb, T leftEntities, U rightEntities);
             template<typename T, typename U> int addActions();
 
-            void getDouble(double* result, float var1, float var2);
-            void getFloat(float* result1, float* result2, double var);
-    };
-
-    class Sql
-    {
-        public:
-            static const std::string create_facts_table;
+            void getDouble(double& result, float var1, float var2);
+            void getFloat(float& result1, float& result2, double var);
     };
 
     class KnowledgeBaseException : public std::exception
     {
         private:
-            std::string errorMessage_;
+            const std::string errorMessage_;
 
         public:
-            KnowledgeBaseException(std::string errorMessage) :
+            KnowledgeBaseException(const std::string& errorMessage) :
                 errorMessage_(errorMessage)
             {
             }

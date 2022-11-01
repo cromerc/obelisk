@@ -1,9 +1,9 @@
-#include "models/entity.h"
+#include "models/action.h"
 
-const char* obelisk::Entity::createTable()
+const char* obelisk::Action::createTable()
 {
     return R"(
-        CREATE TABLE "entity" (
+        CREATE TABLE "action" (
             "id"   INTEGER NOT NULL UNIQUE,
             "name" TEXT NOT NULL CHECK(trim(name) != '') UNIQUE,
             PRIMARY KEY("id" AUTOINCREMENT)
@@ -11,22 +11,22 @@ const char* obelisk::Entity::createTable()
     )";
 }
 
-int obelisk::Entity::getId()
+int obelisk::Action::getId()
 {
     return id_;
 }
 
-void obelisk::Entity::setId(int id)
+void obelisk::Action::setId(int id)
 {
     id_ = id;
 }
 
-std::string obelisk::Entity::getName()
+std::string obelisk::Action::getName()
 {
     return name_;
 }
 
-void obelisk::Entity::setName(std::string name)
+void obelisk::Action::setName(std::string name)
 {
     name_ = name;
 }
