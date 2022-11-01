@@ -44,7 +44,7 @@ namespace obelisk
 
         public:
             KnowledgeBaseException() :
-                errorMessage_("an unknown error occured")
+                errorMessage_("an unknown error ocurred")
             {
             }
 
