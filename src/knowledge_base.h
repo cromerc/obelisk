@@ -15,7 +15,7 @@ namespace obelisk
             const int DEFAULT_FLAGS
                 = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
             const char* filename_;
-            sqlite3* dbConnection_;
+            sqlite3* dbConnection_ = nullptr;
             int flags_;
             void logSqliteError(int result);
 

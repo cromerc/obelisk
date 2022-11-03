@@ -41,7 +41,10 @@ obelisk::KnowledgeBase::KnowledgeBase(const char* filename, int flags)
 
 obelisk::KnowledgeBase::~KnowledgeBase()
 {
-    sqlite3_close_v2(dbConnection_);
+    if (dbConnection_)
+    {
+        sqlite3_close_v2(dbConnection_);
+    }
 }
 
 void obelisk::KnowledgeBase::createTable(std::function<const char*()> function)
