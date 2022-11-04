@@ -13,7 +13,7 @@ namespace obelisk
     class Parser
     {
         private:
-            obelisk::Lexer* lexer_;
+            std::unique_ptr<obelisk::Lexer> lexer_;
             int currentToken_;
 
             void setCurrentToken(int currentToken);
@@ -35,10 +35,8 @@ namespace obelisk
 
         public:
             Parser();
-            Parser(obelisk::Lexer* lexer);
-            ~Parser();
 
-            obelisk::Lexer* getLexer();
+            std::unique_ptr<obelisk::Lexer>& getLexer();
 
             int getCurrentToken();
 

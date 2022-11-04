@@ -3,29 +3,14 @@
 #include "ast/variable_expression_ast.h"
 #include "parser.h"
 
+#include <memory>
+
 obelisk::Parser::Parser()
 {
-    lexer_ = new obelisk::Lexer();
+    lexer_ = std::unique_ptr<obelisk::Lexer> {new obelisk::Lexer()};
 }
 
-obelisk::Parser::Parser(obelisk::Lexer* lexer)
-{
-    if (lexer != nullptr)
-    {
-        lexer_ = lexer;
-    }
-    else
-    {
-        Parser();
-    }
-}
-
-obelisk::Parser::~Parser()
-{
-    delete lexer_;
-}
-
-obelisk::Lexer* obelisk::Parser::getLexer()
+std::unique_ptr<obelisk::Lexer>& obelisk::Parser::getLexer()
 {
     return lexer_;
 }
@@ -91,7 +76,7 @@ std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseNumberExpression()
     auto result = std::make_unique<obelisk::NumberExpressionAST>(
         getLexer()->getNumberValue());
     getNextToken();
-    return std::move(result);
+    return result;
 }
 
 std::unique_ptr<obelisk::ExpressionAST>
