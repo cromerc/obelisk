@@ -1,36 +1,36 @@
-#ifndef OBELISK_MODELS_ENTITY_H
-#define OBELISK_MODELS_ENTITY_H
+#ifndef OBELISK_MODELS_ACTION_H
+#define OBELISK_MODELS_ACTION_H
 
 #include <string>
 
 namespace obelisk
 {
-    class Entity
+    class Action
     {
         private:
             int id_;
             std::string name_;
 
         public:
-            Entity() :
+            Action() :
                 id_(0),
                 name_("")
             {
             }
 
-            Entity(int id) :
+            Action(int id) :
                 id_(id),
                 name_("")
             {
             }
 
-            Entity(std::string name) :
+            Action(std::string name) :
                 id_(0),
                 name_(name)
             {
             }
 
-            Entity(int id, std::string name) :
+            Action(int id, std::string name) :
                 id_(id),
                 name_(name)
             {

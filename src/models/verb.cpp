@@ -1,18 +1,14 @@
 #include "models/verb.h"
 
-obelisk::Verb::Verb()
+const char* obelisk::Verb::createTable()
 {
-}
-
-obelisk::Verb::Verb(std::string verb)
-{
-    verb_ = verb;
-}
-
-obelisk::Verb::Verb(int id, std::string verb)
-{
-    id_   = id;
-    verb_ = verb;
+    return R"(
+        CREATE TABLE "verb" (
+            "id"   INTEGER NOT NULL UNIQUE,
+            "name" TEXT NOT NULL CHECK(trim(name) != "") UNIQUE,
+            PRIMARY KEY("id" AUTOINCREMENT)
+        );
+    )";
 }
 
 int obelisk::Verb::getId()
@@ -25,12 +21,12 @@ void obelisk::Verb::setId(int id)
     id_ = id;
 }
 
-std::string obelisk::Verb::getVerb()
+std::string obelisk::Verb::getName()
 {
-    return verb_;
+    return name_;
 }
 
-void obelisk::Verb::setVerb(std::string verb)
+void obelisk::Verb::setName(std::string name)
 {
-    verb_ = verb;
+    name_ = name;
 }
