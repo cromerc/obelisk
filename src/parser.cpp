@@ -293,7 +293,9 @@ std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseFact()
 
     bool getEntity {true};
     std::vector<std::string> leftEntities;
+    std::vector<std::string> rightEntities;
     std::string entityName {""};
+    std::string verb {""};
     getNextToken();
     while (true) //left side of fact
     {
@@ -305,14 +307,24 @@ std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseFact()
                 {
                     // open a double quote
                     syntax.push('"');
+                    getNextToken();
                 }
                 else if (syntax.top() == '"')
                 {
                     // close a double quote
                     syntax.pop();
-                    leftEntities.push_back(entityName);
+                    if (verb == "")
+                    {
+                        leftEntities.push_back(entityName);
+                    }
+                    else
+                    {
+                        rightEntities.push_back(entityName);
+                    }
                     entityName = "";
-                    getEntity = false;
+                    getEntity  = false;
+                    getNextToken();
+                    continue;
                 }
             }
 
@@ -328,25 +340,50 @@ std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseFact()
         }
         else
         {
-            // and
+            if (getCurrentToken() == ')')
+            {
+                // TODO: throw an error if verb is empty
+                // TODO: throw an error if rightEntities has 0 elements
+                break;
+            }
+
+            if (getCurrentToken() == '"')
+            {
+                // TODO: throw and error because there is an unexpected double quote.
+                break;
+            }
+
+            if (getLexer()->getIdentifier() == "and")
+            {
+                getNextToken();
+                getEntity = true;
+                continue;
+            }
+            else
+            {
+                verb      = getLexer()->getIdentifier();
+                getEntity = true;
+                continue;
+            }
         }
-
-        /*if (getCurrentToken() == ')') // TODO: break if not string and not "and"
-        {
-            // TODO: save the verb
-            break;
-        }*/
     }
+
+    return nullptr;
 }
 
-void handleAction()
+void obelisk::Parser::handleAction()
 {
 }
 
-void handleRule()
+void obelisk::Parser::handleRule()
 {
 }
 
-void handleFact()
+void obelisk::Parser::handleFact()
+{
+    parseFact();
+}
+
+void obelisk::Parser::insertFact()
 {
 }
