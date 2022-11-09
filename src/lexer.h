@@ -3,16 +3,16 @@
 
 #include <string>
 
+// TODO: add error handling
 namespace obelisk
 {
-
     class Lexer
     {
         private:
             std::string identifier_;
             double numberValue_;
 
-            void setIdentifier(const std::string identifier);
+            void setIdentifier(const std::string& identifier);
             void eraseIdentifier();
             void appendIdentifier(int lastChar);
             void setNumberValue(double numberValue);
@@ -21,12 +21,12 @@ namespace obelisk
         public:
             enum Token
             {
-                kTokenInvalid = -1,
-                kTokenEof     = -2,
+                kTokenEof = -1,
 
                 // commands
-                kTokenFact   = -3,
-                kTokenRule   = -4,
+                kTokenFact   = -2,
+                kTokenRule   = -3,
+                kTokenAction = -4,
                 kTokenDef    = -5,
                 kTokenExtern = -6,
 
@@ -38,7 +38,7 @@ namespace obelisk
 
             int getToken();
 
-            std::string getIdentifier();
+            const std::string& getIdentifier();
             double getNumberValue();
     };
 } // namespace obelisk
