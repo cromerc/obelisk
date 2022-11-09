@@ -32,6 +32,9 @@ namespace obelisk
             std::unique_ptr<obelisk::FunctionAST> parseDefinition();
             std::unique_ptr<obelisk::FunctionAST> parseTopLevelExpression();
             std::unique_ptr<obelisk::PrototypeAST> parseExtern();
+            std::unique_ptr<obelisk::ExpressionAST> parseAction();
+            std::unique_ptr<obelisk::ExpressionAST> parseRule();
+            std::unique_ptr<obelisk::ExpressionAST> parseFact();
 
         public:
             Parser();
@@ -47,6 +50,9 @@ namespace obelisk
             void handleDefinition();
             void handleExtern();
             void handleTopLevelExpression();
+            void handleAction();
+            void handleRule();
+            void handleFact();
     };
 } // namespace obelisk
 

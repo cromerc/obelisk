@@ -3,6 +3,9 @@
 #include "ast/variable_expression_ast.h"
 #include "parser.h"
 
+#include <stack>
+#include <vector>
+
 obelisk::Parser::Parser()
 {
     lexer_ = new obelisk::Lexer();
@@ -222,4 +225,128 @@ std::unique_ptr<obelisk::PrototypeAST> obelisk::Parser::parseExtern()
 {
     getNextToken();
     return parsePrototype();
+}
+
+std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseAction()
+{
+    //action(is "dangerous" then "avoid" or "ignore");
+    getNextToken();
+    if (getCurrentToken() != '(')
+    {
+        // TODO: throw an error
+    }
+}
+
+std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseRule()
+{
+    //rule("player" can "die" if "enemy1" is "dangerous");
+    getNextToken();
+    if (getCurrentToken() != '(')
+    {
+        // TODO: throw an error
+    }
+    while (true) //left side of Rule
+    {
+        getNextToken();
+        if (getCurrentToken() != '"')
+        {
+            //TODO: throw an error
+        }
+
+        /*if (getCurrentToken() == ')') // TODO: break if not string and not "and"
+        {
+            // TODO: save the verb
+            break;
+        }*/
+    }
+    while (true) //right side of Ruke
+    {
+        getNextToken();
+        if (getCurrentToken() != '"')
+        {
+            //TODO: throw an error
+        }
+
+        if (getCurrentToken() == ')')
+        {
+            // TODO: save the verb
+            break;
+        }
+    }
+}
+
+// fact("chris cromer" and "martin" and "Isabella" can "program" and "speak english");
+// fact("" and "martin")
+std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseFact()
+{
+    std::stack<char> syntax;
+
+    getNextToken();
+    if (getCurrentToken() != '(')
+    {
+        // TODO: throw an error
+    }
+
+    syntax.push('(');
+
+    // ("
+
+    bool getEntity {true};
+    std::vector<std::string> leftEntities;
+    std::string entityName {""};
+    getNextToken();
+    while (true) //left side of fact
+    {
+        if (getEntity)
+        {
+            if (getCurrentToken() == '"')
+            {
+                if (syntax.top() != '"')
+                {
+                    // open a double quote
+                    syntax.push('"');
+                }
+                else if (syntax.top() == '"')
+                {
+                    // close a double quote
+                    syntax.pop();
+                    leftEntities.push_back(entityName);
+                    entityName = "";
+                    getEntity = false;
+                }
+            }
+
+            if (syntax.top() == '"')
+            {
+                if (entityName != "")
+                {
+                    entityName += " ";
+                }
+                entityName += getLexer()->getIdentifier();
+            }
+            getNextToken();
+        }
+        else
+        {
+            // and
+        }
+
+        /*if (getCurrentToken() == ')') // TODO: break if not string and not "and"
+        {
+            // TODO: save the verb
+            break;
+        }*/
+    }
+}
+
+void handleAction()
+{
+}
+
+void handleRule()
+{
+}
+
+void handleFact()
+{
 }
