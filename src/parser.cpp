@@ -243,7 +243,7 @@ std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseRule()
             break;
         }*/
     }
-    while (true) //right side of Ruke
+    while (true) //right side of Rule
     {
         getNextToken();
         if (getCurrentToken() != '"')
@@ -366,8 +366,4 @@ void obelisk::Parser::handleRule()
 void obelisk::Parser::handleFact()
 {
     parseFact();
-}
-
-void obelisk::Parser::insertFact()
-{
 }
