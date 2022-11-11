@@ -6,10 +6,11 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <memory>
 
 static void mainLoop()
 {
-    obelisk::Parser* parser = new obelisk::Parser();
+    auto parser = std::unique_ptr<obelisk::Parser> {new obelisk::Parser()};
 
     // Prime the first token.
     fprintf(stderr, "ready> ");
@@ -22,16 +23,21 @@ static void mainLoop()
         {
             case obelisk::Lexer::kTokenEof :
                 return;
-            case obelisk::Lexer::kTokenInvalid :
-                std::cerr << "Invalid token!\n";
-                parser->getNextToken();
-                return;
             case ';' : // ignore top-level semicolons.
                 std::cout << "Identifier: "
                           << parser->getLexer()->getIdentifier() << std::endl;
                 std::cout << "Num: " << parser->getLexer()->getNumberValue()
                           << std::endl;
                 parser->getNextToken();
+                break;
+            case obelisk::Lexer::kTokenFact :
+                // parser->handleFactFunction();
+                break;
+            case obelisk::Lexer::kTokenRule :
+                // parser->handleRuleFunction();
+                break;
+            case obelisk::Lexer::kTokenAction :
+                // parser->handleActionFunction();
                 break;
             default :
                 parser->getNextToken();
@@ -47,9 +53,36 @@ int main(int argc, char** argv)
         std::cout << argv[i] << std::endl;
     }
 
+    // This can be used to store a double as 2 floats in the database, then restore it back to a double.
+    // Inspired by Godot's double precision on the GPU to render large worlds.
+    /*try
+    {
+        float first;
+        float second;
+        double var = 0.123456789012345;
+
+        obelisk::KnowledgeBase* kb = new obelisk::KnowledgeBase("cromer.kb");
+        kb->getFloat(first, second, var);
+        std::cout << std::setprecision(std::numeric_limits<double>::digits10)
+                  << "Double: " << var << std::endl
+                  << "First: " << first << std::endl
+                  << "Second: " << second << std::endl;
+        var = 0.0;
+        kb->getDouble(var, first, second);
+        std::cout << std::setprecision(std::numeric_limits<double>::digits10)
+                  << "Double: " << var << std::endl
+                  << "First: " << first << std::endl
+                  << "Second: " << second << std::endl;
+    }
+    catch (obelisk::KnowledgeBaseException& exception)
+    {
+        return EXIT_FAILURE;
+    }*/
+
     try
     {
-        obelisk::KnowledgeBase* kb = new obelisk::KnowledgeBase("cromer.kb");
+        auto kb = std::unique_ptr<obelisk::KnowledgeBase> {
+            new obelisk::KnowledgeBase("cromer.kb")};
 
         /*std::vector<std::string> leftObjects;
         std::vector<std::string> rightObjects;
@@ -66,23 +99,6 @@ int main(int argc, char** argv)
         std::cout << exception.what() << std::endl;
         return EXIT_FAILURE;
     }
-
-    // This can be used to store a double as 2 floats in the database, then restore it back to a double.
-    // Inspired by Godot's double precision on the GPU to render large worlds.
-    /*float first;
-    float second;
-    double var = 0.123456789012345;
-    kb->getFloat(&first, &second, var);
-    std::cout << std::setprecision(std::numeric_limits<double>::digits10)
-              << "Double: " << var << std::endl
-              << "First: " << first << std::endl
-              << "Second: " << second << std::endl;
-    var = 0.0;
-    kb->getDouble(&var, first, second);
-    std::cout << std::setprecision(std::numeric_limits<double>::digits10)
-              << "Double: " << var << std::endl
-              << "First: " << first << std::endl
-              << "Second: " << second << std::endl;*/
 
     mainLoop();
 

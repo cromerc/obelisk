@@ -3,29 +3,16 @@
 #include "ast/variable_expression_ast.h"
 #include "parser.h"
 
+#include <memory>
+#include <stack>
+#include <vector>
+
 obelisk::Parser::Parser()
 {
-    lexer_ = new obelisk::Lexer();
+    lexer_ = std::unique_ptr<obelisk::Lexer> {new obelisk::Lexer()};
 }
 
-obelisk::Parser::Parser(obelisk::Lexer* lexer)
-{
-    if (lexer != nullptr)
-    {
-        lexer_ = lexer;
-    }
-    else
-    {
-        Parser();
-    }
-}
-
-obelisk::Parser::~Parser()
-{
-    delete lexer_;
-}
-
-obelisk::Lexer* obelisk::Parser::getLexer()
+std::unique_ptr<obelisk::Lexer>& obelisk::Parser::getLexer()
 {
     return lexer_;
 }
@@ -91,7 +78,7 @@ std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseNumberExpression()
     auto result = std::make_unique<obelisk::NumberExpressionAST>(
         getLexer()->getNumberValue());
     getNextToken();
-    return std::move(result);
+    return result;
 }
 
 std::unique_ptr<obelisk::ExpressionAST>
@@ -222,4 +209,165 @@ std::unique_ptr<obelisk::PrototypeAST> obelisk::Parser::parseExtern()
 {
     getNextToken();
     return parsePrototype();
+}
+
+std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseAction()
+{
+    //action(is "dangerous" then "avoid" or "ignore");
+    getNextToken();
+    if (getCurrentToken() != '(')
+    {
+        // TODO: throw an error
+    }
+}
+
+std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseRule()
+{
+    //rule("player" can "die" if "enemy1" is "dangerous");
+    getNextToken();
+    if (getCurrentToken() != '(')
+    {
+        // TODO: throw an error
+    }
+    while (true) //left side of Rule
+    {
+        getNextToken();
+        if (getCurrentToken() != '"')
+        {
+            //TODO: throw an error
+        }
+
+        /*if (getCurrentToken() == ')') // TODO: break if not string and not "and"
+        {
+            // TODO: save the verb
+            break;
+        }*/
+    }
+    while (true) //right side of Ruke
+    {
+        getNextToken();
+        if (getCurrentToken() != '"')
+        {
+            //TODO: throw an error
+        }
+
+        if (getCurrentToken() == ')')
+        {
+            // TODO: save the verb
+            break;
+        }
+    }
+}
+
+// fact("chris cromer" and "martin" and "Isabella" can "program" and "speak english");
+// fact("" and "martin")
+std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseFact()
+{
+    std::stack<char> syntax;
+
+    getNextToken();
+    if (getCurrentToken() != '(')
+    {
+        // TODO: throw an error
+    }
+
+    syntax.push('(');
+
+    // ("
+
+    bool getEntity {true};
+    std::vector<std::string> leftEntities;
+    std::vector<std::string> rightEntities;
+    std::string entityName {""};
+    std::string verb {""};
+    getNextToken();
+    while (true) //left side of fact
+    {
+        if (getEntity)
+        {
+            if (getCurrentToken() == '"')
+            {
+                if (syntax.top() != '"')
+                {
+                    // open a double quote
+                    syntax.push('"');
+                    getNextToken();
+                }
+                else if (syntax.top() == '"')
+                {
+                    // close a double quote
+                    syntax.pop();
+                    if (verb == "")
+                    {
+                        leftEntities.push_back(entityName);
+                    }
+                    else
+                    {
+                        rightEntities.push_back(entityName);
+                    }
+                    entityName = "";
+                    getEntity  = false;
+                    getNextToken();
+                    continue;
+                }
+            }
+
+            if (syntax.top() == '"')
+            {
+                if (entityName != "")
+                {
+                    entityName += " ";
+                }
+                entityName += getLexer()->getIdentifier();
+            }
+            getNextToken();
+        }
+        else
+        {
+            if (getCurrentToken() == ')')
+            {
+                // TODO: throw an error if verb is empty
+                // TODO: throw an error if rightEntities has 0 elements
+                break;
+            }
+
+            if (getCurrentToken() == '"')
+            {
+                // TODO: throw and error because there is an unexpected double quote.
+                break;
+            }
+
+            if (getLexer()->getIdentifier() == "and")
+            {
+                getNextToken();
+                getEntity = true;
+                continue;
+            }
+            else
+            {
+                verb      = getLexer()->getIdentifier();
+                getEntity = true;
+                continue;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+void obelisk::Parser::handleAction()
+{
+}
+
+void obelisk::Parser::handleRule()
+{
+}
+
+void obelisk::Parser::handleFact()
+{
+    parseFact();
+}
+
+void obelisk::Parser::insertFact()
+{
 }

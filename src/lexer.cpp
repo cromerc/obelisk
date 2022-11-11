@@ -8,7 +8,7 @@ int obelisk::Lexer::getToken()
 
     while (isspace(lastChar))
     {
-        lastChar = getchar();
+        lastChar = std::getc(stdin);
     }
 
     if (isalpha(lastChar))
@@ -18,6 +18,21 @@ int obelisk::Lexer::getToken()
         while (isalnum((lastChar = getchar())))
         {
             appendIdentifier(lastChar);
+        }
+
+        if (getIdentifier() == "fact")
+        {
+            return Token::kTokenFact;
+        }
+
+        if (getIdentifier() == "rule")
+        {
+            return Token::kTokenFact;
+        }
+
+        if (getIdentifier() == "action")
+        {
+            return Token::kTokenAction;
         }
 
         if (getIdentifier() == "def")
@@ -90,12 +105,12 @@ void obelisk::Lexer::commentLine(int* lastChar)
     while (*lastChar != EOF && *lastChar != '\n' && *lastChar != '\r');
 }
 
-std::string obelisk::Lexer::getIdentifier()
+const std::string& obelisk::Lexer::getIdentifier()
 {
     return identifier_;
 }
 
-void obelisk::Lexer::setIdentifier(const std::string identifier)
+void obelisk::Lexer::setIdentifier(const std::string& identifier)
 {
     identifier_ = identifier;
 }
