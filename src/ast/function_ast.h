@@ -24,6 +24,8 @@ namespace obelisk
                 body_(std::move(body))
             {
             }
+
+            llvm::Function *codegen();
     };
 } // namespace obelisk
 

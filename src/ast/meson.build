@@ -1,8 +1,8 @@
 obelisk_ast_sources = files(
-    'call_expression_ast.h',
-    'expression_ast.h',
-    'function_ast.h',
-    'number_expression_ast.h',
-    'prototype_ast.h',
-    'variable_expression_ast.h'
+    'call_expression_ast.cpp',
+    'error.cpp',
+    'function_ast.cpp',
+    'number_expression_ast.cpp',
+    'prototype_ast.cpp',
+    'variable_expression_ast.cpp'
 )
