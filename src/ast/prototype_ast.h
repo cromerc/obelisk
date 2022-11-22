@@ -1,6 +1,8 @@
 #ifndef OBELISK_AST_PROTOTYPE_AST_H
 #define OBELISK_AST_PROTOTYPE_AST_H
 
+#include <llvm/IR/Function.h>
+
 #include <string>
 #include <vector>
 
@@ -28,6 +30,8 @@ namespace obelisk
             {
                 return name_;
             }
+
+            llvm::Function* codegen();
     };
 } //namespace obelisk
 
