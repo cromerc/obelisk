@@ -19,6 +19,8 @@ namespace obelisk
                 name_(name)
             {
             }
+
+            llvm::Value *codegen() override;
     };
 } //namespace obelisk
 
