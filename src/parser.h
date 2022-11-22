@@ -52,6 +52,28 @@ namespace obelisk
             void handleRule();
             void handleFact();
     };
+
+    class ParserException : public std::exception
+    {
+        private:
+            const std::string errorMessage_;
+
+        public:
+            ParserException() :
+                errorMessage_("an unknown error ocurred")
+            {
+            }
+
+            ParserException(const std::string& errorMessage) :
+                errorMessage_(errorMessage)
+            {
+            }
+
+            const char* what() const noexcept
+            {
+                return errorMessage_.c_str();
+            }
+    };
 } // namespace obelisk
 
 #endif

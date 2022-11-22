@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <stack>
+#include <string>
 #include <vector>
 
 obelisk::Parser::Parser()
@@ -213,50 +214,10 @@ std::unique_ptr<obelisk::PrototypeAST> obelisk::Parser::parseExtern()
 
 std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseAction()
 {
-    //action(is "dangerous" then "avoid" or "ignore");
-    getNextToken();
-    if (getCurrentToken() != '(')
-    {
-        // TODO: throw an error
-    }
 }
 
 std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseRule()
 {
-    //rule("player" can "die" if "enemy1" is "dangerous");
-    getNextToken();
-    if (getCurrentToken() != '(')
-    {
-        // TODO: throw an error
-    }
-    while (true) //left side of Rule
-    {
-        getNextToken();
-        if (getCurrentToken() != '"')
-        {
-            //TODO: throw an error
-        }
-
-        /*if (getCurrentToken() == ')') // TODO: break if not string and not "and"
-        {
-            // TODO: save the verb
-            break;
-        }*/
-    }
-    while (true) //right side of Rule
-    {
-        getNextToken();
-        if (getCurrentToken() != '"')
-        {
-            //TODO: throw an error
-        }
-
-        if (getCurrentToken() == ')')
-        {
-            // TODO: save the verb
-            break;
-        }
-    }
 }
 
 // fact("chris cromer" and "martin" and "Isabella" can "program" and "speak english");
@@ -268,7 +229,8 @@ std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseFact()
     getNextToken();
     if (getCurrentToken() != '(')
     {
-        // TODO: throw an error
+        throw obelisk::ParserException(
+            "expected '(' but got '" + std::to_string(getCurrentToken()) + "'");
     }
 
     syntax.push('(');
@@ -326,14 +288,29 @@ std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseFact()
         {
             if (getCurrentToken() == ')')
             {
-                // TODO: throw an error if verb is empty
-                // TODO: throw an error if rightEntities has 0 elements
+                // closing parenthesis found, make sure we have everything needed
+                if (verb == "")
+                {
+                    throw obelisk::ParserException("verb is empty");
+                }
+
+                if (leftEntities.size() == 0)
+                {
+                    throw obelisk::ParserException(
+                        "missing left side entities");
+                }
+
+                if (rightEntities.size() == 0)
+                {
+                    throw obelisk::ParserException(
+                        "missing right side entities");
+                }
                 break;
             }
 
             if (getCurrentToken() == '"')
             {
-                // TODO: throw and error because there is an unexpected double quote.
+                throw obelisk::ParserException("unexpected '\"'");
                 break;
             }
 
