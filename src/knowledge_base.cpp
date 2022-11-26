@@ -9,11 +9,6 @@
 #include <filesystem>
 #include <iostream>
 
-obelisk::KnowledgeBase::KnowledgeBase(const char* filename)
-{
-    KnowledgeBase(filename, DEFAULT_FLAGS);
-}
-
 obelisk::KnowledgeBase::KnowledgeBase(const char* filename, int flags)
 {
     filename_ = std::move(filename);
@@ -64,6 +59,33 @@ void obelisk::KnowledgeBase::createTable(std::function<const char*()> function)
             throw obelisk::KnowledgeBaseException();
         }
     }
+}
+
+int obelisk::KnowledgeBase::addEntities(std::vector<obelisk::Entity>& entities)
+{
+    for (auto& entity : entities)
+    {
+        entity.insertEntity(dbConnection_);
+    }
+    return 0;
+}
+
+int obelisk::KnowledgeBase::addVerbs(std::vector<obelisk::Verb>& verbs)
+{
+    for (auto& verb : verbs)
+    {
+        verb.insertVerb(dbConnection_);
+    }
+    return 0;
+}
+
+int obelisk::KnowledgeBase::addFacts(std::vector<obelisk::Fact>& facts)
+{
+    for (auto& fact : facts)
+    {
+        fact.insertFact(dbConnection_);
+    }
+    return 0;
 }
 
 // TODO: log files?

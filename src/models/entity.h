@@ -1,6 +1,8 @@
 #ifndef OBELISK_MODELS_ENTITY_H
 #define OBELISK_MODELS_ENTITY_H
 
+#include <sqlite3.h>
+
 #include <string>
 
 namespace obelisk
@@ -38,11 +40,14 @@ namespace obelisk
 
             static const char* createTable();
 
-            int getId();
+            int& getId();
             void setId(int id);
 
-            std::string getName();
+            std::string& getName();
             void setName(std::string name);
+
+            Entity selectEntity(sqlite3* dbConnection, std::string name);
+            int insertEntity(sqlite3* dbConnection);
     };
 } // namespace obelisk
 

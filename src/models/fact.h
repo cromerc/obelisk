@@ -2,6 +2,7 @@
 #define OBELISK_MODELS_FACT_H
 
 #include "models/entity.h"
+#include "models/fact.h"
 #include "models/verb.h"
 
 #include <string>
@@ -56,17 +57,24 @@ namespace obelisk
 
             static const char* createTable();
 
-            int getId();
+            int& getId();
             void setId(int id);
 
-            obelisk::Entity getLeftEntity();
+            Entity& getLeftEntity();
             void setLeftEntity(obelisk::Entity leftEntity);
 
-            obelisk::Entity getRightEntity();
+            Entity& getRightEntity();
             void setRightEntity(obelisk::Entity leftEntity);
 
-            obelisk::Verb getVerb();
+            Verb& getVerb();
             void setVerb(obelisk::Verb verb);
+
+            Fact selectFact(sqlite3* dbConnection,
+                int idLeftEntity,
+                int idRightEntity,
+                int idVerb);
+
+            int insertFact(sqlite3* dbConnection);
     };
 } // namespace obelisk
 

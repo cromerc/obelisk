@@ -16,7 +16,7 @@ const char* obelisk::SuggestAction::createTable()
     )";
 }
 
-int obelisk::SuggestAction::getId()
+int& obelisk::SuggestAction::getId()
 {
     return id_;
 }
@@ -26,7 +26,7 @@ void obelisk::SuggestAction::setId(int id)
     id_ = id;
 }
 
-obelisk::Fact obelisk::SuggestAction::getFact()
+obelisk::Fact& obelisk::SuggestAction::getFact()
 {
     return fact_;
 }
@@ -36,7 +36,7 @@ void obelisk::SuggestAction::setFact(obelisk::Fact fact)
     fact_ = fact;
 }
 
-obelisk::Action obelisk::SuggestAction::getTrueAction()
+obelisk::Action& obelisk::SuggestAction::getTrueAction()
 {
     return trueAction_;
 }
@@ -46,7 +46,7 @@ void obelisk::SuggestAction::setTrueAction(obelisk::Action trueAction)
     trueAction_ = trueAction;
 }
 
-obelisk::Action obelisk::SuggestAction::getFalseAction()
+obelisk::Action& obelisk::SuggestAction::getFalseAction()
 {
     return falseAction_;
 }

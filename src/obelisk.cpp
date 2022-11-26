@@ -8,9 +8,21 @@
 #include <limits>
 #include <memory>
 
-static void mainLoop()
+static int mainLoop()
 {
     auto parser = std::unique_ptr<obelisk::Parser> {new obelisk::Parser()};
+    std::unique_ptr<obelisk::KnowledgeBase> kb;
+
+    try
+    {
+        kb = std::unique_ptr<obelisk::KnowledgeBase> {
+            new obelisk::KnowledgeBase("cromer.kb")};
+    }
+    catch (obelisk::KnowledgeBaseException& exception)
+    {
+        std::cout << exception.what() << std::endl;
+        return EXIT_FAILURE;
+    }
 
     // Prime the first token.
     fprintf(stderr, "ready> ");
@@ -22,7 +34,7 @@ static void mainLoop()
         switch (parser->getCurrentToken())
         {
             case obelisk::Lexer::kTokenEof :
-                return;
+                return EXIT_SUCCESS;
             case ';' : // ignore top-level semicolons.
                 std::cout << "Identifier: "
                           << parser->getLexer()->getIdentifier() << std::endl;
@@ -31,19 +43,21 @@ static void mainLoop()
                 parser->getNextToken();
                 break;
             case obelisk::Lexer::kTokenFact :
-                // parser->handleFactFunction();
+                parser->handleFact(kb);
                 break;
             case obelisk::Lexer::kTokenRule :
-                // parser->handleRuleFunction();
+                // parser->handleRule();
                 break;
             case obelisk::Lexer::kTokenAction :
-                // parser->handleActionFunction();
+                // parser->handleAction();
                 break;
             default :
                 parser->getNextToken();
                 break;
         }
     }
+
+    return EXIT_SUCCESS;
 }
 
 int main(int argc, char** argv)
@@ -79,28 +93,5 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }*/
 
-    try
-    {
-        auto kb = std::unique_ptr<obelisk::KnowledgeBase> {
-            new obelisk::KnowledgeBase("cromer.kb")};
-
-        /*std::vector<std::string> leftObjects;
-        std::vector<std::string> rightObjects;
-        leftObjects.push_back("chris");
-        leftObjects.push_back("martin");
-
-        rightObjects.push_back("happy");
-        rightObjects.push_back("smart");
-
-        kb->addFacts("is", leftObjects, rightObjects);*/
-    }
-    catch (obelisk::KnowledgeBaseException& exception)
-    {
-        std::cout << exception.what() << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    mainLoop();
-
-    return EXIT_SUCCESS;
+    return mainLoop();
 }

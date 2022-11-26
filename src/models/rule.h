@@ -45,13 +45,13 @@ namespace obelisk
 
             static const char* createTable();
 
-            int getId();
+            int& getId();
             void setId(int id);
 
-            obelisk::Fact getFact();
+            obelisk::Fact& getFact();
             void setFact(obelisk::Fact fact);
 
-            obelisk::Fact getReason();
+            obelisk::Fact& getReason();
             void setReason(obelisk::Fact reason);
     };
 } // namespace obelisk

@@ -14,7 +14,7 @@ const char* obelisk::Rule::createTable()
     )";
 }
 
-int obelisk::Rule::getId()
+int& obelisk::Rule::getId()
 {
     return id_;
 }
@@ -24,7 +24,7 @@ void obelisk::Rule::setId(int id)
     id_ = id;
 }
 
-obelisk::Fact obelisk::Rule::getFact()
+obelisk::Fact& obelisk::Rule::getFact()
 {
     return fact_;
 }
@@ -34,7 +34,7 @@ void obelisk::Rule::setFact(obelisk::Fact fact)
     fact_ = fact;
 }
 
-obelisk::Fact obelisk::Rule::getReason()
+obelisk::Fact& obelisk::Rule::getReason()
 {
     return reason_;
 }

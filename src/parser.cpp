@@ -1,6 +1,9 @@
 #include "ast/call_expression_ast.h"
 #include "ast/number_expression_ast.h"
 #include "ast/variable_expression_ast.h"
+#include "models/entity.h"
+#include "models/fact.h"
+#include "models/verb.h"
 #include "parser.h"
 
 #include <memory>
@@ -212,17 +215,19 @@ std::unique_ptr<obelisk::PrototypeAST> obelisk::Parser::parseExtern()
     return parsePrototype();
 }
 
+//action("martin" is "dangerous" then "avoid" or "ignore");
 std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseAction()
 {
 }
 
+//rule("chris" and "martin" is "happy" if "chris" plays "playstation");
 std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseRule()
 {
 }
 
 // fact("chris cromer" and "martin" and "Isabella" can "program" and "speak english");
 // fact("" and "martin")
-std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseFact()
+void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
 {
     std::stack<char> syntax;
 
@@ -329,18 +334,68 @@ std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseFact()
         }
     }
 
-    return nullptr;
+    for (auto& leftEntity : leftEntities)
+    {
+        for (auto& rightEntity : rightEntities)
+        {
+            facts.push_back(obelisk::Fact(obelisk::Entity(leftEntity),
+                obelisk::Entity(rightEntity),
+                obelisk::Verb(verb)));
+        }
+    }
 }
 
-void obelisk::Parser::handleAction()
+void obelisk::Parser::handleAction(std::unique_ptr<obelisk::KnowledgeBase>& kb)
 {
 }
 
-void obelisk::Parser::handleRule()
+void obelisk::Parser::handleRule(std::unique_ptr<obelisk::KnowledgeBase>& kb)
 {
 }
 
-void obelisk::Parser::handleFact()
+void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
 {
-    parseFact();
+    std::vector<obelisk::Fact> facts;
+    parseFact(facts);
+
+    int verbId = 0;
+    for (auto& fact : facts)
+    {
+        // TODO: doesn't work after first insert
+        std::vector<obelisk::Entity> entities {fact.getLeftEntity()};
+        kb->addEntities(entities);
+        fact.setLeftEntity(entities.front());
+
+        entities = {fact.getRightEntity()};
+        kb->addEntities(entities);
+        fact.setRightEntity(entities.front());
+
+        if (verbId == 0)
+        {
+            std::vector<obelisk::Verb> verbs = {fact.getVerb()};
+            kb->addVerbs(verbs);
+            if (verbs.front().getId() != 0)
+            {
+                // The verb was inserted
+                fact.setVerb(verbs.front());
+                verbId = fact.getVerb().getId();
+            }
+            else
+            {
+                // The verb is already already in the knowledge base
+                // TODO: SELECT the verb and save it into verbId
+            }
+        }
+        else
+        {
+            fact.getVerb().setId(verbId);
+        }
+
+        // INSERT INTO fact
+        std::vector<obelisk::Fact> facts {fact};
+        kb->addFacts(facts);
+        fact = facts.front();
+    }
 }
+
+// fact("chris cromer" and "martin" and "Isabella" can "program" and "speak english");

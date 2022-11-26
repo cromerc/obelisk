@@ -1,1 +1,1 @@
-static void mainLoop();
+static int mainLoop();

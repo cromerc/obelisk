@@ -1,10 +1,15 @@
 #ifndef OBELISK_KNOWLEDGE_BASE_H
 #define OBELISK_KNOWLEDGE_BASE_H
 
+#include "models/entity.h"
+#include "models/fact.h"
+#include "models/verb.h"
+
 #include <sqlite3.h>
 
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <string>
 
 namespace obelisk
@@ -22,16 +27,19 @@ namespace obelisk
             void createTable(std::function<const char*()> function);
 
         public:
-            KnowledgeBase(const char* filename);
             KnowledgeBase(const char* filename, int flags);
+
+            KnowledgeBase(const char* filename) :
+                KnowledgeBase(filename,
+                    SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE)
+            {
+            }
+
             ~KnowledgeBase();
 
-            template<typename T, typename U>
-            int addFacts(std::string verb, T leftEntities, U rightEntities);
-            // TODO: add parameter for fact
-            template<typename T, typename U>
-            int addRules(std::string verb, T leftEntities, U rightEntities);
-            template<typename T, typename U> int addActions();
+            int addEntities(std::vector<obelisk::Entity>& entities);
+            int addVerbs(std::vector<obelisk::Verb>& verbs);
+            int addFacts(std::vector<obelisk::Fact>& facts);
 
             void getDouble(double& result, float var1, float var2);
             void getFloat(float& result1, float& result2, double var);
