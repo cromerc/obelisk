@@ -11,8 +11,7 @@ const char* obelisk::Entity::createTable()
     )";
 }
 
-obelisk::Entity obelisk::Entity::selectEntity(sqlite3* dbConnection,
-    std::string name)
+int obelisk::Entity::selectEntity(sqlite3* dbConnection)
 {
     // TODO: check if database is open
     sqlite3_stmt* ppStmt = nullptr;
@@ -33,7 +32,8 @@ obelisk::Entity obelisk::Entity::selectEntity(sqlite3* dbConnection,
         // TODO: Something was not used... throw an error
     }
 
-    result = sqlite3_bind_text(ppStmt, 1, name.c_str(), -1, SQLITE_TRANSIENT);
+    result
+        = sqlite3_bind_text(ppStmt, 1, getName().c_str(), -1, SQLITE_TRANSIENT);
     if (result != SQLITE_OK)
     {
         // TODO: Something is wrong... throw an error
@@ -47,15 +47,15 @@ obelisk::Entity obelisk::Entity::selectEntity(sqlite3* dbConnection,
 
     if (result == SQLITE_ROW)
     {
-        auto id = sqlite3_column_int(ppStmt, 0);
-        std::string name((char*) sqlite3_column_text(ppStmt, 1));
+        setId(sqlite3_column_int(ppStmt, 0));
+        setName((char*) sqlite3_column_text(ppStmt, 1));
 
         result = sqlite3_finalize(ppStmt);
         if (result != SQLITE_OK)
         {
             // TODO: Something is wrong... throw an error
         }
-        return Entity(id, name);
+        return 0;
     }
     else
     {
@@ -64,7 +64,7 @@ obelisk::Entity obelisk::Entity::selectEntity(sqlite3* dbConnection,
         {
             // TODO: Something is wrong... throw an error
         }
-        return Entity();
+        return 0;
     }
 }
 
@@ -72,11 +72,12 @@ int obelisk::Entity::insertEntity(sqlite3* dbConnection)
 {
     // TODO: check if database is open
 
-    if (selectEntity(dbConnection, getName()).getId() != 0)
+    /*selectEntity(dbConnection);
+    if (getId() != 0)
     {
         // TODO: already exists in database, throw an error? Or skip past it?
         return -1;
-    }
+    }*/
 
     sqlite3_stmt* ppStmt = nullptr;
     const char* pzTail   = nullptr;
@@ -108,8 +109,10 @@ int obelisk::Entity::insertEntity(sqlite3* dbConnection)
     {
         // TODO: Something is wrong... throw an error
     }
-
-    setId((int) sqlite3_last_insert_rowid(dbConnection));
+    else
+    {
+        setId((int) sqlite3_last_insert_rowid(dbConnection));
+    }
 
     result = sqlite3_finalize(ppStmt);
     if (result != SQLITE_OK)

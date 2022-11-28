@@ -16,10 +16,7 @@ const char* obelisk::Fact::createTable()
     )";
 }
 
-obelisk::Fact obelisk::Fact::selectFact(sqlite3* dbConnection,
-    int idLeftEntity,
-    int idRightEntity,
-    int idVerb)
+int obelisk::Fact::selectFact(sqlite3* dbConnection)
 {
     // TODO: check if database is open
 
@@ -67,17 +64,17 @@ obelisk::Fact obelisk::Fact::selectFact(sqlite3* dbConnection,
 
     if (result == SQLITE_ROW)
     {
-        auto id          = sqlite3_column_int(ppStmt, 0);
-        auto leftEntity  = sqlite3_column_int(ppStmt, 1);
-        auto rightEntity = sqlite3_column_int(ppStmt, 2);
-        auto verb        = sqlite3_column_int(ppStmt, 3);
+        setId(sqlite3_column_int(ppStmt, 0));
+        getLeftEntity().setId(sqlite3_column_int(ppStmt, 1));
+        getRightEntity().setId(sqlite3_column_int(ppStmt, 2));
+        getVerb().setId(sqlite3_column_int(ppStmt, 3));
 
         result = sqlite3_finalize(ppStmt);
         if (result != SQLITE_OK)
         {
             // TODO: Something is wrong... throw an error
         }
-        return Fact(id, leftEntity, rightEntity, verb);
+        return 0;
     }
     else
     {
@@ -86,7 +83,7 @@ obelisk::Fact obelisk::Fact::selectFact(sqlite3* dbConnection,
         {
             // TODO: Something is wrong... throw an error
         }
-        return Fact();
+        return 0;
     }
 }
 
@@ -95,16 +92,12 @@ int obelisk::Fact::insertFact(sqlite3* dbConnection)
     // TODO: make sure database is open
 
     // check if the fact id exists, based on the ids of the entities and verb
-    if (selectFact(dbConnection,
-            getLeftEntity().getId(),
-            getRightEntity().getId(),
-            getVerb().getId())
-            .getId()
-        != 0)
+    /*selectFact(dbConnection);
+    if (getId() != 0)
     {
         // TODO: Verb is already in database, throw an error? Or just skip it?
         return -1;
-    }
+    }*/
 
     // TODO: verify that verbId, leftEntityId, and rightEntityId are not 0
 
@@ -149,8 +142,10 @@ int obelisk::Fact::insertFact(sqlite3* dbConnection)
     {
         // TODO: Something is wrong... throw an error
     }
-
-    setId((int) sqlite3_last_insert_rowid(dbConnection));
+    else
+    {
+        setId((int) sqlite3_last_insert_rowid(dbConnection));
+    }
 
     result = sqlite3_finalize(ppStmt);
     if (result != SQLITE_OK)

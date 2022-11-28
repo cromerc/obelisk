@@ -41,6 +41,10 @@ namespace obelisk
             int addVerbs(std::vector<obelisk::Verb>& verbs);
             int addFacts(std::vector<obelisk::Fact>& facts);
 
+            int getEntity(obelisk::Entity& entity);
+            int getVerb(obelisk::Verb& verb);
+            int getFact(obelisk::Fact& fact);
+
             void getDouble(double& result, float var1, float var2);
             void getFloat(float& result1, float& result2, double var);
     };

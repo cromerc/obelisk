@@ -61,6 +61,7 @@ void obelisk::KnowledgeBase::createTable(std::function<const char*()> function)
     }
 }
 
+// TODO: change these to throw errors instead of return int
 int obelisk::KnowledgeBase::addEntities(std::vector<obelisk::Entity>& entities)
 {
     for (auto& entity : entities)
@@ -85,6 +86,24 @@ int obelisk::KnowledgeBase::addFacts(std::vector<obelisk::Fact>& facts)
     {
         fact.insertFact(dbConnection_);
     }
+    return 0;
+}
+
+int obelisk::KnowledgeBase::getEntity(obelisk::Entity& entity)
+{
+    entity.selectEntity(dbConnection_);
+    return 0;
+}
+
+int obelisk::KnowledgeBase::getVerb(obelisk::Verb& verb)
+{
+    verb.selectVerb(dbConnection_);
+    return 0;
+}
+
+int obelisk::KnowledgeBase::getFact(obelisk::Fact& fact)
+{
+    fact.selectFact(dbConnection_);
     return 0;
 }
 

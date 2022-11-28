@@ -366,9 +366,38 @@ void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
         kb->addEntities(entities);
         fact.setLeftEntity(entities.front());
 
+        // the id was not inserted, so check if it exists in the database
+        if (fact.getLeftEntity().getId() == 0)
+        {
+            obelisk::Entity entity = fact.getLeftEntity();
+            kb->getEntity(entity);
+            if (entity.getId() == 0)
+            {
+                // TODO: throw an error here, it was not inserted, and doesn't exist in the database
+            }
+            else
+            {
+                fact.setLeftEntity(entity);
+            }
+        }
+
         entities = {fact.getRightEntity()};
         kb->addEntities(entities);
         fact.setRightEntity(entities.front());
+
+        if (fact.getRightEntity().getId() == 0)
+        {
+            obelisk::Entity entity = fact.getRightEntity();
+            kb->getEntity(entity);
+            if (entity.getId() == 0)
+            {
+                // TODO: throw an error here, it was not inserted, and doesn't exist in the database
+            }
+            else
+            {
+                fact.setRightEntity(entity);
+            }
+        }
 
         if (verbId == 0)
         {

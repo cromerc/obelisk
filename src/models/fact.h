@@ -69,11 +69,7 @@ namespace obelisk
             Verb& getVerb();
             void setVerb(obelisk::Verb verb);
 
-            Fact selectFact(sqlite3* dbConnection,
-                int idLeftEntity,
-                int idRightEntity,
-                int idVerb);
-
+            int selectFact(sqlite3* dbConnection);
             int insertFact(sqlite3* dbConnection);
     };
 } // namespace obelisk
