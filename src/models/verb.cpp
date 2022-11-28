@@ -117,6 +117,8 @@ int obelisk::Verb::insertVerb(sqlite3* dbConnection)
         setId((int) sqlite3_last_insert_rowid(dbConnection));
     }
 
+    sqlite3_set_last_insert_rowid(dbConnection, 0);
+
     result = sqlite3_finalize(ppStmt);
     if (result != SQLITE_OK)
     {
