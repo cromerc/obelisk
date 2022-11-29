@@ -69,8 +69,8 @@ namespace obelisk
             Verb& getVerb();
             void setVerb(obelisk::Verb verb);
 
-            int selectFact(sqlite3* dbConnection);
-            int insertFact(sqlite3* dbConnection);
+            void selectFact(sqlite3* dbConnection);
+            void insertFact(sqlite3* dbConnection);
     };
 } // namespace obelisk
 

@@ -24,6 +24,7 @@ namespace obelisk
             int flags_;
             void logSqliteError(int result);
 
+            void enableForeignKeys();
             void createTable(std::function<const char*()> function);
 
         public:
@@ -37,13 +38,13 @@ namespace obelisk
 
             ~KnowledgeBase();
 
-            int addEntities(std::vector<obelisk::Entity>& entities);
-            int addVerbs(std::vector<obelisk::Verb>& verbs);
-            int addFacts(std::vector<obelisk::Fact>& facts);
+            void addEntities(std::vector<obelisk::Entity>& entities);
+            void addVerbs(std::vector<obelisk::Verb>& verbs);
+            void addFacts(std::vector<obelisk::Fact>& facts);
 
-            int getEntity(obelisk::Entity& entity);
-            int getVerb(obelisk::Verb& verb);
-            int getFact(obelisk::Fact& fact);
+            void getEntity(obelisk::Entity& entity);
+            void getVerb(obelisk::Verb& verb);
+            void getFact(obelisk::Fact& fact);
 
             void getDouble(double& result, float var1, float var2);
             void getFloat(float& result1, float& result2, double var);

@@ -9,6 +9,7 @@ const char* obelisk::SuggestAction::createTable()
             "true_action"  INTEGER NOT NULL,
             "false_action" INTEGER NOT NULL,
             PRIMARY KEY("id" AUTOINCREMENT),
+            UNIQUE("fact", "true_action", "false_action"),
             FOREIGN KEY("fact") REFERENCES "fact"("id") ON DELETE RESTRICT,
             FOREIGN KEY("true_action") REFERENCES "action"("id") ON DELETE RESTRICT,
             FOREIGN KEY("false_action") REFERENCES "action"("id") ON DELETE RESTRICT

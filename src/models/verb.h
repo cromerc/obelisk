@@ -46,8 +46,8 @@ namespace obelisk
             std::string& getName();
             void setName(std::string name);
 
-            int selectVerb(sqlite3* dbConnection);
-            int insertVerb(sqlite3* dbConnection);
+            void selectVerb(sqlite3* dbConnection);
+            void insertVerb(sqlite3* dbConnection);
     };
 } // namespace obelisk
 

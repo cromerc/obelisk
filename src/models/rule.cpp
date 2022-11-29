@@ -8,6 +8,7 @@ const char* obelisk::Rule::createTable()
             "fact"   INTEGER NOT NULL,
             "reason" INTEGER NOT NULL CHECK("reason" != "fact"),
             PRIMARY KEY("id" AUTOINCREMENT),
+            UNIQUE("fact", "reason"),
             FOREIGN KEY("fact") REFERENCES "fact"("id") ON DELETE RESTRICT,
             FOREIGN KEY("reason") REFERENCES "fact"("id") ON DELETE RESTRICT
         );

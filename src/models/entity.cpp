@@ -1,4 +1,5 @@
 #include "models/entity.h"
+#include "models/error.h"
 
 const char* obelisk::Entity::createTable()
 {
@@ -11,118 +12,139 @@ const char* obelisk::Entity::createTable()
     )";
 }
 
-int obelisk::Entity::selectEntity(sqlite3* dbConnection)
+void obelisk::Entity::selectEntity(sqlite3* dbConnection)
 {
-    // TODO: check if database is open
+    if (dbConnection == nullptr)
+    {
+        throw obelisk::DatabaseException("database isn't open");
+    }
+
     sqlite3_stmt* ppStmt = nullptr;
-    const char* pzTail   = nullptr;
 
     auto result = sqlite3_prepare_v2(dbConnection,
-        "SELECT id, name FROM entity WHERE name=?;",
+        "SELECT id, name FROM entity WHERE name=?",
         -1,
         &ppStmt,
-        &pzTail);
+        nullptr);
+
     if (result != SQLITE_OK)
     {
-        // TODO: something went wrong throw an error
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
     }
 
-    if (pzTail != nullptr)
+    result = sqlite3_bind_text(ppStmt, 1, getName().c_str(), -1, SQLITE_STATIC);
+    switch (result)
     {
-        // TODO: Something was not used... throw an error
-    }
-
-    result
-        = sqlite3_bind_text(ppStmt, 1, getName().c_str(), -1, SQLITE_TRANSIENT);
-    if (result != SQLITE_OK)
-    {
-        // TODO: Something is wrong... throw an error
+        case SQLITE_OK :
+            break;
+        case SQLITE_TOOBIG :
+            throw obelisk::DatabaseException::SizeException();
+            break;
+        case SQLITE_RANGE :
+            throw obelisk::DatabaseException::RangeException();
+            break;
+        case SQLITE_NOMEM :
+            throw obelisk::DatabaseException::MemoryException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
     }
 
     result = sqlite3_step(ppStmt);
-    if (result != SQLITE_DONE)
+    switch (result)
     {
-        // TODO: Something is wrong... throw an error
+        case SQLITE_DONE :
+            // no rows in the database
+            break;
+        case SQLITE_ROW :
+            setId(sqlite3_column_int(ppStmt, 0));
+            setName((char*) sqlite3_column_text(ppStmt, 1));
+            break;
+        case SQLITE_BUSY :
+            throw obelisk::DatabaseException::BusyException();
+            break;
+        case SQLITE_MISUSE :
+            throw obelisk::DatabaseException::MisuseException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
     }
 
-    if (result == SQLITE_ROW)
-    {
-        setId(sqlite3_column_int(ppStmt, 0));
-        setName((char*) sqlite3_column_text(ppStmt, 1));
+    result = sqlite3_finalize(ppStmt);
 
-        result = sqlite3_finalize(ppStmt);
-        if (result != SQLITE_OK)
-        {
-            // TODO: Something is wrong... throw an error
-        }
-        return 0;
-    }
-    else
+    if (result != SQLITE_OK)
     {
-        result = sqlite3_finalize(ppStmt);
-        if (result != SQLITE_OK)
-        {
-            // TODO: Something is wrong... throw an error
-        }
-        return 0;
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
     }
 }
 
-int obelisk::Entity::insertEntity(sqlite3* dbConnection)
+void obelisk::Entity::insertEntity(sqlite3* dbConnection)
 {
-    // TODO: check if database is open
-
-    /*selectEntity(dbConnection);
-    if (getId() != 0)
+    if (dbConnection == nullptr)
     {
-        // TODO: already exists in database, throw an error? Or skip past it?
-        return -1;
-    }*/
-
-    sqlite3_stmt* ppStmt = nullptr;
-    const char* pzTail   = nullptr;
-
-    auto result = sqlite3_prepare_v2(dbConnection,
-        "INSERT INTO entity (name) VALUES (?);",
-        -1,
-        &ppStmt,
-        &pzTail);
-    if (result != SQLITE_OK)
-    {
-        // TODO: something went wrong throw an error
+        throw obelisk::DatabaseException("database isn't open");
     }
 
-    if (pzTail != nullptr)
+    sqlite3_stmt* ppStmt = nullptr;
+
+    auto result = sqlite3_prepare_v2(dbConnection,
+        "INSERT INTO entity (name) VALUES (?)",
+        -1,
+        &ppStmt,
+        nullptr);
+    if (result != SQLITE_OK)
     {
-        // TODO: Something was not used... throw an error
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
     }
 
     result
         = sqlite3_bind_text(ppStmt, 1, getName().c_str(), -1, SQLITE_TRANSIENT);
-    if (result != SQLITE_OK)
+    switch (result)
     {
-        // TODO: Something is wrong... throw an error
+        case SQLITE_OK :
+            break;
+        case SQLITE_TOOBIG :
+            throw obelisk::DatabaseException::SizeException();
+            break;
+        case SQLITE_RANGE :
+            throw obelisk::DatabaseException::RangeException();
+            break;
+        case SQLITE_NOMEM :
+            throw obelisk::DatabaseException::MemoryException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
     }
 
     result = sqlite3_step(ppStmt);
-    if (result != SQLITE_DONE)
+    switch (result)
     {
-        // TODO: Something is wrong... throw an error
+        case SQLITE_DONE :
+            setId((int) sqlite3_last_insert_rowid(dbConnection));
+            sqlite3_set_last_insert_rowid(dbConnection, 0);
+            break;
+        case SQLITE_CONSTRAINT :
+            throw obelisk::DatabaseException::ConstraintException(
+                sqlite3_errmsg(dbConnection));
+        case SQLITE_BUSY :
+            throw obelisk::DatabaseException::BusyException();
+            break;
+        case SQLITE_MISUSE :
+            throw obelisk::DatabaseException::MisuseException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
     }
-    else
-    {
-        setId((int) sqlite3_last_insert_rowid(dbConnection));
-    }
-
-    sqlite3_set_last_insert_rowid(dbConnection, 0);
 
     result = sqlite3_finalize(ppStmt);
     if (result != SQLITE_OK)
     {
-        // TODO: Something is wrong... throw an error
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
     }
-
-    return 0;
 }
 
 int& obelisk::Entity::getId()

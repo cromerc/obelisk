@@ -1,13 +1,16 @@
 #include "knowledge_base.h"
 #include "models/action.h"
 #include "models/entity.h"
+#include "models/error.h"
 #include "models/fact.h"
 #include "models/rule.h"
 #include "models/suggest_action.h"
 #include "models/verb.h"
 
+#include <cstring>
 #include <filesystem>
 #include <iostream>
+#include <string>
 
 obelisk::KnowledgeBase::KnowledgeBase(const char* filename, int flags)
 {
@@ -22,6 +25,8 @@ obelisk::KnowledgeBase::KnowledgeBase(const char* filename, int flags)
     {
         logSqliteError(result);
     }
+
+    enableForeignKeys();
 
     if (!dbExists)
     {
@@ -42,16 +47,25 @@ obelisk::KnowledgeBase::~KnowledgeBase()
     }
 }
 
-void obelisk::KnowledgeBase::createTable(std::function<const char*()> function)
+/**
+ * @brief Enable foreign key functionality in the open database.
+ *
+ * This must always be done when the connection is opened or it will not
+ * enforce the foreign key constraints.
+ */
+void obelisk::KnowledgeBase::enableForeignKeys()
 {
-    char* tmp;
-    auto result = sqlite3_exec(dbConnection_, function(), NULL, NULL, &tmp);
+    char* errmsg;
+    int result = sqlite3_exec(dbConnection_,
+        "PRAGMA foreign_keys = ON;",
+        NULL,
+        NULL,
+        &errmsg);
     if (result != SQLITE_OK)
     {
         logSqliteError(result);
-        if (tmp)
+        if (errmsg)
         {
-            std::string errmsg(tmp);
             throw obelisk::KnowledgeBaseException(errmsg);
         }
         else
@@ -61,53 +75,103 @@ void obelisk::KnowledgeBase::createTable(std::function<const char*()> function)
     }
 }
 
-// TODO: change these to throw errors instead of return int
-int obelisk::KnowledgeBase::addEntities(std::vector<obelisk::Entity>& entities)
+void obelisk::KnowledgeBase::createTable(std::function<const char*()> function)
+{
+    char* errmsg;
+    int result = sqlite3_exec(dbConnection_, function(), NULL, NULL, &errmsg);
+    if (result != SQLITE_OK)
+    {
+        logSqliteError(result);
+        if (errmsg)
+        {
+            throw obelisk::KnowledgeBaseException(errmsg);
+        }
+        else
+        {
+            throw obelisk::KnowledgeBaseException();
+        }
+    }
+}
+
+void obelisk::KnowledgeBase::addEntities(std::vector<obelisk::Entity>& entities)
 {
     for (auto& entity : entities)
     {
-        entity.insertEntity(dbConnection_);
+        try
+        {
+            entity.insertEntity(dbConnection_);
+        }
+        catch (obelisk::DatabaseException::ConstraintException& exception)
+        {
+            // ignore unique constraint error
+            if (std::strcmp(exception.what(),
+                    "UNIQUE constraint failed: entity.name")
+                != 0)
+            {
+                throw;
+            }
+        }
     }
-    return 0;
 }
 
-int obelisk::KnowledgeBase::addVerbs(std::vector<obelisk::Verb>& verbs)
+void obelisk::KnowledgeBase::addVerbs(std::vector<obelisk::Verb>& verbs)
 {
     for (auto& verb : verbs)
     {
-        verb.insertVerb(dbConnection_);
+        try
+        {
+            verb.insertVerb(dbConnection_);
+        }
+        catch (obelisk::DatabaseException::ConstraintException& exception)
+        {
+            // ignore unique constraint error
+            if (std::strcmp(exception.what(),
+                    "UNIQUE constraint failed: verb.name")
+                != 0)
+            {
+                throw;
+            }
+        }
     }
-    return 0;
 }
 
-int obelisk::KnowledgeBase::addFacts(std::vector<obelisk::Fact>& facts)
+void obelisk::KnowledgeBase::addFacts(std::vector<obelisk::Fact>& facts)
 {
     for (auto& fact : facts)
     {
-        fact.insertFact(dbConnection_);
+        try
+        {
+            fact.insertFact(dbConnection_);
+        }
+        catch (obelisk::DatabaseException::ConstraintException& exception)
+        {
+            // ignore unique constraint error
+            if (std::strcmp(exception.what(),
+                    "UNIQUE constraint failed: fact.left_entity, fact.right_entity, fact.verb")
+                != 0)
+            {
+                throw;
+            }
+        }
     }
-    return 0;
 }
 
-int obelisk::KnowledgeBase::getEntity(obelisk::Entity& entity)
+void obelisk::KnowledgeBase::getEntity(obelisk::Entity& entity)
 {
     entity.selectEntity(dbConnection_);
-    return 0;
 }
 
-int obelisk::KnowledgeBase::getVerb(obelisk::Verb& verb)
+void obelisk::KnowledgeBase::getVerb(obelisk::Verb& verb)
 {
     verb.selectVerb(dbConnection_);
-    return 0;
 }
 
-int obelisk::KnowledgeBase::getFact(obelisk::Fact& fact)
+void obelisk::KnowledgeBase::getFact(obelisk::Fact& fact)
 {
     fact.selectFact(dbConnection_);
-    return 0;
 }
 
-// TODO: log files?
+// TODO: log files? or just throw an error?
 void obelisk::KnowledgeBase::logSqliteError(int result)
 {
     std::cout << sqlite3_errstr(result) << std::endl;
