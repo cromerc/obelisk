@@ -18,6 +18,8 @@ namespace obelisk
                 number_(number)
             {
             }
+
+            llvm::Value *codegen() override;
     };
 } // namespace obelisk
 

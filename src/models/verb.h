@@ -1,6 +1,8 @@
 #ifndef OBELISK_MODELS_VERB_H
 #define OBELISK_MODELS_VERB_H
 
+#include <sqlite3.h>
+
 #include <string>
 
 namespace obelisk
@@ -38,11 +40,14 @@ namespace obelisk
 
             static const char* createTable();
 
-            int getId();
+            int& getId();
             void setId(int id);
 
-            std::string getName();
+            std::string& getName();
             void setName(std::string name);
+
+            void selectVerb(sqlite3* dbConnection);
+            void insertVerb(sqlite3* dbConnection);
     };
 } // namespace obelisk
 

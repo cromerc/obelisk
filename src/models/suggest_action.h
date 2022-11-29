@@ -56,16 +56,16 @@ namespace obelisk
 
             static const char* createTable();
 
-            int getId();
+            int& getId();
             void setId(int id);
 
-            obelisk::Fact getFact();
+            obelisk::Fact& getFact();
             void setFact(obelisk::Fact fact);
 
-            obelisk::Action getTrueAction();
+            obelisk::Action& getTrueAction();
             void setTrueAction(obelisk::Action trueAction);
 
-            obelisk::Action getFalseAction();
+            obelisk::Action& getFalseAction();
             void setFalseAction(obelisk::Action falseAction);
     };
 } // namespace obelisk

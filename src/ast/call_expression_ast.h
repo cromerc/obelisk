@@ -28,6 +28,8 @@ namespace obelisk
                 args_(std::move(args))
             {
             }
+
+            llvm::Value *codegen() override;
     };
 } // namespace obelisk
 

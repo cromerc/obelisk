@@ -4,7 +4,9 @@
 #include "ast/expression_ast.h"
 #include "ast/function_ast.h"
 #include "ast/prototype_ast.h"
+#include "knowledge_base.h"
 #include "lexer.h"
+#include "models/fact.h"
 
 #include <memory>
 
@@ -34,7 +36,7 @@ namespace obelisk
             std::unique_ptr<obelisk::PrototypeAST> parseExtern();
             std::unique_ptr<obelisk::ExpressionAST> parseAction();
             std::unique_ptr<obelisk::ExpressionAST> parseRule();
-            std::unique_ptr<obelisk::ExpressionAST> parseFact();
+            void parseFact(std::vector<obelisk::Fact>& facts);
 
         public:
             Parser();
@@ -48,9 +50,31 @@ namespace obelisk
             void handleDefinition();
             void handleExtern();
             void handleTopLevelExpression();
-            void handleAction();
-            void handleRule();
-            void handleFact();
+            void handleAction(std::unique_ptr<obelisk::KnowledgeBase>& kb);
+            void handleRule(std::unique_ptr<obelisk::KnowledgeBase>& kb);
+            void handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb);
+    };
+
+    class ParserException : public std::exception
+    {
+        private:
+            const std::string errorMessage_;
+
+        public:
+            ParserException() :
+                errorMessage_("an unknown error ocurred")
+            {
+            }
+
+            ParserException(const std::string& errorMessage) :
+                errorMessage_(errorMessage)
+            {
+            }
+
+            const char* what() const noexcept
+            {
+                return errorMessage_.c_str();
+            }
     };
 } // namespace obelisk
 
