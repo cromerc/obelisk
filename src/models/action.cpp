@@ -11,7 +11,7 @@ const char* obelisk::Action::createTable()
     )";
 }
 
-int obelisk::Action::getId()
+int& obelisk::Action::getId()
 {
     return id_;
 }
@@ -21,7 +21,7 @@ void obelisk::Action::setId(int id)
     id_ = id;
 }
 
-std::string obelisk::Action::getName()
+std::string& obelisk::Action::getName()
 {
     return name_;
 }

@@ -38,10 +38,10 @@ namespace obelisk
 
             static const char* createTable();
 
-            int getId();
+            int& getId();
             void setId(int id);
 
-            std::string getName();
+            std::string& getName();
             void setName(std::string name);
     };
 } // namespace obelisk
