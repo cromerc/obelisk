@@ -23,7 +23,14 @@ std::unique_ptr<obelisk::Lexer>& obelisk::Parser::getLexer()
 
 int obelisk::Parser::getNextToken()
 {
-    setCurrentToken(getLexer()->getToken());
+    try
+    {
+        setCurrentToken(getLexer()->getToken());
+    }
+    catch (obelisk::LexerException& exception)
+    {
+        throw;
+    }
     return getCurrentToken();
 }
 
@@ -328,6 +335,7 @@ void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
             else
             {
                 verb      = getLexer()->getIdentifier();
+                // TODO: make sure verb is alphabetic
                 getEntity = true;
                 continue;
             }
@@ -361,7 +369,6 @@ void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
     int verbId = 0;
     for (auto& fact : facts)
     {
-        // TODO: doesn't work after first insert
         std::vector<obelisk::Entity> entities {fact.getLeftEntity()};
         kb->addEntities(entities);
         fact.setLeftEntity(entities.front());
@@ -373,7 +380,8 @@ void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
             kb->getEntity(entity);
             if (entity.getId() == 0)
             {
-                // TODO: throw an error here, it was not inserted, and doesn't exist in the database
+                throw obelisk::ParserException(
+                    "left entity could not be inserted into the database");
             }
             else
             {
@@ -391,7 +399,8 @@ void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
             kb->getEntity(entity);
             if (entity.getId() == 0)
             {
-                // TODO: throw an error here, it was not inserted, and doesn't exist in the database
+                throw obelisk::ParserException(
+                    "right entity could not be inserted into the database");
             }
             else
             {
@@ -405,14 +414,23 @@ void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
             kb->addVerbs(verbs);
             if (verbs.front().getId() != 0)
             {
-                // The verb was inserted
                 fact.setVerb(verbs.front());
                 verbId = fact.getVerb().getId();
             }
             else
             {
-                // The verb is already already in the knowledge base
-                // TODO: SELECT the verb and save it into verbId
+                obelisk::Verb verb = fact.getVerb();
+                kb->getVerb(verb);
+                if (verb.getId() == 0)
+                {
+                    throw obelisk::ParserException(
+                        "verb could not be inserted into the database");
+                }
+                else
+                {
+                    fact.setVerb(verb);
+                    verbId = fact.getVerb().getId();
+                }
             }
         }
         else
@@ -420,10 +438,19 @@ void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
             fact.getVerb().setId(verbId);
         }
 
-        // INSERT INTO fact
         std::vector<obelisk::Fact> facts {fact};
         kb->addFacts(facts);
         fact = facts.front();
+
+        if (fact.getId() == 0)
+        {
+            kb->getFact(fact);
+            if (fact.getId() == 0)
+            {
+                throw obelisk::ParserException(
+                    "fact could not be inserted into the database");
+            }
+        }
     }
 }
 
