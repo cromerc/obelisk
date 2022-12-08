@@ -48,11 +48,20 @@ int obelisk::Lexer::getToken()
         return kTokenIdentifier;
     }
 
-    if (isdigit(lastChar) || lastChar == '.')
+    if (isdigit(lastChar))
     {
+        bool firstPeriod = false;
         std::string numberStr;
         do
         {
+            if (firstPeriod && lastChar == '.')
+            {
+                throw obelisk::LexerException("invalid double value");
+            }
+            else if (!firstPeriod && lastChar == '.')
+            {
+                firstPeriod = true;
+            }
             numberStr += lastChar;
             lastChar = getchar();
         }

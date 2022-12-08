@@ -26,7 +26,15 @@ static int mainLoop()
 
     // Prime the first token.
     fprintf(stderr, "ready> ");
-    parser->getNextToken();
+    try
+    {
+        parser->getNextToken();
+    }
+    catch (obelisk::LexerException& exception)
+    {
+        std::cout << "Error: " << exception.what() << std::endl;
+        return EXIT_FAILURE;
+    }
 
     while (true)
     {
@@ -40,7 +48,15 @@ static int mainLoop()
                           << parser->getLexer()->getIdentifier() << std::endl;
                 std::cout << "Num: " << parser->getLexer()->getNumberValue()
                           << std::endl;
-                parser->getNextToken();
+                try
+                {
+                    parser->getNextToken();
+                }
+                catch (obelisk::LexerException& exception)
+                {
+                    std::cout << "Error: " << exception.what() << std::endl;
+                    return EXIT_FAILURE;
+                }
                 break;
             case obelisk::Lexer::kTokenFact :
                 parser->handleFact(kb);

@@ -3,7 +3,6 @@
 
 #include <string>
 
-// TODO: add error handling
 namespace obelisk
 {
     class Lexer
@@ -40,6 +39,28 @@ namespace obelisk
 
             const std::string& getIdentifier();
             double getNumberValue();
+    };
+
+    class LexerException : public std::exception
+    {
+        private:
+            const std::string errorMessage_;
+
+        public:
+            LexerException() :
+                errorMessage_("an unknown error ocurred")
+            {
+            }
+
+            LexerException(const std::string& errorMessage) :
+                errorMessage_(errorMessage)
+            {
+            }
+
+            const char* what() const noexcept
+            {
+                return errorMessage_.c_str();
+            }
     };
 } // namespace obelisk
 
