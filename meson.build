@@ -1,6 +1,7 @@
 project('obelisk',
     'cpp',
     version : '1.0.0',
+    license : 'BSD-3-Clause',
     default_options : [
         'warning_level=3',
         'c_std=c17',
