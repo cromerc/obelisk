@@ -47,12 +47,6 @@ obelisk::KnowledgeBase::~KnowledgeBase()
     }
 }
 
-/**
- * @brief Enable foreign key functionality in the open database.
- *
- * This must always be done when the connection is opened or it will not
- * enforce the foreign key constraints.
- */
 void obelisk::KnowledgeBase::enableForeignKeys()
 {
     char* errmsg;
