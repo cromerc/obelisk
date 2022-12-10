@@ -23,7 +23,7 @@ obelisk::KnowledgeBase::KnowledgeBase(const char* filename, int flags)
     auto result = sqlite3_open_v2(filename, &dbConnection_, flags, NULL);
     if (result != SQLITE_OK)
     {
-        logSqliteError(result);
+        throw new KnowledgeBaseException("database could not be opened");
     }
 
     enableForeignKeys();
@@ -63,7 +63,6 @@ void obelisk::KnowledgeBase::enableForeignKeys()
         &errmsg);
     if (result != SQLITE_OK)
     {
-        logSqliteError(result);
         if (errmsg)
         {
             throw obelisk::KnowledgeBaseException(errmsg);
@@ -81,7 +80,6 @@ void obelisk::KnowledgeBase::createTable(std::function<const char*()> function)
     int result = sqlite3_exec(dbConnection_, function(), NULL, NULL, &errmsg);
     if (result != SQLITE_OK)
     {
-        logSqliteError(result);
         if (errmsg)
         {
             throw obelisk::KnowledgeBaseException(errmsg);
@@ -169,12 +167,6 @@ void obelisk::KnowledgeBase::getVerb(obelisk::Verb& verb)
 void obelisk::KnowledgeBase::getFact(obelisk::Fact& fact)
 {
     fact.selectFact(dbConnection_);
-}
-
-// TODO: log files? or just throw an error?
-void obelisk::KnowledgeBase::logSqliteError(int result)
-{
-    std::cout << sqlite3_errstr(result) << std::endl;
 }
 
 void obelisk::KnowledgeBase::getFloat(float& result1,

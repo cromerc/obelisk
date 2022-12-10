@@ -22,7 +22,6 @@ namespace obelisk
             const char* filename_;
             sqlite3* dbConnection_ = nullptr;
             int flags_;
-            void logSqliteError(int result);
 
             void enableForeignKeys();
             void createTable(std::function<const char*()> function);
