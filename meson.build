@@ -9,9 +9,6 @@ project('obelisk',
 )
 
 doxygen = find_program('doxygen', required : false)
-if not doxygen.found()
-    error('MESON_SKIP_TEST doxygen not found.')
-endif
 
 cdata = configuration_data()
 cdata.set('VERSION', meson.project_version())
@@ -22,6 +19,8 @@ else
     cdata.set('HAVE_DOT', 'NO')
 endif
 
-subdir('doc')
+if doxygen.found()
+    subdir('doc')
+endif
 
 subdir('src')
