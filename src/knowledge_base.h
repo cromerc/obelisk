@@ -82,45 +82,48 @@ namespace obelisk
             /**
              * @brief Add entities to the knowledge base.
              *
-             * @param[in] entities The entities to add.
+             * @param[in,out] entities The entities to add. If the insert is
+             * successful it will have a row ID, if not the ID will be 0.
              */
             void addEntities(std::vector<obelisk::Entity>& entities);
 
             /**
              * @brief Add verbs to the knowledge base.
              *
-             * @param[in] verbs The verbs to add.
+             * @param[in,out] verbs The verbs to add. If the insert is
+             * successful it will have a row ID, if not the ID will be 0.
              */
             void addVerbs(std::vector<obelisk::Verb>& verbs);
 
             /**
              * @brief Add facts to the database.
              *
-             * @param[in] facts The facts to add.
+             * @param[in,out] facts The facts to add. If the insert is
+             * successful it will have a row ID, if not the ID will be 0.
              */
             void addFacts(std::vector<obelisk::Fact>& facts);
 
             /**
              * @brief Get an entity object based on the ID it contains.
              *
-             * @param[out] entity The Entity object should contain just the ID
-             * and the rest will be filled in.
+             * @param[in,out] entity The Entity object should contain just the
+             * ID and the rest will be filled in.
              */
             void getEntity(obelisk::Entity& entity);
 
             /**
              * @brief Get a verb object based on the ID it contains.
              *
-             * @param[out] verb The Verb object should contain just the ID and
-             * the rest will be filled in.
+             * @param[in,out] verb The Verb object should contain just the ID
+             * and the rest will be filled in.
              */
             void getVerb(obelisk::Verb& verb);
 
             /**
              * @brief Get a fact object based on the ID it contains.
              *
-             * @param[out] fact The fact object should contain just the ID and
-             * the rest will be filled in.
+             * @param[in,out] fact The fact object should contain just the ID
+             * and the rest will be filled in.
              */
             void getFact(obelisk::Fact& fact);
 
