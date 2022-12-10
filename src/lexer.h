@@ -153,7 +153,7 @@ namespace obelisk
 
         public:
             /**
-             * @brief Construct a new Lexer Exception object.
+             * @brief Construct a new LexerException object.
              *
              */
             LexerException() :
@@ -162,7 +162,7 @@ namespace obelisk
             }
 
             /**
-             * @brief Construct a new Lexer Exception object.
+             * @brief Construct a new LexerException object.
              *
              * @param[in] errorMessage Error message to include.
              */
