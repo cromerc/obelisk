@@ -8,7 +8,7 @@
 #include <limits>
 #include <memory>
 
-static int mainLoop()
+static int obelisk::mainLoop()
 {
     auto parser = std::unique_ptr<obelisk::Parser> {new obelisk::Parser()};
     std::unique_ptr<obelisk::KnowledgeBase> kb;
@@ -109,5 +109,5 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }*/
 
-    return mainLoop();
+    return obelisk::mainLoop();
 }
