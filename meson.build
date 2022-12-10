@@ -9,7 +9,7 @@ project('obelisk',
     ]
 )
 
-llvm = dependency('llvm', version: '>= 14.0.0', modules : ['target', 'mcjit', 'nativecodegen'], required : true, method: 'config-tool')
+llvm = dependency('llvm', version: '>= 14.0.0', modules : ['core', 'target', 'mcjit', 'nativecodegen'], required : true, method: 'config-tool')
 
 doxygen = find_program('doxygen', required : false)
 
