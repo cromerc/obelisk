@@ -6,7 +6,7 @@
 namespace obelisk
 {
     /**
-     * @brief The lexer reads and identifies tokens in the obelisk source code.
+     * @brief The Lexer reads and identifies tokens in the obelisk source code.
      *
      */
     class Lexer
