@@ -147,7 +147,7 @@ namespace obelisk
 
         public:
             /**
-             * @brief Throw a new Lexer exception.
+             * @brief Construct a new Lexer Exception object.
              *
              */
             LexerException() :
@@ -156,9 +156,9 @@ namespace obelisk
             }
 
             /**
-             * @brief Throw a new Lexer exception including an error message.
+             * @brief Construct a new Lexer Exception object.
              *
-             * @param[in] errorMessage The error message to include.
+             * @param[in] errorMessage Error message to include.
              */
             LexerException(const std::string& errorMessage) :
                 errorMessage_(errorMessage)
