@@ -38,8 +38,8 @@ namespace obelisk
             /**
              * @brief Enable foreign key functionality in the open database.
              *
-             * This must always be done when the connection is opened or it will not
-             * enforce the foreign key constraints.
+             * This must always be done when the connection is opened or it will
+             * not enforce the foreign key constraints.
              */
             void enableForeignKeys();
 
@@ -54,7 +54,8 @@ namespace obelisk
             /**
              * @brief Construct a new Knowledge Base object.
              *
-             * @param[in] filename The name of the file to save the knowledge base as.
+             * @param[in] filename The name of the file to save the knowledge
+             * base as.
              * @param[in] flags The flags to open the knowledge base with.
              */
             KnowledgeBase(const char* filename, int flags);
@@ -62,7 +63,8 @@ namespace obelisk
             /**
              * @brief Construct a new Knowledge Base object.
              *
-             * @param[in] filename The name of the file to save the knowledge base as.
+             * @param[in] filename The name of the file to save the knowledge
+             * base as.
              */
             KnowledgeBase(const char* filename) :
                 KnowledgeBase(filename,
@@ -80,7 +82,6 @@ namespace obelisk
             /**
              * @brief Add entities to the knowledge base.
              *
-             * @todo make entities const?
              * @param[in] entities The entities to add.
              */
             void addEntities(std::vector<obelisk::Entity>& entities);
@@ -102,29 +103,34 @@ namespace obelisk
             /**
              * @brief Get an entity object based on the ID it contains.
              *
-             * @param[out] entity The Entity object should contain just the ID and the rest will be filled in.
+             * @param[out] entity The Entity object should contain just the ID
+             * and the rest will be filled in.
              */
             void getEntity(obelisk::Entity& entity);
 
             /**
              * @brief Get a verb object based on the ID it contains.
              *
-             * @param[in] verb The Verb object should contain just the ID and the rest will be filled in.
+             * @param[out] verb The Verb object should contain just the ID and
+             * the rest will be filled in.
              */
             void getVerb(obelisk::Verb& verb);
 
             /**
              * @brief Get a fact object based on the ID it contains.
              *
-             * @param[in] fact The fact object should contain just the ID and the rest will be filled in.
+             * @param[out] fact The fact object should contain just the ID and
+             * the rest will be filled in.
              */
             void getFact(obelisk::Fact& fact);
 
             /**
              * @brief Take a float and divide it into 2 floats.
              *
-             * This is useful to store doubles in SQLite since SQLite doesn't have a double type.
-             * Instead just store the 2 floats in the database. Then after selecting them combine them.
+             * This is useful to store doubles in SQLite since SQLite doesn't
+             * have a double type.
+             * Instead just store the 2 floats in the database. Then after
+             * selecting them combine them.
              *
              * @param[out] result1 The first float generated from the double.
              * @param[out] result2 The second float generated from the double.
@@ -135,7 +141,8 @@ namespace obelisk
             /**
              * @brief Combines 2 separated floats back into a double.
              *
-             * This will recombine the separated floats from the getFloat method.
+             * This will recombine the separated floats from the getFloat
+             * method.
              *
              * @param[out] result The double generated from the combined floats.
              * @param[in] var1 The first float to combine.

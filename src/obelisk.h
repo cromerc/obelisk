@@ -1,5 +1,6 @@
 /**
- * @brief The obelisk namespace contains everything needed to compile obelisk code.
+ * @brief The obelisk namespace contains everything needed to compile obelisk
+ * code.
  *
  */
 namespace obelisk
