@@ -14,6 +14,11 @@
 
 namespace obelisk
 {
+    /**
+     * @brief The KnowledgeBase class represents a collection of facts, rules,
+     * actions, and related language connectors.
+     *
+     */
     class KnowledgeBase
     {
         private:
@@ -52,7 +57,7 @@ namespace obelisk
 
         public:
             /**
-             * @brief Construct a new Knowledge Base object.
+             * @brief Construct a new KnowledgeBase object.
              *
              * @param[in] filename The name of the file to save the knowledge
              * base as.
@@ -61,7 +66,7 @@ namespace obelisk
             KnowledgeBase(const char* filename, int flags);
 
             /**
-             * @brief Construct a new Knowledge Base object.
+             * @brief Construct a new KnowledgeBase object.
              *
              * @param[in] filename The name of the file to save the knowledge
              * base as.
@@ -73,7 +78,7 @@ namespace obelisk
             }
 
             /**
-             * @brief Destroy the Knowledge Base object.
+             * @brief Destroy the KnowledgeBase object.
              *
              * This will close the opened knowledge base before destroying it.
              */
@@ -169,7 +174,7 @@ namespace obelisk
 
         public:
             /**
-             * @brief Construct a new Knowledge Base Exception object.
+             * @brief Construct a new KnowledgeBaseException object.
              *
              */
             KnowledgeBaseException() :
@@ -178,7 +183,7 @@ namespace obelisk
             }
 
             /**
-             * @brief Construct a new Knowledge Base Exception object.
+             * @brief Construct a new KnowledgeBaseException object.
              *
              * @param[in] errorMessage The error message given when thrown.
              */
