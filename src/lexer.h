@@ -112,6 +112,7 @@ namespace obelisk
             /**
              * @brief Gets the next token in the source code.
              *
+             * @throws LexerException when an invalid token is found.
              * @return int Returns a Token value or char if no known token was found.
              */
             int getToken();
