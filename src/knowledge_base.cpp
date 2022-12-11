@@ -93,7 +93,7 @@ void obelisk::KnowledgeBase::addEntities(std::vector<obelisk::Entity>& entities)
         {
             entity.insertEntity(dbConnection_);
         }
-        catch (obelisk::DatabaseException::ConstraintException& exception)
+        catch (obelisk::DatabaseConstraintException& exception)
         {
             // ignore unique constraint error
             if (std::strcmp(exception.what(),
@@ -114,7 +114,7 @@ void obelisk::KnowledgeBase::addVerbs(std::vector<obelisk::Verb>& verbs)
         {
             verb.insertVerb(dbConnection_);
         }
-        catch (obelisk::DatabaseException::ConstraintException& exception)
+        catch (obelisk::DatabaseConstraintException& exception)
         {
             // ignore unique constraint error
             if (std::strcmp(exception.what(),
@@ -135,7 +135,7 @@ void obelisk::KnowledgeBase::addFacts(std::vector<obelisk::Fact>& facts)
         {
             fact.insertFact(dbConnection_);
         }
-        catch (obelisk::DatabaseException::ConstraintException& exception)
+        catch (obelisk::DatabaseConstraintException& exception)
         {
             // ignore unique constraint error
             if (std::strcmp(exception.what(),

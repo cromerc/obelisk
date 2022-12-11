@@ -38,13 +38,13 @@ void obelisk::Entity::selectEntity(sqlite3* dbConnection)
         case SQLITE_OK :
             break;
         case SQLITE_TOOBIG :
-            throw obelisk::DatabaseException::SizeException();
+            throw obelisk::DatabaseSizeException();
             break;
         case SQLITE_RANGE :
-            throw obelisk::DatabaseException::RangeException();
+            throw obelisk::DatabaseRangeException();
             break;
         case SQLITE_NOMEM :
-            throw obelisk::DatabaseException::MemoryException();
+            throw obelisk::DatabaseMemoryException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -62,10 +62,10 @@ void obelisk::Entity::selectEntity(sqlite3* dbConnection)
             setName((char*) sqlite3_column_text(ppStmt, 1));
             break;
         case SQLITE_BUSY :
-            throw obelisk::DatabaseException::BusyException();
+            throw obelisk::DatabaseBusyException();
             break;
         case SQLITE_MISUSE :
-            throw obelisk::DatabaseException::MisuseException();
+            throw obelisk::DatabaseMisuseException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -106,13 +106,13 @@ void obelisk::Entity::insertEntity(sqlite3* dbConnection)
         case SQLITE_OK :
             break;
         case SQLITE_TOOBIG :
-            throw obelisk::DatabaseException::SizeException();
+            throw obelisk::DatabaseSizeException();
             break;
         case SQLITE_RANGE :
-            throw obelisk::DatabaseException::RangeException();
+            throw obelisk::DatabaseRangeException();
             break;
         case SQLITE_NOMEM :
-            throw obelisk::DatabaseException::MemoryException();
+            throw obelisk::DatabaseMemoryException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -127,13 +127,13 @@ void obelisk::Entity::insertEntity(sqlite3* dbConnection)
             sqlite3_set_last_insert_rowid(dbConnection, 0);
             break;
         case SQLITE_CONSTRAINT :
-            throw obelisk::DatabaseException::ConstraintException(
+            throw obelisk::DatabaseConstraintException(
                 sqlite3_errmsg(dbConnection));
         case SQLITE_BUSY :
-            throw obelisk::DatabaseException::BusyException();
+            throw obelisk::DatabaseBusyException();
             break;
         case SQLITE_MISUSE :
-            throw obelisk::DatabaseException::MisuseException();
+            throw obelisk::DatabaseMisuseException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
