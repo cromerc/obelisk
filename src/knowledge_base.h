@@ -72,8 +72,7 @@ namespace obelisk
              * base as.
              */
             KnowledgeBase(const char* filename) :
-                KnowledgeBase(filename,
-                    SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE)
+                KnowledgeBase(filename, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE)
             {
             }
 

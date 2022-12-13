@@ -33,9 +33,7 @@ namespace obelisk
             {
             }
 
-            SuggestAction(obelisk::Fact fact,
-                obelisk::Action trueAction,
-                obelisk::Action falseAction) :
+            SuggestAction(obelisk::Fact fact, obelisk::Action trueAction, obelisk::Action falseAction) :
                 id_(0),
                 fact_(fact),
                 trueAction_(trueAction),
@@ -43,10 +41,7 @@ namespace obelisk
             {
             }
 
-            SuggestAction(int id,
-                obelisk::Fact fact,
-                obelisk::Action trueAction,
-                obelisk::Action falseAction) :
+            SuggestAction(int id, obelisk::Fact fact, obelisk::Action trueAction, obelisk::Action falseAction) :
                 id_(id),
                 fact_(fact),
                 trueAction_(trueAction),

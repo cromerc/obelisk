@@ -18,8 +18,7 @@ namespace obelisk
             void setPrototype(std::unique_ptr<PrototypeAST> prototype);
 
         public:
-            FunctionAST(std::unique_ptr<PrototypeAST> prototype,
-                std::unique_ptr<ExpressionAST> body) :
+            FunctionAST(std::unique_ptr<PrototypeAST> prototype, std::unique_ptr<ExpressionAST> body) :
                 prototype_(std::move(prototype)),
                 body_(std::move(body))
             {

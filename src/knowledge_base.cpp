@@ -50,11 +50,7 @@ obelisk::KnowledgeBase::~KnowledgeBase()
 void obelisk::KnowledgeBase::enableForeignKeys()
 {
     char* errmsg;
-    int result = sqlite3_exec(dbConnection_,
-        "PRAGMA foreign_keys = ON;",
-        NULL,
-        NULL,
-        &errmsg);
+    int result = sqlite3_exec(dbConnection_, "PRAGMA foreign_keys = ON;", NULL, NULL, &errmsg);
     if (result != SQLITE_OK)
     {
         if (errmsg)
@@ -96,9 +92,7 @@ void obelisk::KnowledgeBase::addEntities(std::vector<obelisk::Entity>& entities)
         catch (obelisk::DatabaseConstraintException& exception)
         {
             // ignore unique constraint error
-            if (std::strcmp(exception.what(),
-                    "UNIQUE constraint failed: entity.name")
-                != 0)
+            if (std::strcmp(exception.what(), "UNIQUE constraint failed: entity.name") != 0)
             {
                 throw;
             }
@@ -117,9 +111,7 @@ void obelisk::KnowledgeBase::addVerbs(std::vector<obelisk::Verb>& verbs)
         catch (obelisk::DatabaseConstraintException& exception)
         {
             // ignore unique constraint error
-            if (std::strcmp(exception.what(),
-                    "UNIQUE constraint failed: verb.name")
-                != 0)
+            if (std::strcmp(exception.what(), "UNIQUE constraint failed: verb.name") != 0)
             {
                 throw;
             }
@@ -163,9 +155,7 @@ void obelisk::KnowledgeBase::getFact(obelisk::Fact& fact)
     fact.selectFact(dbConnection_);
 }
 
-void obelisk::KnowledgeBase::getFloat(float& result1,
-    float& result2,
-    double var)
+void obelisk::KnowledgeBase::getFloat(float& result1, float& result2, double var)
 {
     result1 = (float) var;
     result2 = (float) (var - (double) result1);

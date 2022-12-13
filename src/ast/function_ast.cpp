@@ -17,8 +17,7 @@ llvm::Function *obelisk::FunctionAST::codegen()
         return nullptr;
     }
 
-    llvm::BasicBlock *bB
-        = llvm::BasicBlock::Create(*TheContext, "entry", theFunction);
+    llvm::BasicBlock *bB = llvm::BasicBlock::Create(*TheContext, "entry", theFunction);
     Builder->SetInsertPoint(bB);
 
     NamedValues.clear();

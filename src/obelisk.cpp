@@ -15,8 +15,7 @@ static int obelisk::mainLoop()
 
     try
     {
-        kb = std::unique_ptr<obelisk::KnowledgeBase> {
-            new obelisk::KnowledgeBase("cromer.kb")};
+        kb = std::unique_ptr<obelisk::KnowledgeBase> {new obelisk::KnowledgeBase("cromer.kb")};
     }
     catch (obelisk::KnowledgeBaseException& exception)
     {
@@ -44,10 +43,8 @@ static int obelisk::mainLoop()
             case obelisk::Lexer::kTokenEof :
                 return EXIT_SUCCESS;
             case ';' : // ignore top-level semicolons.
-                std::cout << "Identifier: "
-                          << parser->getLexer()->getIdentifier() << std::endl;
-                std::cout << "Num: " << parser->getLexer()->getNumberValue()
-                          << std::endl;
+                std::cout << "Identifier: " << parser->getLexer()->getIdentifier() << std::endl;
+                std::cout << "Num: " << parser->getLexer()->getNumberValue() << std::endl;
                 try
                 {
                     parser->getNextToken();

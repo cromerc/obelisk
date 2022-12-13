@@ -18,8 +18,7 @@ namespace obelisk
             }
 
             DatabaseException(const int errorCode) :
-                errorMessage_(
-                    "database error " + std::to_string(errorCode) + " ocurred")
+                errorMessage_("database error " + std::to_string(errorCode) + " ocurred")
             {
             }
 
@@ -71,8 +70,7 @@ namespace obelisk
         public:
             DatabaseBusyException()
             {
-                setErrorMessage(
-                    "database was busy and operation was not performed");
+                setErrorMessage("database was busy and operation was not performed");
             }
     };
 

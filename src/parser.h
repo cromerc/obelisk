@@ -21,13 +21,11 @@ namespace obelisk
             void setCurrentToken(int currentToken);
 
             std::unique_ptr<obelisk::ExpressionAST> logError(const char* str);
-            std::unique_ptr<obelisk::PrototypeAST> logErrorPrototype(
-                const char* str);
+            std::unique_ptr<obelisk::PrototypeAST> logErrorPrototype(const char* str);
 
             std::unique_ptr<obelisk::ExpressionAST> parseExpression();
             std::unique_ptr<obelisk::ExpressionAST> parseNumberExpression();
-            std::unique_ptr<obelisk::ExpressionAST>
-                parseParenthesisExpression();
+            std::unique_ptr<obelisk::ExpressionAST> parseParenthesisExpression();
             std::unique_ptr<obelisk::ExpressionAST> parseIdentifierExpression();
             std::unique_ptr<obelisk::ExpressionAST> parsePrimary();
             std::unique_ptr<obelisk::PrototypeAST> parsePrototype();
