@@ -9,6 +9,7 @@ const char* obelisk::Fact::createTable()
             "left_entity"  INTEGER NOT NULL,
             "right_entity" INTEGER NOT NULL,
             "verb"         INTEGER NOT NULL,
+            "is_true"      INTEGER NOT NULL DEFAULT 0,
             PRIMARY KEY("id" AUTOINCREMENT),
             UNIQUE("left_entity", "right_entity", "verb")
             FOREIGN KEY("verb") REFERENCES "verb"("id") ON DELETE RESTRICT,
@@ -43,13 +44,13 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
         case SQLITE_OK :
             break;
         case SQLITE_TOOBIG :
-            throw obelisk::DatabaseException::SizeException();
+            throw obelisk::DatabaseSizeException();
             break;
         case SQLITE_RANGE :
-            throw obelisk::DatabaseException::RangeException();
+            throw obelisk::DatabaseRangeException();
             break;
         case SQLITE_NOMEM :
-            throw obelisk::DatabaseException::MemoryException();
+            throw obelisk::DatabaseMemoryException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -62,13 +63,13 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
         case SQLITE_OK :
             break;
         case SQLITE_TOOBIG :
-            throw obelisk::DatabaseException::SizeException();
+            throw obelisk::DatabaseSizeException();
             break;
         case SQLITE_RANGE :
-            throw obelisk::DatabaseException::RangeException();
+            throw obelisk::DatabaseRangeException();
             break;
         case SQLITE_NOMEM :
-            throw obelisk::DatabaseException::MemoryException();
+            throw obelisk::DatabaseMemoryException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -81,13 +82,13 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
         case SQLITE_OK :
             break;
         case SQLITE_TOOBIG :
-            throw obelisk::DatabaseException::SizeException();
+            throw obelisk::DatabaseSizeException();
             break;
         case SQLITE_RANGE :
-            throw obelisk::DatabaseException::RangeException();
+            throw obelisk::DatabaseRangeException();
             break;
         case SQLITE_NOMEM :
-            throw obelisk::DatabaseException::MemoryException();
+            throw obelisk::DatabaseMemoryException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -107,10 +108,10 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
             getVerb().setId(sqlite3_column_int(ppStmt, 3));
             break;
         case SQLITE_BUSY :
-            throw obelisk::DatabaseException::BusyException();
+            throw obelisk::DatabaseBusyException();
             break;
         case SQLITE_MISUSE :
-            throw obelisk::DatabaseException::MisuseException();
+            throw obelisk::DatabaseMisuseException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -149,13 +150,13 @@ void obelisk::Fact::insertFact(sqlite3* dbConnection)
         case SQLITE_OK :
             break;
         case SQLITE_TOOBIG :
-            throw obelisk::DatabaseException::SizeException();
+            throw obelisk::DatabaseSizeException();
             break;
         case SQLITE_RANGE :
-            throw obelisk::DatabaseException::RangeException();
+            throw obelisk::DatabaseRangeException();
             break;
         case SQLITE_NOMEM :
-            throw obelisk::DatabaseException::MemoryException();
+            throw obelisk::DatabaseMemoryException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -168,13 +169,13 @@ void obelisk::Fact::insertFact(sqlite3* dbConnection)
         case SQLITE_OK :
             break;
         case SQLITE_TOOBIG :
-            throw obelisk::DatabaseException::SizeException();
+            throw obelisk::DatabaseSizeException();
             break;
         case SQLITE_RANGE :
-            throw obelisk::DatabaseException::RangeException();
+            throw obelisk::DatabaseRangeException();
             break;
         case SQLITE_NOMEM :
-            throw obelisk::DatabaseException::MemoryException();
+            throw obelisk::DatabaseMemoryException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -187,13 +188,13 @@ void obelisk::Fact::insertFact(sqlite3* dbConnection)
         case SQLITE_OK :
             break;
         case SQLITE_TOOBIG :
-            throw obelisk::DatabaseException::SizeException();
+            throw obelisk::DatabaseSizeException();
             break;
         case SQLITE_RANGE :
-            throw obelisk::DatabaseException::RangeException();
+            throw obelisk::DatabaseRangeException();
             break;
         case SQLITE_NOMEM :
-            throw obelisk::DatabaseException::MemoryException();
+            throw obelisk::DatabaseMemoryException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -208,13 +209,12 @@ void obelisk::Fact::insertFact(sqlite3* dbConnection)
             sqlite3_set_last_insert_rowid(dbConnection, 0);
             break;
         case SQLITE_CONSTRAINT :
-            throw obelisk::DatabaseException::ConstraintException(
-                sqlite3_errmsg(dbConnection));
+            throw obelisk::DatabaseConstraintException(sqlite3_errmsg(dbConnection));
         case SQLITE_BUSY :
-            throw obelisk::DatabaseException::BusyException();
+            throw obelisk::DatabaseBusyException();
             break;
         case SQLITE_MISUSE :
-            throw obelisk::DatabaseException::MisuseException();
+            throw obelisk::DatabaseMisuseException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));

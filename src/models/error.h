@@ -8,8 +8,8 @@ namespace obelisk
 {
     class DatabaseException : public std::exception
     {
-        private:
-            const std::string errorMessage_;
+        protected:
+            std::string errorMessage_;
 
         public:
             DatabaseException() :
@@ -18,8 +18,7 @@ namespace obelisk
             }
 
             DatabaseException(const int errorCode) :
-                errorMessage_(
-                    "database error " + std::to_string(errorCode) + " ocurred")
+                errorMessage_("database error " + std::to_string(errorCode) + " ocurred")
             {
             }
 
@@ -28,118 +27,75 @@ namespace obelisk
             {
             }
 
-            const char* what() const noexcept
+            virtual const char* what() const noexcept
             {
                 return errorMessage_.c_str();
             }
 
-            class SizeException : public std::exception
+            virtual void setErrorMessage(const std::string errorMessage)
             {
-                private:
-                    const std::string errorMessage_;
+                errorMessage_ = errorMessage;
+            }
+    };
 
-                public:
-                    SizeException() :
-                        errorMessage_("size of string or blob exceeds limits")
-                    {
-                    }
-
-                    const char* what() const noexcept
-                    {
-                        return errorMessage_.c_str();
-                    }
-            };
-
-            class RangeException : public std::exception
+    class DatabaseSizeException : public obelisk::DatabaseException
+    {
+        public:
+            DatabaseSizeException()
             {
-                private:
-                    const std::string errorMessage_;
+                setErrorMessage("size of string or blob exceeds limits");
+            }
+    };
 
-                public:
-                    RangeException() :
-                        errorMessage_("parameter index is out of range")
-                    {
-                    }
-
-                    const char* what() const noexcept
-                    {
-                        return errorMessage_.c_str();
-                    }
-            };
-
-            class MemoryException : public std::exception
+    class DatabaseRangeException : public obelisk::DatabaseException
+    {
+        public:
+            DatabaseRangeException()
             {
-                private:
-                    const std::string errorMessage_;
+                setErrorMessage("parameter index is out of range");
+            }
+    };
 
-                public:
-                    MemoryException() :
-                        errorMessage_("not enough memory for operation")
-                    {
-                    }
-
-                    const char* what() const noexcept
-                    {
-                        return errorMessage_.c_str();
-                    }
-            };
-
-            class BusyException : public std::exception
+    class DatabaseMemoryException : public obelisk::DatabaseException
+    {
+        public:
+            DatabaseMemoryException()
             {
-                private:
-                    const std::string errorMessage_;
+                setErrorMessage("not enough memory for operation");
+            }
+    };
 
-                public:
-                    BusyException() :
-                        errorMessage_(
-                            "database was busy and operation not performed")
-                    {
-                    }
-
-                    const char* what() const noexcept
-                    {
-                        return errorMessage_.c_str();
-                    }
-            };
-
-            class MisuseException : public std::exception
+    class DatabaseBusyException : public obelisk::DatabaseException
+    {
+        public:
+            DatabaseBusyException()
             {
-                private:
-                    const std::string errorMessage_;
+                setErrorMessage("database was busy and operation was not performed");
+            }
+    };
 
-                public:
-                    MisuseException() :
-                        errorMessage_("misuse of the database routine")
-                    {
-                    }
+    class DatabaseMisuseException : public obelisk::DatabaseException
+    {
+        public:
+            DatabaseMisuseException()
 
-                    const char* what() const noexcept
-                    {
-                        return errorMessage_.c_str();
-                    }
-            };
-
-            class ConstraintException : public std::exception
             {
-                private:
-                    const std::string errorMessage_;
+                setErrorMessage("misuse of the database routine");
+            }
+    };
 
-                public:
-                    ConstraintException() :
-                        errorMessage_("a constraint exception occurred")
-                    {
-                    }
+    class DatabaseConstraintException : public obelisk::DatabaseException
+    {
+        public:
+            DatabaseConstraintException()
+            {
+                setErrorMessage("a constraint exception occurred");
+            }
 
-                    ConstraintException(const std::string& errorMessage) :
-                        errorMessage_(errorMessage)
-                    {
-                    }
-
-                    const char* what() const noexcept
-                    {
-                        return errorMessage_.c_str();
-                    }
-            };
+            DatabaseConstraintException(const std::string& errorMessage)
+            {
+                setErrorMessage(errorMessage);
+            }
     };
 } // namespace obelisk
 

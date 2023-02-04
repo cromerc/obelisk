@@ -22,8 +22,7 @@ namespace obelisk
             void setArgs(std::vector<std::unique_ptr<ExpressionAST>> args);
 
         public:
-            CallExpressionAST(const std::string &callee,
-                std::vector<std::unique_ptr<ExpressionAST>> args) :
+            CallExpressionAST(const std::string &callee, std::vector<std::unique_ptr<ExpressionAST>> args) :
                 callee_(callee),
                 args_(std::move(args))
             {

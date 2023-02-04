@@ -44,15 +44,13 @@ void obelisk::Parser::setCurrentToken(int currentToken)
     currentToken_ = currentToken;
 }
 
-std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::logError(
-    const char* str)
+std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::logError(const char* str)
 {
     fprintf(stderr, "Error: %s\n", str);
     return nullptr;
 }
 
-std::unique_ptr<obelisk::PrototypeAST> obelisk::Parser::logErrorPrototype(
-    const char* str)
+std::unique_ptr<obelisk::PrototypeAST> obelisk::Parser::logErrorPrototype(const char* str)
 {
     logError(str);
     return nullptr;
@@ -86,14 +84,12 @@ std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parsePrimary()
 
 std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseNumberExpression()
 {
-    auto result = std::make_unique<obelisk::NumberExpressionAST>(
-        getLexer()->getNumberValue());
+    auto result = std::make_unique<obelisk::NumberExpressionAST>(getLexer()->getNumberValue());
     getNextToken();
     return result;
 }
 
-std::unique_ptr<obelisk::ExpressionAST>
-    obelisk::Parser::parseParenthesisExpression()
+std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseParenthesisExpression()
 {
     getNextToken();
     auto v = parseExpression();
@@ -110,8 +106,7 @@ std::unique_ptr<obelisk::ExpressionAST>
     return v;
 }
 
-std::unique_ptr<obelisk::ExpressionAST>
-    obelisk::Parser::parseIdentifierExpression()
+std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseIdentifierExpression()
 {
     std::string idName = getLexer()->getIdentifier();
     getNextToken();
@@ -181,8 +176,7 @@ std::unique_ptr<obelisk::PrototypeAST> obelisk::Parser::parsePrototype()
 
     getNextToken();
 
-    return std::make_unique<obelisk::PrototypeAST>(functionName,
-        std::move(argNames));
+    return std::make_unique<obelisk::PrototypeAST>(functionName, std::move(argNames));
 }
 
 std::unique_ptr<obelisk::FunctionAST> obelisk::Parser::parseDefinition()
@@ -196,8 +190,7 @@ std::unique_ptr<obelisk::FunctionAST> obelisk::Parser::parseDefinition()
 
     if (auto expression = parseExpression())
     {
-        return std::make_unique<FunctionAST>(std::move(prototype),
-            std::move(expression));
+        return std::make_unique<FunctionAST>(std::move(prototype), std::move(expression));
     }
 
     return nullptr;
@@ -208,10 +201,8 @@ std::unique_ptr<obelisk::FunctionAST> obelisk::Parser::parseTopLevelExpression()
     if (auto expression = parseExpression())
     {
         // Make an anonymous prototype
-        auto prototype = std::make_unique<obelisk::PrototypeAST>("__anon_expr",
-            std::vector<std::string>());
-        return std::make_unique<obelisk::FunctionAST>(std::move(prototype),
-            std::move(expression));
+        auto prototype = std::make_unique<obelisk::PrototypeAST>("__anon_expr", std::vector<std::string>());
+        return std::make_unique<obelisk::FunctionAST>(std::move(prototype), std::move(expression));
     }
     return nullptr;
 }
@@ -241,8 +232,7 @@ void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
     getNextToken();
     if (getCurrentToken() != '(')
     {
-        throw obelisk::ParserException(
-            "expected '(' but got '" + std::to_string(getCurrentToken()) + "'");
+        throw obelisk::ParserException("expected '(' but got '" + std::to_string(getCurrentToken()) + "'");
     }
 
     syntax.push('(');
@@ -308,14 +298,12 @@ void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
 
                 if (leftEntities.size() == 0)
                 {
-                    throw obelisk::ParserException(
-                        "missing left side entities");
+                    throw obelisk::ParserException("missing left side entities");
                 }
 
                 if (rightEntities.size() == 0)
                 {
-                    throw obelisk::ParserException(
-                        "missing right side entities");
+                    throw obelisk::ParserException("missing right side entities");
                 }
                 break;
             }
@@ -346,9 +334,8 @@ void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
     {
         for (auto& rightEntity : rightEntities)
         {
-            facts.push_back(obelisk::Fact(obelisk::Entity(leftEntity),
-                obelisk::Entity(rightEntity),
-                obelisk::Verb(verb)));
+            facts.push_back(
+                obelisk::Fact(obelisk::Entity(leftEntity), obelisk::Entity(rightEntity), obelisk::Verb(verb)));
         }
     }
 }
@@ -380,8 +367,7 @@ void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
             kb->getEntity(entity);
             if (entity.getId() == 0)
             {
-                throw obelisk::ParserException(
-                    "left entity could not be inserted into the database");
+                throw obelisk::ParserException("left entity could not be inserted into the database");
             }
             else
             {
@@ -399,8 +385,7 @@ void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
             kb->getEntity(entity);
             if (entity.getId() == 0)
             {
-                throw obelisk::ParserException(
-                    "right entity could not be inserted into the database");
+                throw obelisk::ParserException("right entity could not be inserted into the database");
             }
             else
             {
@@ -423,8 +408,7 @@ void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
                 kb->getVerb(verb);
                 if (verb.getId() == 0)
                 {
-                    throw obelisk::ParserException(
-                        "verb could not be inserted into the database");
+                    throw obelisk::ParserException("verb could not be inserted into the database");
                 }
                 else
                 {
@@ -447,8 +431,7 @@ void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
             kb->getFact(fact);
             if (fact.getId() == 0)
             {
-                throw obelisk::ParserException(
-                    "fact could not be inserted into the database");
+                throw obelisk::ParserException("fact could not be inserted into the database");
             }
         }
     }

@@ -8,15 +8,14 @@
 #include <limits>
 #include <memory>
 
-static int mainLoop()
+static int obelisk::mainLoop()
 {
     auto parser = std::unique_ptr<obelisk::Parser> {new obelisk::Parser()};
     std::unique_ptr<obelisk::KnowledgeBase> kb;
 
     try
     {
-        kb = std::unique_ptr<obelisk::KnowledgeBase> {
-            new obelisk::KnowledgeBase("cromer.kb")};
+        kb = std::unique_ptr<obelisk::KnowledgeBase> {new obelisk::KnowledgeBase("cromer.kb")};
     }
     catch (obelisk::KnowledgeBaseException& exception)
     {
@@ -44,10 +43,8 @@ static int mainLoop()
             case obelisk::Lexer::kTokenEof :
                 return EXIT_SUCCESS;
             case ';' : // ignore top-level semicolons.
-                std::cout << "Identifier: "
-                          << parser->getLexer()->getIdentifier() << std::endl;
-                std::cout << "Num: " << parser->getLexer()->getNumberValue()
-                          << std::endl;
+                std::cout << "Identifier: " << parser->getLexer()->getIdentifier() << std::endl;
+                std::cout << "Num: " << parser->getLexer()->getNumberValue() << std::endl;
                 try
                 {
                     parser->getNextToken();
@@ -109,5 +106,5 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }*/
 
-    return mainLoop();
+    return obelisk::mainLoop();
 }

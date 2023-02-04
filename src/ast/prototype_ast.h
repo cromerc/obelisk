@@ -19,8 +19,7 @@ namespace obelisk
             void setArgs(std::vector<std::string> args);
 
         public:
-            PrototypeAST(const std::string& name,
-                std::vector<std::string> args) :
+            PrototypeAST(const std::string& name, std::vector<std::string> args) :
                 name_(name),
                 args_(std::move(args))
             {
