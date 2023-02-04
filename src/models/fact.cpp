@@ -9,6 +9,7 @@ const char* obelisk::Fact::createTable()
             "left_entity"  INTEGER NOT NULL,
             "right_entity" INTEGER NOT NULL,
             "verb"         INTEGER NOT NULL,
+            "is_true"      INTEGER NOT NULL DEFAULT 0,
             PRIMARY KEY("id" AUTOINCREMENT),
             UNIQUE("left_entity", "right_entity", "verb")
             FOREIGN KEY("verb") REFERENCES "verb"("id") ON DELETE RESTRICT,
