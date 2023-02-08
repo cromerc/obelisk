@@ -9,14 +9,14 @@
 #include <limits>
 #include <memory>
 
-static int obelisk::mainLoop()
+static int obelisk::mainLoop(const std::vector<std::string>& sourceFiles, const std::string& kbFile)
 {
     auto parser = std::unique_ptr<obelisk::Parser> {new obelisk::Parser()};
     std::unique_ptr<obelisk::KnowledgeBase> kb;
 
     try
     {
-        kb = std::unique_ptr<obelisk::KnowledgeBase> {new obelisk::KnowledgeBase("cromer.kb")};
+        kb = std::unique_ptr<obelisk::KnowledgeBase> {new obelisk::KnowledgeBase(kbFile.c_str())};
     }
     catch (obelisk::KnowledgeBaseException& exception)
     {
@@ -131,5 +131,5 @@ int main(int argc, char** argv)
 
     return 0;
 
-    return obelisk::mainLoop();
+    return obelisk::mainLoop(sourceFiles, kbFile);
 }
