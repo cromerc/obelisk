@@ -1,4 +1,5 @@
 option('docs',
     type: 'boolean',
     value: true,
-    description: 'Build documentation for obelisk')
+    description: 'Build documentation for obelisk'
+)
