@@ -42,5 +42,5 @@ Options:
      *
      * @return int Returns EXIT_SUCCESS or EXIT_FAILURE.
      */
-    static int mainLoop(const std::vector<std::string> &sourceFiles, const std::string &kbFile);
+    int mainLoop(const std::vector<std::string> &sourceFiles, const std::string &kbFile);
 } // namespace obelisk

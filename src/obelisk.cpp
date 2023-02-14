@@ -9,9 +9,8 @@
 #include <limits>
 #include <memory>
 
-static int obelisk::mainLoop(const std::vector<std::string>& sourceFiles, const std::string& kbFile)
+int obelisk::mainLoop(const std::vector<std::string>& sourceFiles, const std::string& kbFile)
 {
-    auto parser = std::unique_ptr<obelisk::Parser> {new obelisk::Parser()};
     std::unique_ptr<obelisk::KnowledgeBase> kb;
 
     try
@@ -24,8 +23,20 @@ static int obelisk::mainLoop(const std::vector<std::string>& sourceFiles, const 
         return EXIT_FAILURE;
     }
 
-    // Prime the first token.
-    fprintf(stderr, "ready> ");
+    size_t file = 0;
+    std::shared_ptr<obelisk::Lexer> lexer;
+    try
+    {
+        lexer = std::shared_ptr<obelisk::Lexer> {new obelisk::Lexer(sourceFiles[file++])};
+    }
+    catch (obelisk::LexerException& exception)
+    {
+        std::cout << exception.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+    auto parser = std::unique_ptr<obelisk::Parser> {new obelisk::Parser(lexer)};
+
+    // prime the first token
     try
     {
         parser->getNextToken();
@@ -38,14 +49,29 @@ static int obelisk::mainLoop(const std::vector<std::string>& sourceFiles, const 
 
     while (true)
     {
-        fprintf(stderr, "ready> ");
         switch (parser->getCurrentToken())
         {
             case obelisk::Lexer::kTokenEof :
-                return EXIT_SUCCESS;
-            case ';' : // ignore top-level semicolons.
-                std::cout << "Identifier: " << parser->getLexer()->getIdentifier() << std::endl;
-                std::cout << "Num: " << parser->getLexer()->getNumberValue() << std::endl;
+                // end of source file found, create a new lexer and pass it to the parser to use
+                if (file >= sourceFiles.size())
+                {
+                    return EXIT_SUCCESS;
+                }
+                try
+                {
+                    lexer = std::shared_ptr<obelisk::Lexer> {new obelisk::Lexer(sourceFiles[file++])};
+                    parser->setLexer(lexer);
+                    // prime the first token in the parser
+                    parser->getNextToken();
+                }
+                catch (obelisk::LexerException& exception)
+                {
+                    std::cout << exception.what() << std::endl;
+                    return EXIT_FAILURE;
+                }
+                break;
+            case ';' :
+                // semicolon found, the end of a statement
                 try
                 {
                     parser->getNextToken();
@@ -74,7 +100,7 @@ static int obelisk::mainLoop(const std::vector<std::string>& sourceFiles, const 
     return EXIT_SUCCESS;
 }
 
-void obelisk::showUsage()
+static void obelisk::showUsage()
 {
     std::cout << obelisk::usageMessage << std::endl;
 }
@@ -125,11 +151,6 @@ int main(int argc, char** argv)
         obelisk::showUsage();
         return EXIT_FAILURE;
     }
-
-    std::cout << sourceFiles[0] << std::endl;
-    std::cout << kbFile << std::endl;
-
-    return 0;
 
     return obelisk::mainLoop(sourceFiles, kbFile);
 }

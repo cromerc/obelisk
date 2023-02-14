@@ -7,8 +7,8 @@ const char* obelisk::Fact::createTable()
         CREATE TABLE "fact" (
             "id"           INTEGER NOT NULL UNIQUE,
             "left_entity"  INTEGER NOT NULL,
-            "right_entity" INTEGER NOT NULL,
             "verb"         INTEGER NOT NULL,
+            "right_entity" INTEGER NOT NULL,
             "is_true"      INTEGER NOT NULL DEFAULT 0,
             PRIMARY KEY("id" AUTOINCREMENT),
             UNIQUE("left_entity", "right_entity", "verb")

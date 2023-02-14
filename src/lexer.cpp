@@ -2,20 +2,33 @@
 
 #include <iostream>
 
+obelisk::Lexer::Lexer(const std::string& sourceFile)
+{
+    fileStream_.open(sourceFile, std::ifstream::in);
+    if (!fileStream_)
+    {
+        throw obelisk::LexerException("could not open source file " + sourceFile);
+    }
+}
+
+obelisk::Lexer::~Lexer()
+{
+    fileStream_.close();
+    fileStream_.clear();
+}
+
 int obelisk::Lexer::getToken()
 {
-    static int lastChar = ' ';
-
     while (isspace(lastChar))
     {
-        lastChar = std::getc(stdin);
+        lastChar = fileStream_.get();
     }
 
     if (isalpha(lastChar))
     {
         eraseIdentifier();
         appendIdentifier(lastChar);
-        while (isalnum((lastChar = getchar())))
+        while (isalnum((lastChar = fileStream_.get())))
         {
             appendIdentifier(lastChar);
         }
@@ -63,7 +76,7 @@ int obelisk::Lexer::getToken()
                 firstPeriod = true;
             }
             numberStr += lastChar;
-            lastChar = getchar();
+            lastChar = fileStream_.get();
         }
         while (isdigit(lastChar) || lastChar == '.');
 
@@ -83,7 +96,7 @@ int obelisk::Lexer::getToken()
     }
     else if (lastChar == '/')
     {
-        lastChar = getchar();
+        lastChar = fileStream_.get();
         if (lastChar == '/')
         {
             commentLine(&lastChar);
@@ -101,7 +114,7 @@ int obelisk::Lexer::getToken()
     }
 
     int thisChar = lastChar;
-    lastChar     = getchar();
+    lastChar     = fileStream_.get();
     return thisChar;
 }
 
@@ -109,7 +122,7 @@ void obelisk::Lexer::commentLine(int* lastChar)
 {
     do
     {
-        *lastChar = getchar();
+        *lastChar = fileStream_.get();
     }
     while (*lastChar != EOF && *lastChar != '\n' && *lastChar != '\r');
 }

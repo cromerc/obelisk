@@ -1,6 +1,7 @@
 #ifndef OBELISK_LEXER_H
 #define OBELISK_LEXER_H
 
+#include <fstream>
 #include <string>
 
 namespace obelisk
@@ -12,6 +13,12 @@ namespace obelisk
     class Lexer
     {
         private:
+            int lastChar = ' ';
+            /**
+             * @brief The stream of the source file being read.
+             *
+             */
+            std::ifstream fileStream_;
             /**
              * @brief The last found identifier.
              *
@@ -21,7 +28,7 @@ namespace obelisk
              * @brief The last found number.
              *
              */
-            double numberValue_;
+            double numberValue_ = 0;
 
             /**
              * @brief Set the identifier.
@@ -112,6 +119,19 @@ namespace obelisk
                  */
                 kTokenString     = -9
             };
+
+            /**
+             * @brief Construct a new Lexer object.
+             *
+             * @param[in] sourceFile The source file to read.
+             */
+            Lexer(const std::string& sourceFile);
+
+            /**
+             * @brief Destroy the Lexer object.
+             *
+             */
+            ~Lexer();
 
             /**
              * @brief Gets the next token in the source code.
