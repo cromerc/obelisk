@@ -11,14 +11,15 @@
 #include <string>
 #include <vector>
 
-obelisk::Parser::Parser()
-{
-    lexer_ = std::unique_ptr<obelisk::Lexer> {new obelisk::Lexer()};
-}
-
-std::unique_ptr<obelisk::Lexer>& obelisk::Parser::getLexer()
+std::shared_ptr<obelisk::Lexer> obelisk::Parser::getLexer()
 {
     return lexer_;
+}
+
+void obelisk::Parser::setLexer(std::shared_ptr<obelisk::Lexer> lexer)
+{
+    lexer_        = lexer;
+    currentToken_ = 0;
 }
 
 int obelisk::Parser::getNextToken()

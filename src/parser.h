@@ -15,8 +15,8 @@ namespace obelisk
     class Parser
     {
         private:
-            std::unique_ptr<obelisk::Lexer> lexer_;
-            int currentToken_;
+            std::shared_ptr<obelisk::Lexer> lexer_;
+            int currentToken_ = 0;
 
             void setCurrentToken(int currentToken);
 
@@ -37,9 +37,13 @@ namespace obelisk
             void parseFact(std::vector<obelisk::Fact>& facts);
 
         public:
-            Parser();
+            Parser(std::shared_ptr<obelisk::Lexer> lexer) :
+                lexer_(lexer)
+            {
+            }
 
-            std::unique_ptr<obelisk::Lexer>& getLexer();
+            std::shared_ptr<obelisk::Lexer> getLexer();
+            void setLexer(std::shared_ptr<obelisk::Lexer> lexer);
 
             int getCurrentToken();
 

@@ -2,20 +2,20 @@
 #include "lexer.h"
 #include "obelisk.h"
 #include "parser.h"
+#include "version.h"
 
 #include <iomanip>
 #include <iostream>
 #include <limits>
 #include <memory>
 
-static int obelisk::mainLoop()
+int obelisk::mainLoop(const std::vector<std::string>& sourceFiles, const std::string& kbFile)
 {
-    auto parser = std::unique_ptr<obelisk::Parser> {new obelisk::Parser()};
     std::unique_ptr<obelisk::KnowledgeBase> kb;
 
     try
     {
-        kb = std::unique_ptr<obelisk::KnowledgeBase> {new obelisk::KnowledgeBase("cromer.kb")};
+        kb = std::unique_ptr<obelisk::KnowledgeBase> {new obelisk::KnowledgeBase(kbFile.c_str())};
     }
     catch (obelisk::KnowledgeBaseException& exception)
     {
@@ -23,8 +23,20 @@ static int obelisk::mainLoop()
         return EXIT_FAILURE;
     }
 
-    // Prime the first token.
-    fprintf(stderr, "ready> ");
+    size_t file = 0;
+    std::shared_ptr<obelisk::Lexer> lexer;
+    try
+    {
+        lexer = std::shared_ptr<obelisk::Lexer> {new obelisk::Lexer(sourceFiles[file++])};
+    }
+    catch (obelisk::LexerException& exception)
+    {
+        std::cout << exception.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+    auto parser = std::unique_ptr<obelisk::Parser> {new obelisk::Parser(lexer)};
+
+    // prime the first token
     try
     {
         parser->getNextToken();
@@ -37,14 +49,29 @@ static int obelisk::mainLoop()
 
     while (true)
     {
-        fprintf(stderr, "ready> ");
         switch (parser->getCurrentToken())
         {
             case obelisk::Lexer::kTokenEof :
-                return EXIT_SUCCESS;
-            case ';' : // ignore top-level semicolons.
-                std::cout << "Identifier: " << parser->getLexer()->getIdentifier() << std::endl;
-                std::cout << "Num: " << parser->getLexer()->getNumberValue() << std::endl;
+                // end of source file found, create a new lexer and pass it to the parser to use
+                if (file >= sourceFiles.size())
+                {
+                    return EXIT_SUCCESS;
+                }
+                try
+                {
+                    lexer = std::shared_ptr<obelisk::Lexer> {new obelisk::Lexer(sourceFiles[file++])};
+                    parser->setLexer(lexer);
+                    // prime the first token in the parser
+                    parser->getNextToken();
+                }
+                catch (obelisk::LexerException& exception)
+                {
+                    std::cout << exception.what() << std::endl;
+                    return EXIT_FAILURE;
+                }
+                break;
+            case ';' :
+                // semicolon found, the end of a statement
                 try
                 {
                     parser->getNextToken();
@@ -73,38 +100,57 @@ static int obelisk::mainLoop()
     return EXIT_SUCCESS;
 }
 
+static void obelisk::showUsage()
+{
+    std::cout << obelisk::usageMessage << std::endl;
+}
+
 int main(int argc, char** argv)
 {
-    for (int i = 1; i < argc; i++)
+    std::vector<std::string> sourceFiles;
+    std::string kbFile = "obelisk.kb";
+
+    while (true)
     {
-        std::cout << argv[i] << std::endl;
+        int option_index = 0;
+        switch (getopt_long(argc, argv, "k:hv", obelisk::long_options, &option_index))
+        {
+            case 'k' :
+                kbFile = std::string(optarg);
+                continue;
+            case 'h' :
+                obelisk::showUsage();
+                return EXIT_SUCCESS;
+                break;
+            case 'v' :
+                std::cout << "obelisk " << obelisk::version << std::endl;
+                return EXIT_SUCCESS;
+                break;
+            default :
+                obelisk::showUsage();
+                return EXIT_FAILURE;
+                break;
+
+            case -1 :
+                break;
+        }
+
+        break;
     }
 
-    // This can be used to store a double as 2 floats in the database, then restore it back to a double.
-    // Inspired by Godot's double precision on the GPU to render large worlds.
-    /*try
+    if (optind < argc)
     {
-        float first;
-        float second;
-        double var = 0.123456789012345;
-
-        obelisk::KnowledgeBase* kb = new obelisk::KnowledgeBase("cromer.kb");
-        kb->getFloat(first, second, var);
-        std::cout << std::setprecision(std::numeric_limits<double>::digits10)
-                  << "Double: " << var << std::endl
-                  << "First: " << first << std::endl
-                  << "Second: " << second << std::endl;
-        var = 0.0;
-        kb->getDouble(var, first, second);
-        std::cout << std::setprecision(std::numeric_limits<double>::digits10)
-                  << "Double: " << var << std::endl
-                  << "First: " << first << std::endl
-                  << "Second: " << second << std::endl;
+        while (optind < argc)
+        {
+            sourceFiles.push_back(argv[optind++]);
+        }
     }
-    catch (obelisk::KnowledgeBaseException& exception)
+
+    if (sourceFiles.size() == 0)
     {
+        obelisk::showUsage();
         return EXIT_FAILURE;
-    }*/
+    }
 
-    return obelisk::mainLoop();
+    return obelisk::mainLoop(sourceFiles, kbFile);
 }

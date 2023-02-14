@@ -1,0 +1,8 @@
+namespace obelisk
+{
+    /**
+     * @brief The current version of obelisk.
+     *
+     */
+    std::string version = "@version@";
+} // namespace obelisk
