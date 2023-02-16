@@ -214,18 +214,14 @@ std::unique_ptr<obelisk::PrototypeAST> obelisk::Parser::parseExtern()
     return parsePrototype();
 }
 
-//action("martin" is "dangerous" then "avoid" or "ignore");
 std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseAction()
 {
 }
 
-//rule("chris" and "martin" is "happy" if "chris" plays "playstation");
 std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseRule()
 {
 }
 
-// fact("chris cromer" and "martin" and "Isabella" can "program" and "speak english");
-// fact("" and "martin")
 void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
 {
     std::stack<char> syntax;
@@ -237,8 +233,6 @@ void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
     }
 
     syntax.push('(');
-
-    // ("
 
     bool getEntity {true};
     std::vector<std::string> leftEntities;
@@ -437,5 +431,3 @@ void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
         }
     }
 }
-
-// fact("chris cromer" and "martin" and "Isabella" can "program" and "speak english");
