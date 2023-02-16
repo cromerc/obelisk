@@ -16,13 +16,15 @@ namespace obelisk
             obelisk::Entity leftEntity_;
             obelisk::Entity rightEntity_;
             obelisk::Verb verb_;
+            bool isTrue_;
 
         public:
             Fact() :
                 id_(0),
                 leftEntity_(),
                 rightEntity_(),
-                verb_()
+                verb_(),
+                isTrue_(0)
             {
             }
 
@@ -30,23 +32,26 @@ namespace obelisk
                 id_(id),
                 leftEntity_(),
                 rightEntity_(),
-                verb_()
+                verb_(),
+                isTrue_(0)
             {
             }
 
-            Fact(obelisk::Entity leftEntity, obelisk::Entity rightEntity, obelisk::Verb verb) :
+            Fact(obelisk::Entity leftEntity, obelisk::Entity rightEntity, obelisk::Verb verb, bool isTrue) :
                 id_(0),
                 leftEntity_(leftEntity),
                 rightEntity_(rightEntity),
-                verb_(verb)
+                verb_(verb),
+                isTrue_(isTrue)
             {
             }
 
-            Fact(int id, obelisk::Entity leftEntity, obelisk::Entity rightEntity, obelisk::Verb verb) :
+            Fact(int id, obelisk::Entity leftEntity, obelisk::Entity rightEntity, obelisk::Verb verb, bool isTrue) :
                 id_(id),
                 leftEntity_(leftEntity),
                 rightEntity_(rightEntity),
-                verb_(verb)
+                verb_(verb),
+                isTrue_(isTrue)
             {
             }
 
@@ -63,6 +68,9 @@ namespace obelisk
 
             Verb& getVerb();
             void setVerb(obelisk::Verb verb);
+
+            bool& getIsTrue();
+            void setIsTrue(bool isTrue);
 
             void selectFact(sqlite3* dbConnection);
             void insertFact(sqlite3* dbConnection);

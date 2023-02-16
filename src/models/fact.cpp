@@ -29,7 +29,7 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
     sqlite3_stmt* ppStmt = nullptr;
 
     auto result = sqlite3_prepare_v2(dbConnection,
-        "SELECT id, left_entity, right_entity, verb FROM fact WHERE (left_entity=? AND right_entity=? AND verb=?)",
+        "SELECT id, left_entity, right_entity, verb, is_true FROM fact WHERE (left_entity=? AND right_entity=? AND verb=?)",
         -1,
         &ppStmt,
         nullptr);
@@ -106,6 +106,7 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
             getLeftEntity().setId(sqlite3_column_int(ppStmt, 1));
             getRightEntity().setId(sqlite3_column_int(ppStmt, 2));
             getVerb().setId(sqlite3_column_int(ppStmt, 3));
+            setIsTrue(sqlite3_column_int(ppStmt, 4));
             break;
         case SQLITE_BUSY :
             throw obelisk::DatabaseBusyException();
@@ -135,7 +136,7 @@ void obelisk::Fact::insertFact(sqlite3* dbConnection)
     sqlite3_stmt* ppStmt = nullptr;
 
     auto result = sqlite3_prepare_v2(dbConnection,
-        "INSERT INTO fact (left_entity, right_entity, verb) VALUES (?, ?, ?)",
+        "INSERT INTO fact (left_entity, right_entity, verb, is_true) VALUES (?, ?, ?, ?)",
         -1,
         &ppStmt,
         nullptr);
@@ -183,6 +184,25 @@ void obelisk::Fact::insertFact(sqlite3* dbConnection)
     }
 
     result = sqlite3_bind_int(ppStmt, 3, getVerb().getId());
+    switch (result)
+    {
+        case SQLITE_OK :
+            break;
+        case SQLITE_TOOBIG :
+            throw obelisk::DatabaseSizeException();
+            break;
+        case SQLITE_RANGE :
+            throw obelisk::DatabaseRangeException();
+            break;
+        case SQLITE_NOMEM :
+            throw obelisk::DatabaseMemoryException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_bind_int(ppStmt, 4, getIsTrue());
     switch (result)
     {
         case SQLITE_OK :
@@ -266,4 +286,14 @@ obelisk::Verb& obelisk::Fact::getVerb()
 void obelisk::Fact::setVerb(obelisk::Verb verb)
 {
     verb_ = verb;
+}
+
+bool& obelisk::Fact::getIsTrue()
+{
+    return isTrue_;
+}
+
+void obelisk::Fact::setIsTrue(bool isTrue)
+{
+    isTrue_ = isTrue;
 }

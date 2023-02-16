@@ -336,7 +336,7 @@ void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
         for (auto& rightEntity : rightEntities)
         {
             facts.push_back(
-                obelisk::Fact(obelisk::Entity(leftEntity), obelisk::Entity(rightEntity), obelisk::Verb(verb)));
+                obelisk::Fact(obelisk::Entity(leftEntity), obelisk::Entity(rightEntity), obelisk::Verb(verb), true));
         }
     }
 }
