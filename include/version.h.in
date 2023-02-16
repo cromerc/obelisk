@@ -1,0 +1,14 @@
+namespace obelisk
+{
+    /**
+     * @brief The current version of obelisk.
+     *
+     */
+    const std::string version = "@version@";
+
+    /**
+     * @brief The current library version of obelisk.
+     *
+     */
+    const std::string soVersion = "@so_version@";
+} // namespace obelisk

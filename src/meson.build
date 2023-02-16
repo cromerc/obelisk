@@ -1,5 +1,6 @@
 conf_data = configuration_data()
 conf_data.set('version', meson.project_version())
+conf_data.set('so_version', project_version_lib)
 configure_file(input : 'version.h.in',
     output : 'version.h',
     configuration : conf_data

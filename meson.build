@@ -9,6 +9,8 @@ project('obelisk',
     ]
 )
 
+project_version_lib = '0'
+
 llvm = dependency('llvm', version: '>= 14.0.0', modules : ['core', 'target', 'mcjit', 'nativecodegen'], required : true, method: 'config-tool')
 
 cdata = configuration_data()
@@ -27,4 +29,5 @@ if docs_enabled
     endif
 endif
 
+subdir('lib')
 subdir('src')
