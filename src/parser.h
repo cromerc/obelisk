@@ -6,7 +6,12 @@
 #include "ast/prototype_ast.h"
 #include "knowledge_base.h"
 #include "lexer.h"
+#include "models/action.h"
+#include "models/entity.h"
 #include "models/fact.h"
+#include "models/rule.h"
+#include "models/suggest_action.h"
+#include "models/verb.h"
 
 #include <memory>
 
@@ -32,8 +37,8 @@ namespace obelisk
             std::unique_ptr<obelisk::FunctionAST> parseDefinition();
             std::unique_ptr<obelisk::FunctionAST> parseTopLevelExpression();
             std::unique_ptr<obelisk::PrototypeAST> parseExtern();
-            std::unique_ptr<obelisk::ExpressionAST> parseAction();
-            std::unique_ptr<obelisk::ExpressionAST> parseRule();
+            void parseAction(obelisk::SuggestAction& suggestAction);
+            void parseRule(std::vector<obelisk::Rule>& rules);
             void parseFact(std::vector<obelisk::Fact>& facts);
 
         public:
@@ -55,6 +60,10 @@ namespace obelisk
             void handleAction(std::unique_ptr<obelisk::KnowledgeBase>& kb);
             void handleRule(std::unique_ptr<obelisk::KnowledgeBase>& kb);
             void handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb);
+
+            void insertEntity(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Entity& entity);
+            void insertVerb(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Verb& verb);
+            void insertFact(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Fact& fact);
     };
 
     class ParserException : public std::exception

@@ -89,7 +89,7 @@ int obelisk::mainLoop(const std::vector<std::string>& sourceFiles, const std::st
                 // parser->handleRule();
                 break;
             case obelisk::Lexer::kTokenAction :
-                // parser->handleAction();
+                parser->handleAction(kb);
                 break;
             default :
                 parser->getNextToken();
