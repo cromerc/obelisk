@@ -124,7 +124,7 @@ int main(int argc, char** argv)
                 return EXIT_SUCCESS;
                 break;
             case 'v' :
-                std::cout << "obelisk " << (new obelisk::Obelisk())->getVersion() << std::endl;
+                std::cout << "obelisk " << obelisk::version << std::endl;
                 return EXIT_SUCCESS;
                 break;
             default :
