@@ -37,7 +37,7 @@ namespace obelisk
             {
             }
 
-            Fact(obelisk::Entity leftEntity, obelisk::Entity rightEntity, obelisk::Verb verb, bool isTrue) :
+            Fact(obelisk::Entity leftEntity, obelisk::Entity rightEntity, obelisk::Verb verb, bool isTrue = false) :
                 id_(0),
                 leftEntity_(leftEntity),
                 rightEntity_(rightEntity),
@@ -46,7 +46,11 @@ namespace obelisk
             {
             }
 
-            Fact(int id, obelisk::Entity leftEntity, obelisk::Entity rightEntity, obelisk::Verb verb, bool isTrue) :
+            Fact(int id,
+                obelisk::Entity leftEntity,
+                obelisk::Entity rightEntity,
+                obelisk::Verb verb,
+                bool isTrue = false) :
                 id_(id),
                 leftEntity_(leftEntity),
                 rightEntity_(rightEntity),
