@@ -22,7 +22,7 @@ lib = library('obelisk',
     install : true
 )
 
-libobelisk_dep = declare_dependency(
+libobelisk = declare_dependency(
     include_directories : incdirs,
     link_with : lib,
     sources : obelisk_lib_sources

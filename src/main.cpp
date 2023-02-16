@@ -1,9 +1,9 @@
 #include "knowledge_base.h"
 #include "lexer.h"
-#include "lib/include/obelisk.h"
-#include "lib/version.h"
+#include "main.h"
 #include "obelisk.h"
 #include "parser.h"
+#include "version.h"
 
 #include <iomanip>
 #include <iostream>

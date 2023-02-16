@@ -1,7 +1,7 @@
 subdir('lib')
 
 obelisk_sources = files(
-    'obelisk.cpp',
+    'main.cpp',
     'lexer.cpp',
     'parser.cpp',
     'knowledge_base.cpp'
@@ -23,7 +23,7 @@ link_args = ' ' + r.stdout().replace('\n', ' ')
 
 executable('obelisk',
     obelisk_sources,
-    dependencies : [libobelisk_dep, sqlite3],
+    dependencies : [libobelisk, sqlite3],
     cpp_args : cpp_args.split(),
     link_args : link_args.split(),
     install : true
