@@ -112,7 +112,7 @@ namespace obelisk
              *
              * @param[in] dbConnection The database connection to use.
              */
-            void selectEntity(sqlite3* dbConnection);
+            void select(sqlite3* dbConnection);
 
             /**
              * @brief Insert an Entity into the database based on the object's
@@ -120,7 +120,7 @@ namespace obelisk
              *
              * @param[in] dbConnection The database connection to use.
              */
-            void insertEntity(sqlite3* dbConnection);
+            void insert(sqlite3* dbConnection);
     };
 } // namespace obelisk
 

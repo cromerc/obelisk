@@ -87,7 +87,7 @@ void obelisk::KnowledgeBase::addEntities(std::vector<obelisk::Entity>& entities)
     {
         try
         {
-            entity.insertEntity(dbConnection_);
+            entity.insert(dbConnection_);
         }
         catch (obelisk::DatabaseConstraintException& exception)
         {
@@ -106,7 +106,7 @@ void obelisk::KnowledgeBase::addVerbs(std::vector<obelisk::Verb>& verbs)
     {
         try
         {
-            verb.insertVerb(dbConnection_);
+            verb.insert(dbConnection_);
         }
         catch (obelisk::DatabaseConstraintException& exception)
         {
@@ -125,7 +125,7 @@ void obelisk::KnowledgeBase::addFacts(std::vector<obelisk::Fact>& facts)
     {
         try
         {
-            fact.insertFact(dbConnection_);
+            fact.insert(dbConnection_);
         }
         catch (obelisk::DatabaseConstraintException& exception)
         {
@@ -142,17 +142,17 @@ void obelisk::KnowledgeBase::addFacts(std::vector<obelisk::Fact>& facts)
 
 void obelisk::KnowledgeBase::getEntity(obelisk::Entity& entity)
 {
-    entity.selectEntity(dbConnection_);
+    entity.select(dbConnection_);
 }
 
 void obelisk::KnowledgeBase::getVerb(obelisk::Verb& verb)
 {
-    verb.selectVerb(dbConnection_);
+    verb.select(dbConnection_);
 }
 
 void obelisk::KnowledgeBase::getFact(obelisk::Fact& fact)
 {
-    fact.selectFact(dbConnection_);
+    fact.select(dbConnection_);
 }
 
 void obelisk::KnowledgeBase::getFloat(float& result1, float& result2, double var)

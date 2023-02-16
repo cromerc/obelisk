@@ -76,8 +76,8 @@ namespace obelisk
             bool& getIsTrue();
             void setIsTrue(bool isTrue);
 
-            void selectFact(sqlite3* dbConnection);
-            void insertFact(sqlite3* dbConnection);
+            void select(sqlite3* dbConnection);
+            void insert(sqlite3* dbConnection);
     };
 } // namespace obelisk
 

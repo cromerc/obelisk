@@ -12,7 +12,7 @@ const char* obelisk::Entity::createTable()
     )";
 }
 
-void obelisk::Entity::selectEntity(sqlite3* dbConnection)
+void obelisk::Entity::select(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)
     {
@@ -76,7 +76,7 @@ void obelisk::Entity::selectEntity(sqlite3* dbConnection)
     }
 }
 
-void obelisk::Entity::insertEntity(sqlite3* dbConnection)
+void obelisk::Entity::insert(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)
     {

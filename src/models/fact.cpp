@@ -19,7 +19,7 @@ const char* obelisk::Fact::createTable()
     )";
 }
 
-void obelisk::Fact::selectFact(sqlite3* dbConnection)
+void obelisk::Fact::select(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)
     {
@@ -126,7 +126,7 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
     }
 }
 
-void obelisk::Fact::insertFact(sqlite3* dbConnection)
+void obelisk::Fact::insert(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)
     {
