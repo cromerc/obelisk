@@ -10,5 +10,7 @@ namespace obelisk
      * @brief The current library version of obelisk.
      *
      */
-    const std::string soVersion = "@so_version@";
+    // clang-format off
+    const int soVersion = @so_version@;
+    // clang-format on
 } // namespace obelisk

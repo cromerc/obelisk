@@ -29,12 +29,4 @@ if docs_enabled
     endif
 endif
 
-lib_enabled = get_option('lib')
-if lib_enabled
-    subdir('lib')
-endif
-
-bin_enabled = get_option('bin')
-if bin_enabled
-    subdir('src')
-endif
+subdir('src')

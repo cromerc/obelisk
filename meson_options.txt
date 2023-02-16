@@ -1,13 +1,3 @@
-option('bin',
-    type: 'boolean',
-    value: true,
-    description: 'Build the obelisk compiler'
-)
-option('lib',
-    type: 'boolean',
-    value: true,
-    description: 'Build the obelisk library'
-)
 option('docs',
     type: 'boolean',
     value: true,

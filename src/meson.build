@@ -1,10 +1,4 @@
-conf_data = configuration_data()
-conf_data.set('version', meson.project_version())
-conf_data.set('so_version', project_version_lib)
-configure_file(input : 'version.h.in',
-    output : 'version.h',
-    configuration : conf_data
-)
+subdir('lib')
 
 obelisk_sources = files(
     'obelisk.cpp',
@@ -29,7 +23,7 @@ link_args = ' ' + r.stdout().replace('\n', ' ')
 
 executable('obelisk',
     obelisk_sources,
-    dependencies : [sqlite3],
+    dependencies : [libobelisk_dep, sqlite3],
     cpp_args : cpp_args.split(),
     link_args : link_args.split(),
     install : true

@@ -7,14 +7,23 @@ configure_file(input : 'version.h.in',
 )
 
 obelisk_lib_sources = files(
+    'obelisk.cpp'
 )
 
 sqlite3 = dependency('sqlite3')
 
-library('obelisk',
+incdirs = include_directories(['.', 'include'])
+lib = library('obelisk',
     obelisk_lib_sources,
+    include_directories: incdirs,
     dependencies : [sqlite3],
     version : meson.project_version(),
     soversion : project_version_lib,
     install : true
+)
+
+libobelisk_dep = declare_dependency(
+    include_directories : incdirs,
+    link_with : lib,
+    sources : obelisk_lib_sources
 )

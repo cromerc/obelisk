@@ -1,8 +1,9 @@
 #include "knowledge_base.h"
 #include "lexer.h"
+#include "lib/include/obelisk.h"
+#include "lib/version.h"
 #include "obelisk.h"
 #include "parser.h"
-#include "version.h"
 
 #include <iomanip>
 #include <iostream>
@@ -123,7 +124,7 @@ int main(int argc, char** argv)
                 return EXIT_SUCCESS;
                 break;
             case 'v' :
-                std::cout << "obelisk " << obelisk::version << std::endl;
+                std::cout << "obelisk " << (new obelisk::Obelisk())->getVersion() << std::endl;
                 return EXIT_SUCCESS;
                 break;
             default :
