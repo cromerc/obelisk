@@ -142,17 +142,17 @@ void obelisk::KnowledgeBase::addFacts(std::vector<obelisk::Fact>& facts)
 
 void obelisk::KnowledgeBase::getEntity(obelisk::Entity& entity)
 {
-    entity.select(dbConnection_);
+    entity.selectByName(dbConnection_);
 }
 
 void obelisk::KnowledgeBase::getVerb(obelisk::Verb& verb)
 {
-    verb.select(dbConnection_);
+    verb.selectByName(dbConnection_);
 }
 
 void obelisk::KnowledgeBase::getFact(obelisk::Fact& fact)
 {
-    fact.select(dbConnection_);
+    fact.selectByName(dbConnection_);
 }
 
 void obelisk::KnowledgeBase::getFloat(float& result1, float& result2, double var)

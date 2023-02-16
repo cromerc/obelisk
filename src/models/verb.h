@@ -112,7 +112,7 @@ namespace obelisk
              *
              * @param[in] dbConnection The database connection to use.
              */
-            void select(sqlite3* dbConnection);
+            void selectByName(sqlite3* dbConnection);
 
             /**
              * @brief Insert a new verb into the KnowledgeBase.

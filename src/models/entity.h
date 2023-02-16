@@ -108,11 +108,11 @@ namespace obelisk
 
             /**
              * @brief Select an Entity from the database based on the object's
-             * ID.
+             * name.
              *
              * @param[in] dbConnection The database connection to use.
              */
-            void select(sqlite3* dbConnection);
+            void selectByName(sqlite3* dbConnection);
 
             /**
              * @brief Insert an Entity into the database based on the object's

@@ -14,7 +14,7 @@ const char* obelisk::Verb::createTable()
     )";
 }
 
-void obelisk::Verb::select(sqlite3* dbConnection)
+void obelisk::Verb::selectByName(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)
     {
