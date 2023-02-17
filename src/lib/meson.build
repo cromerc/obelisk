@@ -6,9 +6,13 @@ configure_file(input : 'version.h.in',
     configuration : conf_data
 )
 
+subdir('models')
+
 obelisk_lib_sources = files(
     'obelisk.cpp'
 )
+
+obelisk_lib_sources += obelisk_model_sources
 
 sqlite3 = dependency('sqlite3')
 
