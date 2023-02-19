@@ -7,6 +7,11 @@
  */
 namespace obelisk
 {
+    /**
+     * @brief The obelisk library provides everything needed to consult the
+     * KnowledgeBase.
+     *
+     */
     class Obelisk
     {
         public:
