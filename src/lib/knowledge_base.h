@@ -1,8 +1,11 @@
 #ifndef OBELISK_KNOWLEDGE_BASE_H
 #define OBELISK_KNOWLEDGE_BASE_H
 
+#include "models/action.h"
 #include "models/entity.h"
 #include "models/fact.h"
+#include "models/rule.h"
+#include "models/suggest_action.h"
 #include "models/verb.h"
 
 #include <sqlite3.h>
@@ -23,7 +26,7 @@ namespace obelisk
     {
         private:
             /**
-             * @brief The filename of the opened knowledge base.
+             * @brief The filename of the opened KnowledgeBase.
              *
              */
             const char* filename_;
@@ -61,7 +64,7 @@ namespace obelisk
              *
              * @param[in] filename The name of the file to save the knowledge
              * base as.
-             * @param[in] flags The flags to open the knowledge base with.
+             * @param[in] flags The flags to open the KnowledgeBase with.
              */
             KnowledgeBase(const char* filename, int flags);
 
@@ -79,12 +82,12 @@ namespace obelisk
             /**
              * @brief Destroy the KnowledgeBase object.
              *
-             * This will close the opened knowledge base before destroying it.
+             * This will close the opened KnowledgeBase before destroying it.
              */
             ~KnowledgeBase();
 
             /**
-             * @brief Add entities to the knowledge base.
+             * @brief Add entities to the KnowledgeBase.
              *
              * @param[in,out] entities The entities to add. If the insert is
              * successful it will have a row ID, if not the ID will be 0.
@@ -92,12 +95,20 @@ namespace obelisk
             void addEntities(std::vector<obelisk::Entity>& entities);
 
             /**
-             * @brief Add verbs to the knowledge base.
+             * @brief Add verbs to the KnowledgeBase.
              *
              * @param[in,out] verbs The verbs to add. If the insert is
              * successful it will have a row ID, if not the ID will be 0.
              */
             void addVerbs(std::vector<obelisk::Verb>& verbs);
+
+            /**
+             * @brief Add actions to the KnowledgeBase.
+             *
+             * @param[in,out] actions The actions to add. If the insert is
+             * successful it will have a row ID, if nto the ID will be 0.
+             */
+            void addActions(std::vector<obelisk::Action>& actions);
 
             /**
              * @brief Add facts to the database.
@@ -122,6 +133,14 @@ namespace obelisk
              * and the rest will be filled in.
              */
             void getVerb(obelisk::Verb& verb);
+
+            /**
+             * @brief Get an action based on the ID it contains.
+             *
+             * @param[in] action The Action object should contain just the ID
+             * and the rest will be filled in.
+             */
+            void getAction(obelisk::Action& action);
 
             /**
              * @brief Get a fact object based on the ID it contains.

@@ -389,7 +389,7 @@ void obelisk::Parser::parseAction(obelisk::SuggestAction& suggestAction)
                 break;
             }
 
-            if (getLexer()->getIdentifier() == "or")
+            if (getLexer()->getIdentifier() == "else")
             {
                 getNextToken();
                 getAction = true;
@@ -406,7 +406,7 @@ void obelisk::Parser::parseAction(obelisk::SuggestAction& suggestAction)
     suggestAction.setFact(
         obelisk::Fact(obelisk::Entity(leftEntity), obelisk::Entity(rightEntity), obelisk::Verb(verb)));
     suggestAction.setTrueAction(obelisk::Action(trueAction));
-    suggestAction.setTrueAction(obelisk::Action(falseAction));
+    suggestAction.setFalseAction(obelisk::Action(falseAction));
 }
 
 void obelisk::Parser::parseRule(std::vector<obelisk::Rule>& rules)
@@ -547,6 +547,8 @@ void obelisk::Parser::handleAction(std::unique_ptr<obelisk::KnowledgeBase>& kb)
         insertEntity(kb, suggestAction.getFact().getRightEntity());
         insertVerb(kb, suggestAction.getFact().getVerb());
         insertFact(kb, suggestAction.getFact());
+        insertAction(kb, suggestAction.getTrueAction());
+        insertAction(kb, suggestAction.getFalseAction());
 
         // TODO: insert the actions, then insert the suggested action
     }
@@ -643,6 +645,23 @@ void obelisk::Parser::insertVerb(std::unique_ptr<obelisk::KnowledgeBase>& kb, ob
         if (verb.getId() == 0)
         {
             throw obelisk::ParserException("verb could not be inserted into the database");
+        }
+    }
+}
+
+void obelisk::Parser::insertAction(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Action& action)
+{
+    std::vector<obelisk::Action> actions {action};
+    kb->addActions(actions);
+    action = std::move(actions.front());
+
+    // the id was not inserted, so check if it exists in the database
+    if (action.getId() == 0)
+    {
+        kb->getAction(action);
+        if (action.getId() == 0)
+        {
+            throw obelisk::ParserException("action could not be inserted into the database");
         }
     }
 }

@@ -16,7 +16,7 @@ namespace obelisk
     {
         private:
             /**
-             * @brief The ID of the Verb in the knowledge base.
+             * @brief The ID of the Verb in the KnowledgeBase.
              *
              */
             int id_;

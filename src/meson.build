@@ -3,8 +3,7 @@ subdir('lib')
 obelisk_sources = files(
     'main.cpp',
     'lexer.cpp',
-    'parser.cpp',
-    'knowledge_base.cpp'
+    'parser.cpp'
 )
 
 sqlite3 = dependency('sqlite3')

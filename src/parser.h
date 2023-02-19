@@ -63,6 +63,7 @@ namespace obelisk
 
             void insertEntity(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Entity& entity);
             void insertVerb(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Verb& verb);
+            void insertAction(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Action& action);
             void insertFact(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Fact& fact);
     };
 

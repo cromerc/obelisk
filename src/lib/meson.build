@@ -9,7 +9,8 @@ configure_file(input : 'version.h.in',
 subdir('models')
 
 obelisk_lib_sources = files(
-    'obelisk.cpp'
+    'obelisk.cpp',
+    'knowledge_base.cpp'
 )
 
 obelisk_lib_sources += obelisk_model_sources

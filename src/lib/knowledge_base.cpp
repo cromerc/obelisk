@@ -1,11 +1,5 @@
 #include "knowledge_base.h"
-#include "models/action.h"
-#include "models/entity.h"
 #include "models/error.h"
-#include "models/fact.h"
-#include "models/rule.h"
-#include "models/suggest_action.h"
-#include "models/verb.h"
 
 #include <cstring>
 #include <filesystem>
@@ -119,6 +113,25 @@ void obelisk::KnowledgeBase::addVerbs(std::vector<obelisk::Verb>& verbs)
     }
 }
 
+void obelisk::KnowledgeBase::addActions(std::vector<obelisk::Action>& actions)
+{
+    for (auto& action : actions)
+    {
+        try
+        {
+            action.insert(dbConnection_);
+        }
+        catch (obelisk::DatabaseConstraintException& exception)
+        {
+            // ignore unique constraint error
+            if (std::strcmp(exception.what(), "UNIQUE constraint failed: action.name") != 0)
+            {
+                throw;
+            }
+        }
+    }
+}
+
 void obelisk::KnowledgeBase::addFacts(std::vector<obelisk::Fact>& facts)
 {
     for (auto& fact : facts)
@@ -150,9 +163,14 @@ void obelisk::KnowledgeBase::getVerb(obelisk::Verb& verb)
     verb.selectByName(dbConnection_);
 }
 
+void obelisk::KnowledgeBase::getAction(obelisk::Action& action)
+{
+    action.selectByName(dbConnection_);
+}
+
 void obelisk::KnowledgeBase::getFact(obelisk::Fact& fact)
 {
-    fact.selectByName(dbConnection_);
+    fact.selectById(dbConnection_);
 }
 
 void obelisk::KnowledgeBase::getFloat(float& result1, float& result2, double var)
