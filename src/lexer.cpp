@@ -40,7 +40,7 @@ int obelisk::Lexer::getToken()
 
         if (getIdentifier() == "rule")
         {
-            return Token::kTokenFact;
+            return Token::kTokenRule;
         }
 
         if (getIdentifier() == "action")
