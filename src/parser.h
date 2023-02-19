@@ -38,7 +38,7 @@ namespace obelisk
             std::unique_ptr<obelisk::FunctionAST> parseTopLevelExpression();
             std::unique_ptr<obelisk::PrototypeAST> parseExtern();
             void parseAction(obelisk::SuggestAction& suggestAction);
-            void parseRule(std::vector<obelisk::Rule>& rules);
+            void parseRule(obelisk::Rule& rule);
             void parseFact(std::vector<obelisk::Fact>& facts);
 
         public:
@@ -67,6 +67,7 @@ namespace obelisk
             void insertFact(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Fact& fact);
             void insertSuggestAction(std::unique_ptr<obelisk::KnowledgeBase>& kb,
                 obelisk::SuggestAction& suggestAction);
+            void insertRule(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Rule& rule);
     };
 
     class ParserException : public std::exception

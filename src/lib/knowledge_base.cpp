@@ -174,6 +174,25 @@ void obelisk::KnowledgeBase::addSuggestActions(std::vector<obelisk::SuggestActio
     }
 }
 
+void obelisk::KnowledgeBase::addRules(std::vector<obelisk::Rule>& rules)
+{
+    for (auto& rule : rules)
+    {
+        try
+        {
+            rule.insert(dbConnection_);
+        }
+        catch (obelisk::DatabaseConstraintException& exception)
+        {
+            // ignore unique constraint error
+            if (std::strcmp(exception.what(), "UNIQUE constraint failed: rule.fact, rule.reason") != 0)
+            {
+                throw;
+            }
+        }
+    }
+}
+
 void obelisk::KnowledgeBase::getEntity(obelisk::Entity& entity)
 {
     entity.selectByName(dbConnection_);
@@ -197,6 +216,11 @@ void obelisk::KnowledgeBase::getFact(obelisk::Fact& fact)
 void obelisk::KnowledgeBase::getSuggestAction(obelisk::SuggestAction& suggestAction)
 {
     suggestAction.selectById(dbConnection_);
+}
+
+void obelisk::KnowledgeBase::getRule(obelisk::Rule& rule)
+{
+    rule.selectById(dbConnection_);
 }
 
 void obelisk::KnowledgeBase::getFloat(float& result1, float& result2, double var)

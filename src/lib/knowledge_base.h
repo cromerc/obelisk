@@ -128,6 +128,14 @@ namespace obelisk
             void addSuggestActions(std::vector<obelisk::SuggestAction>& suggestActions);
 
             /**
+             * @brief Add rules to the KnowledgeBase.
+             *
+             * @param[in,out] rules The rules to add. If the insert is successful it
+             * will have a row ID, if not the ID will be 0.
+             */
+            void addRules(std::vector<obelisk::Rule>& rules);
+
+            /**
              * @brief Get an Entity object based on the ID it contains.
              *
              * @param[in,out] entity The Entity object should contain just the
@@ -166,6 +174,14 @@ namespace obelisk
              * contain just the ID and the rest will be filled in.
              */
             void getSuggestAction(obelisk::SuggestAction& suggestAction);
+
+            /**
+             * @brief Get a Rule based on the ID it contains.
+             *
+             * @param[in,out] rule The Rule object should  contain just the ID
+             * and the rest will be filled in.
+             */
+            void getRule(obelisk::Rule& rule);
 
             /**
              * @brief Take a float and divide it into 2 floats.

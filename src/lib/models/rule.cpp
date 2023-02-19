@@ -1,3 +1,4 @@
+#include "models/error.h"
 #include "models/rule.h"
 
 const char* obelisk::Rule::createTable()
@@ -13,6 +14,173 @@ const char* obelisk::Rule::createTable()
             FOREIGN KEY("reason") REFERENCES "fact"("id") ON DELETE RESTRICT
         );
     )";
+}
+
+void obelisk::Rule::selectById(sqlite3* dbConnection)
+{
+    if (dbConnection == nullptr)
+    {
+        throw obelisk::DatabaseException("database isn't open");
+    }
+
+    sqlite3_stmt* ppStmt = nullptr;
+
+    auto result = sqlite3_prepare_v2(dbConnection,
+        "SELECT id, fact, reason FROM rule WHERE (fact=? AND reason=?)",
+        -1,
+        &ppStmt,
+        nullptr);
+    if (result != SQLITE_OK)
+    {
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+    }
+
+    result = sqlite3_bind_int(ppStmt, 1, getFact().getId());
+    switch (result)
+    {
+        case SQLITE_OK :
+            break;
+        case SQLITE_TOOBIG :
+            throw obelisk::DatabaseSizeException();
+            break;
+        case SQLITE_RANGE :
+            throw obelisk::DatabaseRangeException();
+            break;
+        case SQLITE_NOMEM :
+            throw obelisk::DatabaseMemoryException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_bind_int(ppStmt, 2, getReason().getId());
+    switch (result)
+    {
+        case SQLITE_OK :
+            break;
+        case SQLITE_TOOBIG :
+            throw obelisk::DatabaseSizeException();
+            break;
+        case SQLITE_RANGE :
+            throw obelisk::DatabaseRangeException();
+            break;
+        case SQLITE_NOMEM :
+            throw obelisk::DatabaseMemoryException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_step(ppStmt);
+    switch (result)
+    {
+        case SQLITE_DONE :
+            // no rows in the database
+            break;
+        case SQLITE_ROW :
+            setId(sqlite3_column_int(ppStmt, 0));
+            getFact().setId(sqlite3_column_int(ppStmt, 1));
+            getReason().setId(sqlite3_column_int(ppStmt, 2));
+            break;
+        case SQLITE_BUSY :
+            throw obelisk::DatabaseBusyException();
+            break;
+        case SQLITE_MISUSE :
+            throw obelisk::DatabaseMisuseException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_finalize(ppStmt);
+    if (result != SQLITE_OK)
+    {
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+    }
+}
+
+void obelisk::Rule::insert(sqlite3* dbConnection)
+{
+    if (dbConnection == nullptr)
+    {
+        throw obelisk::DatabaseException("database isn't open");
+    }
+
+    sqlite3_stmt* ppStmt = nullptr;
+
+    auto result
+        = sqlite3_prepare_v2(dbConnection, "INSERT INTO rule (fact, reason) VALUES (?, ?)", -1, &ppStmt, nullptr);
+    if (result != SQLITE_OK)
+    {
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+    }
+
+    result = sqlite3_bind_int(ppStmt, 1, getFact().getId());
+    switch (result)
+    {
+        case SQLITE_OK :
+            break;
+        case SQLITE_TOOBIG :
+            throw obelisk::DatabaseSizeException();
+            break;
+        case SQLITE_RANGE :
+            throw obelisk::DatabaseRangeException();
+            break;
+        case SQLITE_NOMEM :
+            throw obelisk::DatabaseMemoryException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_bind_int(ppStmt, 2, getReason().getId());
+    switch (result)
+    {
+        case SQLITE_OK :
+            break;
+        case SQLITE_TOOBIG :
+            throw obelisk::DatabaseSizeException();
+            break;
+        case SQLITE_RANGE :
+            throw obelisk::DatabaseRangeException();
+            break;
+        case SQLITE_NOMEM :
+            throw obelisk::DatabaseMemoryException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_step(ppStmt);
+    switch (result)
+    {
+        case SQLITE_DONE :
+            setId((int) sqlite3_last_insert_rowid(dbConnection));
+            sqlite3_set_last_insert_rowid(dbConnection, 0);
+            break;
+        case SQLITE_CONSTRAINT :
+            throw obelisk::DatabaseConstraintException(sqlite3_errmsg(dbConnection));
+        case SQLITE_BUSY :
+            throw obelisk::DatabaseBusyException();
+            break;
+        case SQLITE_MISUSE :
+            throw obelisk::DatabaseMisuseException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_finalize(ppStmt);
+    if (result != SQLITE_OK)
+    {
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+    }
 }
 
 int& obelisk::Rule::getId()

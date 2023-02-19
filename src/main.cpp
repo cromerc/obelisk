@@ -84,13 +84,37 @@ int obelisk::mainLoop(const std::vector<std::string>& sourceFiles, const std::st
                 }
                 break;
             case obelisk::Lexer::kTokenFact :
-                parser->handleFact(kb);
+                try
+                {
+                    parser->handleFact(kb);
+                }
+                catch (obelisk::ParserException& exception)
+                {
+                    std::cout << "Error: " << exception.what() << std::endl;
+                    return EXIT_FAILURE;
+                }
                 break;
             case obelisk::Lexer::kTokenRule :
-                // parser->handleRule();
+                try
+                {
+                    parser->handleRule(kb);
+                }
+                catch (obelisk::ParserException& exception)
+                {
+                    std::cout << "Error: " << exception.what() << std::endl;
+                    return EXIT_FAILURE;
+                }
                 break;
             case obelisk::Lexer::kTokenAction :
-                parser->handleAction(kb);
+                try
+                {
+                    parser->handleAction(kb);
+                }
+                catch (obelisk::ParserException& exception)
+                {
+                    std::cout << "Error: " << exception.what() << std::endl;
+                    return EXIT_FAILURE;
+                }
                 break;
             default :
                 parser->getNextToken();

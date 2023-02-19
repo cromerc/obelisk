@@ -131,6 +131,21 @@ namespace obelisk
              * @param[in] reason The reason Fact.
              */
             void setReason(obelisk::Fact reason);
+
+            /**
+             * @brief Select the Rule from the KnowledgeBase by IDs of the
+             * sub-objects.
+             *
+             * @param[in] dbConnection The database connection to use.
+             */
+            void selectById(sqlite3* dbConnection);
+
+            /**
+             * @brief Insert the Rule into the KnowledgeBase.
+             *
+             * @param[in] dbConnection The database connection to use.
+             */
+            void insert(sqlite3* dbConnection);
     };
 } // namespace obelisk
 
