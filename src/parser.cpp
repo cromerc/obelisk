@@ -549,8 +549,7 @@ void obelisk::Parser::handleAction(std::unique_ptr<obelisk::KnowledgeBase>& kb)
         insertFact(kb, suggestAction.getFact());
         insertAction(kb, suggestAction.getTrueAction());
         insertAction(kb, suggestAction.getFalseAction());
-
-        // TODO: insert the actions, then insert the suggested action
+        insertSuggestAction(kb, suggestAction);
     }
     catch (obelisk::ParserException& exception)
     {
@@ -679,6 +678,24 @@ void obelisk::Parser::insertFact(std::unique_ptr<obelisk::KnowledgeBase>& kb, ob
         if (fact.getId() == 0)
         {
             throw obelisk::ParserException("fact could not be inserted into the database");
+        }
+    }
+}
+
+void obelisk::Parser::insertSuggestAction(std::unique_ptr<obelisk::KnowledgeBase>& kb,
+    obelisk::SuggestAction& suggestAction)
+{
+    std::vector<obelisk::SuggestAction> suggestActions {suggestAction};
+    kb->addSuggestActions(suggestActions);
+    suggestAction = std::move(suggestActions.front());
+
+    // the id was not inserted, so check if it exists in the database
+    if (suggestAction.getId() == 0)
+    {
+        kb->getSuggestAction(suggestAction);
+        if (suggestAction.getId() == 0)
+        {
+            throw obelisk::ParserException("suggest_action could not be inserted into the database");
         }
     }
 }

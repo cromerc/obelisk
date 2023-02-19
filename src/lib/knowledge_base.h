@@ -111,7 +111,7 @@ namespace obelisk
             void addActions(std::vector<obelisk::Action>& actions);
 
             /**
-             * @brief Add facts to the database.
+             * @brief Add facts to the KnowledgeBase.
              *
              * @param[in,out] facts The facts to add. If the insert is
              * successful it will have a row ID, if not the ID will be 0.
@@ -119,7 +119,16 @@ namespace obelisk
             void addFacts(std::vector<obelisk::Fact>& facts);
 
             /**
-             * @brief Get an entity object based on the ID it contains.
+             * @brief Add suggested actions to the KnowledgeBase.
+             *
+             * @param[in,out] suggestActions The suggested actions to add. If
+             * the insert is successful it will have a row ID, if not the ID
+             * will be 0.
+             */
+            void addSuggestActions(std::vector<obelisk::SuggestAction>& suggestActions);
+
+            /**
+             * @brief Get an Entity object based on the ID it contains.
              *
              * @param[in,out] entity The Entity object should contain just the
              * ID and the rest will be filled in.
@@ -127,7 +136,7 @@ namespace obelisk
             void getEntity(obelisk::Entity& entity);
 
             /**
-             * @brief Get a verb object based on the ID it contains.
+             * @brief Get a Verb object based on the ID it contains.
              *
              * @param[in,out] verb The Verb object should contain just the ID
              * and the rest will be filled in.
@@ -135,7 +144,7 @@ namespace obelisk
             void getVerb(obelisk::Verb& verb);
 
             /**
-             * @brief Get an action based on the ID it contains.
+             * @brief Get an Action based on the ID it contains.
              *
              * @param[in] action The Action object should contain just the ID
              * and the rest will be filled in.
@@ -143,12 +152,20 @@ namespace obelisk
             void getAction(obelisk::Action& action);
 
             /**
-             * @brief Get a fact object based on the ID it contains.
+             * @brief Get a Fact object based on the ID it contains.
              *
-             * @param[in,out] fact The fact object should contain just the ID
+             * @param[in,out] fact The Fact object should contain just the ID
              * and the rest will be filled in.
              */
             void getFact(obelisk::Fact& fact);
+
+            /**
+             * @brief Get a SuggestAction based on the ID it contains.
+             *
+             * @param[in,out] suggestAction The SuggestAction object should
+             * contain just the ID and the rest will be filled in.
+             */
+            void getSuggestAction(obelisk::SuggestAction& suggestAction);
 
             /**
              * @brief Take a float and divide it into 2 floats.

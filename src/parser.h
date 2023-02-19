@@ -65,6 +65,8 @@ namespace obelisk
             void insertVerb(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Verb& verb);
             void insertAction(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Action& action);
             void insertFact(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Fact& fact);
+            void insertSuggestAction(std::unique_ptr<obelisk::KnowledgeBase>& kb,
+                obelisk::SuggestAction& suggestAction);
     };
 
     class ParserException : public std::exception
