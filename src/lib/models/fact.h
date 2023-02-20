@@ -211,6 +211,14 @@ namespace obelisk
              * @param[in] dbConnection The database connection to use.
              */
             void insert(sqlite3* dbConnection);
+
+            /**
+             * @brief Update whether or not the fact is true in the
+             * KnowledgeBase.
+             *
+             * @param[in] dbConnection The database connection.
+             */
+            void updateIsTrue(sqlite3* dbConnection);
     };
 } // namespace obelisk
 

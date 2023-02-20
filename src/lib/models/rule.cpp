@@ -183,6 +183,69 @@ void obelisk::Rule::insert(sqlite3* dbConnection)
     }
 }
 
+void obelisk::Rule::selectByReason(sqlite3* dbConnection, int reasonId, std::vector<obelisk::Rule>& rules)
+{
+    if (dbConnection == nullptr)
+    {
+        throw obelisk::DatabaseException("database isn't open");
+    }
+
+    sqlite3_stmt* ppStmt = nullptr;
+
+    auto result
+        = sqlite3_prepare_v2(dbConnection, "SELECT id, fact, reason FROM rule WHERE (reason=?)", -1, &ppStmt, nullptr);
+    if (result != SQLITE_OK)
+    {
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+    }
+
+    result = sqlite3_bind_int(ppStmt, 1, reasonId);
+    switch (result)
+    {
+        case SQLITE_OK :
+            break;
+        case SQLITE_TOOBIG :
+            throw obelisk::DatabaseSizeException();
+            break;
+        case SQLITE_RANGE :
+            throw obelisk::DatabaseRangeException();
+            break;
+        case SQLITE_NOMEM :
+            throw obelisk::DatabaseMemoryException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    while ((result = sqlite3_step(ppStmt)) != SQLITE_DONE)
+    {
+        switch (result)
+        {
+            case SQLITE_ROW :
+                rules.push_back(obelisk::Rule(sqlite3_column_int(ppStmt, 0),
+                    obelisk::Fact(sqlite3_column_int(ppStmt, 1)),
+                    obelisk::Fact(sqlite3_column_int(ppStmt, 2))));
+                break;
+            case SQLITE_BUSY :
+                throw obelisk::DatabaseBusyException();
+                break;
+            case SQLITE_MISUSE :
+                throw obelisk::DatabaseMisuseException();
+                break;
+            default :
+                throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+                break;
+        }
+    }
+
+    result = sqlite3_finalize(ppStmt);
+    if (result != SQLITE_OK)
+    {
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+    }
+}
+
 int& obelisk::Rule::getId()
 {
     return id_;

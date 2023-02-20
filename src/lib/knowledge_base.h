@@ -184,6 +184,21 @@ namespace obelisk
             void getRule(obelisk::Rule& rule);
 
             /**
+             * @brief Check if a rule looks for this Fact, if so update its
+             * truth.
+             *
+             * @param[in,out] fact The Fact to check for existing rules.
+             */
+            void checkRule(obelisk::Fact& fact);
+
+            /**
+             * @brief Update the is true field in the KnowledgeBase.
+             *
+             * @param[in,out] fact The fact to update.
+             */
+            void updateIsTrue(obelisk::Fact& fact);
+
+            /**
              * @brief Take a float and divide it into 2 floats.
              *
              * This is useful to store doubles in SQLite since SQLite doesn't

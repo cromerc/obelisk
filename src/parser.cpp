@@ -770,14 +770,23 @@ void obelisk::Parser::handleRule(std::unique_ptr<obelisk::KnowledgeBase>& kb)
     try
     {
         parseRule(rule);
-        insertEntity(kb, rule.getFact().getLeftEntity());
-        insertEntity(kb, rule.getFact().getRightEntity());
-        insertVerb(kb, rule.getFact().getVerb());
-        insertFact(kb, rule.getFact());
+
         insertEntity(kb, rule.getReason().getLeftEntity());
         insertEntity(kb, rule.getReason().getRightEntity());
         insertVerb(kb, rule.getReason().getVerb());
         insertFact(kb, rule.getReason());
+
+        // The rule is true, so the fact must be true to.
+        if (rule.getReason().getIsTrue())
+        {
+            rule.getFact().setIsTrue(true);
+        }
+
+        insertEntity(kb, rule.getFact().getLeftEntity());
+        insertEntity(kb, rule.getFact().getRightEntity());
+        insertVerb(kb, rule.getFact().getVerb());
+        insertFact(kb, rule.getFact());
+
         insertRule(kb, rule);
     }
     catch (obelisk::ParserException& exception)
@@ -830,12 +839,14 @@ void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
 
         try
         {
-            insertFact(kb, fact);
+            insertFact(kb, fact, true);
         }
         catch (obelisk::ParserException& exception)
         {
             throw;
         }
+
+        kb->checkRule(fact);
     }
 }
 
@@ -890,7 +901,7 @@ void obelisk::Parser::insertAction(std::unique_ptr<obelisk::KnowledgeBase>& kb, 
     }
 }
 
-void obelisk::Parser::insertFact(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Fact& fact)
+void obelisk::Parser::insertFact(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Fact& fact, bool updateIsTrue)
 {
     std::vector<obelisk::Fact> facts {fact};
     kb->addFacts(facts);
@@ -903,6 +914,14 @@ void obelisk::Parser::insertFact(std::unique_ptr<obelisk::KnowledgeBase>& kb, ob
         if (fact.getId() == 0)
         {
             throw obelisk::ParserException("fact could not be inserted into the database");
+        }
+        else
+        {
+            if (updateIsTrue)
+            {
+                fact.setIsTrue(true);
+                kb->updateIsTrue(fact);
+            }
         }
     }
 }

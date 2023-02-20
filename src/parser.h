@@ -17,12 +17,32 @@
 
 namespace obelisk
 {
+    /**
+     * @brief The Parser is responsible for analyzing the language's key words
+     * and taking action based on its analysis.
+     *
+     */
     class Parser
     {
         private:
+            /**
+             * @brief The Lexer object that the Parser is using to Parse a
+             * specific source file.
+             *
+             */
             std::shared_ptr<obelisk::Lexer> lexer_;
+
+            /**
+             * @brief The current token that the lexer has retrieved.
+             *
+             */
             int currentToken_ = 0;
 
+            /**
+             * @brief Set the current token.
+             *
+             * @param[in] currentToken The token should be ASCII character.
+             */
             void setCurrentToken(int currentToken);
 
             std::unique_ptr<obelisk::ExpressionAST> logError(const char* str);
@@ -64,7 +84,9 @@ namespace obelisk
             void insertEntity(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Entity& entity);
             void insertVerb(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Verb& verb);
             void insertAction(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Action& action);
-            void insertFact(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Fact& fact);
+            void insertFact(std::unique_ptr<obelisk::KnowledgeBase>& kb,
+                obelisk::Fact& fact,
+                bool updateIsTrue = false);
             void insertSuggestAction(std::unique_ptr<obelisk::KnowledgeBase>& kb,
                 obelisk::SuggestAction& suggestAction);
             void insertRule(std::unique_ptr<obelisk::KnowledgeBase>& kb, obelisk::Rule& rule);

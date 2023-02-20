@@ -223,6 +223,28 @@ void obelisk::KnowledgeBase::getRule(obelisk::Rule& rule)
     rule.selectById(dbConnection_);
 }
 
+void obelisk::KnowledgeBase::checkRule(obelisk::Fact& fact)
+{
+    std::vector<obelisk::Rule> rules;
+    obelisk::Rule::selectByReason(dbConnection_, fact.getId(), rules);
+    for (auto& rule : rules)
+    {
+        auto reason = rule.getReason();
+        getFact(reason);
+        if (reason.getIsTrue())
+        {
+            auto updateFact = rule.getFact();
+            updateFact.setIsTrue(true);
+            updateFact.updateIsTrue(dbConnection_);
+        }
+    }
+}
+
+void obelisk::KnowledgeBase::updateIsTrue(obelisk::Fact& fact)
+{
+    fact.updateIsTrue(dbConnection_);
+}
+
 void obelisk::KnowledgeBase::getFloat(float& result1, float& result2, double var)
 {
     result1 = (float) var;

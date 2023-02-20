@@ -4,6 +4,7 @@
 #include "models/fact.h"
 
 #include <string>
+#include <vector>
 
 namespace obelisk
 {
@@ -139,6 +140,14 @@ namespace obelisk
              * @param[in] dbConnection The database connection to use.
              */
             void selectById(sqlite3* dbConnection);
+
+            /**
+             * @brief Get the rules that match the reason.
+             *
+             * @param[in] dbConnection The database connection to use.
+             * @param[out] rules The rules to fill in from the database.
+             */
+            static void selectByReason(sqlite3* dbConnection, int reasonId, std::vector<obelisk::Rule>& rules);
 
             /**
              * @brief Insert the Rule into the KnowledgeBase.
