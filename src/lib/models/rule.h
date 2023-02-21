@@ -134,8 +134,7 @@ namespace obelisk
             void setReason(obelisk::Fact reason);
 
             /**
-             * @brief Select the Rule from the KnowledgeBase by IDs of the
-             * sub-objects.
+             * @brief Select the Rule from the KnowledgeBase by IDs of the sub-objects.
              *
              * @param[in] dbConnection The database connection to use.
              */

@@ -42,8 +42,7 @@ namespace obelisk
             /**
              * @brief Construct a new DatabaseException object.
              *
-             * @param[in] errorMessage The error message to describe the
-             * exception.
+             * @param[in] errorMessage The error message to describe the exception.
              */
             DatabaseException(const std::string& errorMessage) :
                 errorMessage_(errorMessage)
@@ -72,8 +71,7 @@ namespace obelisk
     };
 
     /**
-     * @brief Exception thrown if the string or blob size exceeds sqlite's
-     * limits.
+     * @brief Exception thrown if the string or blob size exceeds sqlite's limits.
      *
      */
     class DatabaseSizeException : public obelisk::DatabaseException
@@ -107,8 +105,7 @@ namespace obelisk
     };
 
     /**
-     * @brief Exception thrown if there is not enough memory to perform the
-     * operation.
+     * @brief Exception thrown if there is not enough memory to perform the operation.
      *
      */
     class DatabaseMemoryException : public obelisk::DatabaseException
@@ -178,8 +175,7 @@ namespace obelisk
             /**
              * @brief Construct a new DatabaseConstraintException object.
              *
-             * @param[in] errorMessage The error message to send when the
-             * constraint is violated.
+             * @param[in] errorMessage The error message to send when the constraint is violated.
              */
             DatabaseConstraintException(const std::string& errorMessage)
             {

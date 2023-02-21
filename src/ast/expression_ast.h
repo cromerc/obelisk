@@ -5,10 +5,24 @@
 
 namespace obelisk
 {
+    /**
+     * @brief A generic AST expression which other expression will inherit from.
+     *
+     */
     class ExpressionAST
     {
         public:
-            virtual ~ExpressionAST()       = default;
+            /**
+             * @brief Destroy the ExpressionAST object.
+             *
+             */
+            virtual ~ExpressionAST() = default;
+
+            /**
+             * @brief Generate LLVM IR code based on the AST expression.
+             *
+             * @return llvm::Value* Returns the LLVM code value from the expression.
+             */
             virtual llvm::Value *codegen() = 0;
     };
 } // namespace obelisk

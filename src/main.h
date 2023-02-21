@@ -1,8 +1,7 @@
 #include <getopt.h>
 
 /**
- * @brief The obelisk namespace contains everything needed to compile obelisk.
- * code.
+ * @brief The obelisk namespace contains everything needed to compile obelisk code.
  *
  */
 namespace obelisk
@@ -38,6 +37,7 @@ Options:
 
     /**
      * @brief This is the main loop for obelisk.
+     *
      * This loop handles lexing and parsing of obelisk source code.
      *
      * @return int Returns EXIT_SUCCESS or EXIT_FAILURE.

@@ -56,22 +56,19 @@ namespace obelisk
             /**
              * @brief Comment the rest of the line.
              *
-             * @param[in] lastChar The char to check to see if it in the end of
-             * the line.
+             * @param[in] lastChar The char to check to see if it in the end of the line.
              */
             void commentLine(int* lastChar);
 
         public:
             /**
-             * @brief These token represent recognized language keywords and
-             * language functionality.
+             * @brief These token represent recognized language keywords and language functionality.
              *
              */
             enum Token
             {
                 /**
-                 * @brief End of file is returned when the source code is
-                 * finished.
+                 * @brief End of file is returned when the source code is finished.
                  *
                  */
                 kTokenEof = -1,
@@ -82,8 +79,7 @@ namespace obelisk
                  */
                 kTokenFact   = -2,
                 /**
-                 * @brief A rule which is a relationship between a new fact a
-                 * existing fact.
+                 * @brief A rule which is a relationship between a new fact a existing fact.
                  *
                  */
                 kTokenRule   = -3,
@@ -137,16 +133,14 @@ namespace obelisk
              * @brief Gets the next token in the source code.
              *
              * @throws LexerException when an invalid token is found.
-             * @return int Returns a Token value or char if no known token was
-             * found.
+             * @return int Returns a Token value or char if no known token was found.
              */
             int getToken();
 
             /**
              * @brief Get the last identifier.
              *
-             * @return const std::string& Returns a string that contains the
-             * last found identifier.
+             * @return const std::string& Returns a string that contains the last found identifier.
              */
             const std::string& getIdentifier();
 
@@ -194,8 +188,7 @@ namespace obelisk
             /**
              * @brief Return the exception's error message.
              *
-             * @return const char* Returns a string containing the error
-             * message.
+             * @return const char* Returns a string containing the error message.
              */
             const char* what() const noexcept
             {

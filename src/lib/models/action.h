@@ -8,8 +8,7 @@
 namespace obelisk
 {
     /**
-     * @brief The Action model represents an action to take when a fact is true
-     * or false.
+     * @brief The Action model represents an action to take when a fact is true or false.
      *
      */
     class Action
@@ -108,16 +107,14 @@ namespace obelisk
             void setName(std::string name);
 
             /**
-             * @brief Select an Action from the datbase based on the object
-             * name.
+             * @brief Select an Action from the datbase based on the object name.
              *
              * @param[in] dbConnection The database connection to use.
              */
             void selectByName(sqlite3* dbConnection);
 
             /**
-             * @brief Insert an Action into the KnowledgeBase based on the
-             * object's fields.
+             * @brief Insert an Action into the KnowledgeBase based on the object's fields.
              *
              * @param[in] dbConnection The database connection to use.
              */

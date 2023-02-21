@@ -9,8 +9,7 @@
 namespace obelisk
 {
     /**
-     * @brief The SuggestAction model representas the actions to take depending
-     * on if the Fact is true or false.
+     * @brief The SuggestAction model representas the actions to take depending on if the Fact is true or false.
      *
      */
     class SuggestAction
@@ -161,8 +160,7 @@ namespace obelisk
             void setFalseAction(obelisk::Action falseAction);
 
             /**
-             * @brief Select the SuggestAction from the KnowledgeBase by IDs of the
-             * sub-objects.
+             * @brief Select the SuggestAction from the KnowledgeBase by IDs of the sub-objects.
              *
              * @param[in] dbConnection The database connection to use.
              */

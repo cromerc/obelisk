@@ -11,9 +11,28 @@
 
 namespace obelisk
 {
+    /**
+     * @brief The LLVM context.
+     *
+     */
     static std::unique_ptr<llvm::LLVMContext> TheContext;
+
+    /**
+     * @brief The LLVM module.
+     *
+     */
     static std::unique_ptr<llvm::Module> TheModule;
+
+    /**
+     * @brief The LLVM IR builder.
+     *
+     */
     static std::unique_ptr<llvm::IRBuilder<>> Builder;
+
+    /**
+     * @brief The LLVM named values.
+     *
+     */
     static std::map<std::string, llvm::Value *> NamedValues;
 } // namespace obelisk
 
