@@ -1,3 +1,6 @@
+#ifndef OBELISK_MAIN_H
+#define OBELISK_MAIN_H
+
 #include <getopt.h>
 
 /**
@@ -46,3 +49,5 @@ Options:
     int mainLoop(const std::vector<std::string> &sourceFiles,
         const std::string &kbFile);
 } // namespace obelisk
+
+#endif

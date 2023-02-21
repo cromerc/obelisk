@@ -1,3 +1,6 @@
+#ifndef OBELISK_VERSION_H
+#define OBELISK_VERSION_H
+
 namespace obelisk
 {
     /**
@@ -14,3 +17,5 @@ namespace obelisk
     const int soVersion = @so_version@;
     // clang-format on
 } // namespace obelisk
+
+#endif

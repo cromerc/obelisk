@@ -10,6 +10,8 @@ subdir('models')
 
 obelisk_lib_sources = files(
     'obelisk.cpp',
+    'obelisk.c',
+    'obelisk_wrapper.cpp',
     'knowledge_base.cpp'
 )
 
