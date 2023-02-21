@@ -7,7 +7,8 @@ obelisk::Lexer::Lexer(const std::string& sourceFile)
     fileStream_.open(sourceFile, std::ifstream::in);
     if (!fileStream_)
     {
-        throw obelisk::LexerException("could not open source file " + sourceFile);
+        throw obelisk::LexerException(
+            "could not open source file " + sourceFile);
     }
 }
 

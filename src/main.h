@@ -1,7 +1,8 @@
 #include <getopt.h>
 
 /**
- * @brief The obelisk namespace contains everything needed to compile obelisk code.
+ * @brief The obelisk namespace contains everything needed to compile obelisk
+ * code.
  *
  */
 namespace obelisk
@@ -42,5 +43,6 @@ Options:
      *
      * @return int Returns EXIT_SUCCESS or EXIT_FAILURE.
      */
-    int mainLoop(const std::vector<std::string> &sourceFiles, const std::string &kbFile);
+    int mainLoop(const std::vector<std::string> &sourceFiles,
+        const std::string &kbFile);
 } // namespace obelisk

@@ -48,7 +48,8 @@ namespace obelisk
              * @param[in] prototype The prototype of the function.
              * @param[in] body The body of the function.
              */
-            FunctionAST(std::unique_ptr<PrototypeAST> prototype, std::unique_ptr<ExpressionAST> body) :
+            FunctionAST(std::unique_ptr<PrototypeAST> prototype,
+                std::unique_ptr<ExpressionAST> body) :
                 prototype_(std::move(prototype)),
                 body_(std::move(body))
             {

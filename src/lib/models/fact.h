@@ -10,7 +10,8 @@
 namespace obelisk
 {
     /**
-     * @brief The Fact model represents truth in the releationship between two entities separated by a verb.
+     * @brief The Fact model represents truth in the releationship between two
+     * entities separated by a verb.
      *
      */
     class Fact
@@ -35,7 +36,8 @@ namespace obelisk
             obelisk::Entity rightEntity_;
 
             /**
-             * @brief The Verb that represents the relationship in the expression.
+             * @brief The Verb that represents the relationship in the
+             * expression.
              *
              */
             obelisk::Verb verb_;
@@ -77,12 +79,17 @@ namespace obelisk
             /**
              * @brief Construct a new Fact object.
              *
-             * @param[in] leftEntity The Entity on the left side of the expression.
-             * @param[in] rightEntity The Entity on the right side of the expression.
+             * @param[in] leftEntity The Entity on the left side of the
+             * expression.
+             * @param[in] rightEntity The Entity on the right side of the
+             * expression.
              * @param[in] verb The Verb separating the entities.
              * @param[in] isTrue Whether or not the fact is true.
              */
-            Fact(obelisk::Entity leftEntity, obelisk::Entity rightEntity, obelisk::Verb verb, bool isTrue = false) :
+            Fact(obelisk::Entity leftEntity,
+                obelisk::Entity rightEntity,
+                obelisk::Verb verb,
+                bool isTrue = false) :
                 id_(0),
                 leftEntity_(leftEntity),
                 rightEntity_(rightEntity),
@@ -95,8 +102,10 @@ namespace obelisk
              * @brief Construct a new Fact object.
              *
              * @param[in] id The ID of the Fact in the KnowledgeBase.
-             * @param[in] leftEntity The Entity on the left side of the expression.
-             * @param[in] rightEntity The Entity on the right side of the expression.
+             * @param[in] leftEntity The Entity on the left side of the
+             * expression.
+             * @param[in] rightEntity The Entity on the right side of the
+             * expression.
              * @param[in] verb The Verb separating the entities.
              * @param[in] isTrue Whether or not the fact is true.
              */
@@ -192,7 +201,8 @@ namespace obelisk
             void setIsTrue(bool isTrue);
 
             /**
-             * @brief Select the Fact from the KnowledgeBase by IDs of the sub-objects.
+             * @brief Select the Fact from the KnowledgeBase by IDs of the
+             * sub-objects.
              *
              * @param[in] dbConnection The database connection to use.
              */
@@ -206,7 +216,8 @@ namespace obelisk
             void insert(sqlite3* dbConnection);
 
             /**
-             * @brief Update whether or not the fact is true in the KnowledgeBase.
+             * @brief Update whether or not the fact is true in the
+             * KnowledgeBase.
              *
              * @param[in] dbConnection The database connection.
              */

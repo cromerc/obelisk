@@ -54,7 +54,8 @@ namespace obelisk
              * @param[in] name The name of the prototype.
              * @param[in] args The arguments the prototype accepts.
              */
-            PrototypeAST(const std::string& name, std::vector<std::string> args) :
+            PrototypeAST(const std::string& name,
+                std::vector<std::string> args) :
                 name_(name),
                 args_(std::move(args))
             {

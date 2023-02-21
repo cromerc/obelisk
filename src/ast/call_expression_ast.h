@@ -31,7 +31,8 @@ namespace obelisk
             /**
              * @brief Get the callee.
              *
-             * @return std::string Returns the name of the function being called.
+             * @return std::string Returns the name of the function being
+             * called.
              */
             std::string getCallee();
 
@@ -45,7 +46,8 @@ namespace obelisk
             /**
              * @brief Get the arguments being used by the function.
              *
-             * @return std::vector<std::unique_ptr<ExpressionAST>> Returns an AST expression containing the args.
+             * @return std::vector<std::unique_ptr<ExpressionAST>> Returns an
+             * AST expression containing the args.
              */
             std::vector<std::unique_ptr<ExpressionAST>> getArgs();
 
@@ -63,7 +65,8 @@ namespace obelisk
              * @param[in] callee The function to call.
              * @param[in] args The args to pass into the function.
              */
-            CallExpressionAST(const std::string &callee, std::vector<std::unique_ptr<ExpressionAST>> args) :
+            CallExpressionAST(const std::string &callee,
+                std::vector<std::unique_ptr<ExpressionAST>> args) :
                 callee_(callee),
                 args_(std::move(args))
             {

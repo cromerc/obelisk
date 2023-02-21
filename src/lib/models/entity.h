@@ -8,7 +8,8 @@
 namespace obelisk
 {
     /**
-     * @brief The Entity model represents either a left or right side entity, typically used in facts and rules.
+     * @brief The Entity model represents either a left or right side entity,
+     * typically used in facts and rules.
      *
      */
     class Entity
@@ -107,14 +108,16 @@ namespace obelisk
             void setName(std::string name);
 
             /**
-             * @brief Select an Entity from the KnowledgeBase based on the object's name.
+             * @brief Select an Entity from the KnowledgeBase based on the
+             * object's name.
              *
              * @param[in] dbConnection The database connection to use.
              */
             void selectByName(sqlite3* dbConnection);
 
             /**
-             * @brief Insert an Entity into the KnowledgeBase based on the object's fields.
+             * @brief Insert an Entity into the KnowledgeBase based on the
+             * object's fields.
              *
              * @param[in] dbConnection The database connection to use.
              */

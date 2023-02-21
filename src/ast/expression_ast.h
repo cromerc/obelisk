@@ -21,7 +21,8 @@ namespace obelisk
             /**
              * @brief Generate LLVM IR code based on the AST expression.
              *
-             * @return llvm::Value* Returns the LLVM code value from the expression.
+             * @return llvm::Value* Returns the LLVM code value from the
+             * expression.
              */
             virtual llvm::Value *codegen() = 0;
     };

@@ -134,7 +134,8 @@ namespace obelisk
             void setReason(obelisk::Fact reason);
 
             /**
-             * @brief Select the Rule from the KnowledgeBase by IDs of the sub-objects.
+             * @brief Select the Rule from the KnowledgeBase by IDs of the
+             * sub-objects.
              *
              * @param[in] dbConnection The database connection to use.
              */
@@ -146,7 +147,9 @@ namespace obelisk
              * @param[in] dbConnection The database connection to use.
              * @param[out] rules The rules to fill in from the database.
              */
-            static void selectByReason(sqlite3* dbConnection, int reasonId, std::vector<obelisk::Rule>& rules);
+            static void selectByReason(sqlite3* dbConnection,
+                int reasonId,
+                std::vector<obelisk::Rule>& rules);
 
             /**
              * @brief Insert the Rule into the KnowledgeBase.

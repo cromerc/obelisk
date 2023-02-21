@@ -208,7 +208,8 @@ void obelisk::SuggestAction::insert(sqlite3* dbConnection)
             sqlite3_set_last_insert_rowid(dbConnection, 0);
             break;
         case SQLITE_CONSTRAINT :
-            throw obelisk::DatabaseConstraintException(sqlite3_errmsg(dbConnection));
+            throw obelisk::DatabaseConstraintException(
+                sqlite3_errmsg(dbConnection));
         case SQLITE_BUSY :
             throw obelisk::DatabaseBusyException();
             break;

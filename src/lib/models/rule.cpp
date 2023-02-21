@@ -111,8 +111,11 @@ void obelisk::Rule::insert(sqlite3* dbConnection)
 
     sqlite3_stmt* ppStmt = nullptr;
 
-    auto result
-        = sqlite3_prepare_v2(dbConnection, "INSERT INTO rule (fact, reason) VALUES (?, ?)", -1, &ppStmt, nullptr);
+    auto result = sqlite3_prepare_v2(dbConnection,
+        "INSERT INTO rule (fact, reason) VALUES (?, ?)",
+        -1,
+        &ppStmt,
+        nullptr);
     if (result != SQLITE_OK)
     {
         throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -164,7 +167,8 @@ void obelisk::Rule::insert(sqlite3* dbConnection)
             sqlite3_set_last_insert_rowid(dbConnection, 0);
             break;
         case SQLITE_CONSTRAINT :
-            throw obelisk::DatabaseConstraintException(sqlite3_errmsg(dbConnection));
+            throw obelisk::DatabaseConstraintException(
+                sqlite3_errmsg(dbConnection));
         case SQLITE_BUSY :
             throw obelisk::DatabaseBusyException();
             break;
@@ -183,7 +187,9 @@ void obelisk::Rule::insert(sqlite3* dbConnection)
     }
 }
 
-void obelisk::Rule::selectByReason(sqlite3* dbConnection, int reasonId, std::vector<obelisk::Rule>& rules)
+void obelisk::Rule::selectByReason(sqlite3* dbConnection,
+    int reasonId,
+    std::vector<obelisk::Rule>& rules)
 {
     if (dbConnection == nullptr)
     {
@@ -192,8 +198,11 @@ void obelisk::Rule::selectByReason(sqlite3* dbConnection, int reasonId, std::vec
 
     sqlite3_stmt* ppStmt = nullptr;
 
-    auto result
-        = sqlite3_prepare_v2(dbConnection, "SELECT id, fact, reason FROM rule WHERE (reason=?)", -1, &ppStmt, nullptr);
+    auto result = sqlite3_prepare_v2(dbConnection,
+        "SELECT id, fact, reason FROM rule WHERE (reason=?)",
+        -1,
+        &ppStmt,
+        nullptr);
     if (result != SQLITE_OK)
     {
         throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));

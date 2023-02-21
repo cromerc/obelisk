@@ -36,7 +36,8 @@ void obelisk::Fact::selectById(sqlite3* dbConnection)
     }
     else
     {
-        query = "SELECT id, left_entity, right_entity, verb, is_true FROM fact WHERE (id=?)";
+        query
+            = "SELECT id, left_entity, right_entity, verb, is_true FROM fact WHERE (id=?)";
     }
     auto result = sqlite3_prepare_v2(dbConnection, query, -1, &ppStmt, nullptr);
     if (result != SQLITE_OK)
@@ -259,7 +260,8 @@ void obelisk::Fact::insert(sqlite3* dbConnection)
             sqlite3_set_last_insert_rowid(dbConnection, 0);
             break;
         case SQLITE_CONSTRAINT :
-            throw obelisk::DatabaseConstraintException(sqlite3_errmsg(dbConnection));
+            throw obelisk::DatabaseConstraintException(
+                sqlite3_errmsg(dbConnection));
         case SQLITE_BUSY :
             throw obelisk::DatabaseBusyException();
             break;
@@ -287,7 +289,11 @@ void obelisk::Fact::updateIsTrue(sqlite3* dbConnection)
 
     sqlite3_stmt* ppStmt = nullptr;
 
-    auto result = sqlite3_prepare_v2(dbConnection, "UPDATE fact SET is_true=? WHERE id=?", -1, &ppStmt, nullptr);
+    auto result = sqlite3_prepare_v2(dbConnection,
+        "UPDATE fact SET is_true=? WHERE id=?",
+        -1,
+        &ppStmt,
+        nullptr);
     if (result != SQLITE_OK)
     {
         throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -338,7 +344,8 @@ void obelisk::Fact::updateIsTrue(sqlite3* dbConnection)
             // Row updated
             break;
         case SQLITE_CONSTRAINT :
-            throw obelisk::DatabaseConstraintException(sqlite3_errmsg(dbConnection));
+            throw obelisk::DatabaseConstraintException(
+                sqlite3_errmsg(dbConnection));
         case SQLITE_BUSY :
             throw obelisk::DatabaseBusyException();
             break;

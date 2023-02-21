@@ -11,7 +11,8 @@ namespace obelisk
      * @brief Log an AST expression error.
      *
      * @param[in] str The error message.
-     * @return std::unique_ptr<ExpressionAST> Returns the AST expression that caused the error.
+     * @return std::unique_ptr<ExpressionAST> Returns the AST expression that
+     * caused the error.
      */
     std::unique_ptr<ExpressionAST> LogError(const char *str);
 

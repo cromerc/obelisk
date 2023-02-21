@@ -10,13 +10,15 @@
 #include <limits>
 #include <memory>
 
-int obelisk::mainLoop(const std::vector<std::string>& sourceFiles, const std::string& kbFile)
+int obelisk::mainLoop(const std::vector<std::string>& sourceFiles,
+    const std::string& kbFile)
 {
     std::unique_ptr<obelisk::KnowledgeBase> kb;
 
     try
     {
-        kb = std::unique_ptr<obelisk::KnowledgeBase> {new obelisk::KnowledgeBase(kbFile.c_str())};
+        kb = std::unique_ptr<obelisk::KnowledgeBase> {
+            new obelisk::KnowledgeBase(kbFile.c_str())};
     }
     catch (obelisk::KnowledgeBaseException& exception)
     {
@@ -28,7 +30,8 @@ int obelisk::mainLoop(const std::vector<std::string>& sourceFiles, const std::st
     std::shared_ptr<obelisk::Lexer> lexer;
     try
     {
-        lexer = std::shared_ptr<obelisk::Lexer> {new obelisk::Lexer(sourceFiles[file++])};
+        lexer = std::shared_ptr<obelisk::Lexer> {
+            new obelisk::Lexer(sourceFiles[file++])};
     }
     catch (obelisk::LexerException& exception)
     {
@@ -53,14 +56,16 @@ int obelisk::mainLoop(const std::vector<std::string>& sourceFiles, const std::st
         switch (parser->getCurrentToken())
         {
             case obelisk::Lexer::kTokenEof :
-                // end of source file found, create a new lexer and pass it to the parser to use
+                // end of source file found, create a new lexer and pass it to
+                // the parser to use
                 if (file >= sourceFiles.size())
                 {
                     return EXIT_SUCCESS;
                 }
                 try
                 {
-                    lexer = std::shared_ptr<obelisk::Lexer> {new obelisk::Lexer(sourceFiles[file++])};
+                    lexer = std::shared_ptr<obelisk::Lexer> {
+                        new obelisk::Lexer(sourceFiles[file++])};
                     parser->setLexer(lexer);
                     // prime the first token in the parser
                     parser->getNextToken();
@@ -138,7 +143,11 @@ int main(int argc, char** argv)
     while (true)
     {
         int option_index = 0;
-        switch (getopt_long(argc, argv, "k:hv", obelisk::long_options, &option_index))
+        switch (getopt_long(argc,
+            argv,
+            "k:hv",
+            obelisk::long_options,
+            &option_index))
         {
             case 'k' :
                 kbFile = std::string(optarg);

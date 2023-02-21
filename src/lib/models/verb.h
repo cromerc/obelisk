@@ -8,7 +8,8 @@
 namespace obelisk
 {
     /**
-     * @brief The Verb model represents a verb which is used to connnect entities.
+     * @brief The Verb model represents a verb which is used to connnect
+     * entities.
      *
      */
     class Verb
