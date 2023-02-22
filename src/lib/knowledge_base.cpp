@@ -245,10 +245,10 @@ void obelisk::KnowledgeBase::checkRule(obelisk::Fact& fact)
     {
         auto reason = rule.getReason();
         getFact(reason);
-        if (reason.getIsTrue())
+        if (reason.getIsTrue() > 0)
         {
             auto updateFact = rule.getFact();
-            updateFact.setIsTrue(true);
+            updateFact.setIsTrue(1.0);
             updateFact.updateIsTrue(dbConnection_);
         }
     }
@@ -257,6 +257,11 @@ void obelisk::KnowledgeBase::checkRule(obelisk::Fact& fact)
 void obelisk::KnowledgeBase::updateIsTrue(obelisk::Fact& fact)
 {
     fact.updateIsTrue(dbConnection_);
+}
+
+void obelisk::KnowledgeBase::queryFact(obelisk::Fact& fact)
+{
+    fact.selectByName(dbConnection_);
 }
 
 void obelisk::KnowledgeBase::getFloat(float& result1,

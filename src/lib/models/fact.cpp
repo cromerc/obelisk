@@ -157,6 +157,125 @@ void obelisk::Fact::selectById(sqlite3* dbConnection)
     }
 }
 
+void obelisk::Fact::selectByName(sqlite3* dbConnection)
+{
+    if (dbConnection == nullptr)
+    {
+        throw obelisk::DatabaseException("database isn't open");
+    }
+
+    sqlite3_stmt* ppStmt = nullptr;
+
+    auto result = sqlite3_prepare_v2(dbConnection,
+        "SELECT fact.id, fact.left_entity, fact.right_entity, fact.verb, fact.is_true FROM fact LEFT JOIN entity le ON le.id = fact.left_entity LEFT JOIN entity re ON re.id = fact.right_entity LEFT JOIN verb v ON fact.verb = v.id WHERE (le.name=? AND v.name=? AND re.name=?)",
+        -1,
+        &ppStmt,
+        nullptr);
+    if (result != SQLITE_OK)
+    {
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+    }
+
+    result = sqlite3_bind_text(ppStmt,
+        1,
+        getLeftEntity().getName().c_str(),
+        -1,
+        SQLITE_STATIC);
+    switch (result)
+    {
+        case SQLITE_OK :
+            break;
+        case SQLITE_TOOBIG :
+            throw obelisk::DatabaseSizeException();
+            break;
+        case SQLITE_RANGE :
+            throw obelisk::DatabaseRangeException();
+            break;
+        case SQLITE_NOMEM :
+            throw obelisk::DatabaseMemoryException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_bind_text(ppStmt,
+        2,
+        getVerb().getName().c_str(),
+        -1,
+        SQLITE_STATIC);
+    switch (result)
+    {
+        case SQLITE_OK :
+            break;
+        case SQLITE_TOOBIG :
+            throw obelisk::DatabaseSizeException();
+            break;
+        case SQLITE_RANGE :
+            throw obelisk::DatabaseRangeException();
+            break;
+        case SQLITE_NOMEM :
+            throw obelisk::DatabaseMemoryException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_bind_text(ppStmt,
+        3,
+        getRightEntity().getName().c_str(),
+        -1,
+        SQLITE_STATIC);
+    switch (result)
+    {
+        case SQLITE_OK :
+            break;
+        case SQLITE_TOOBIG :
+            throw obelisk::DatabaseSizeException();
+            break;
+        case SQLITE_RANGE :
+            throw obelisk::DatabaseRangeException();
+            break;
+        case SQLITE_NOMEM :
+            throw obelisk::DatabaseMemoryException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_step(ppStmt);
+    switch (result)
+    {
+        case SQLITE_DONE :
+            // no rows in the database
+            break;
+        case SQLITE_ROW :
+            setId(sqlite3_column_int(ppStmt, 0));
+            getLeftEntity().setId(sqlite3_column_int(ppStmt, 1));
+            getRightEntity().setId(sqlite3_column_int(ppStmt, 2));
+            getVerb().setId(sqlite3_column_int(ppStmt, 3));
+            setIsTrue(sqlite3_column_int(ppStmt, 4));
+            break;
+        case SQLITE_BUSY :
+            throw obelisk::DatabaseBusyException();
+            break;
+        case SQLITE_MISUSE :
+            throw obelisk::DatabaseMisuseException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_finalize(ppStmt);
+    if (result != SQLITE_OK)
+    {
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+    }
+}
+
 void obelisk::Fact::insert(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)
@@ -404,12 +523,12 @@ void obelisk::Fact::setVerb(obelisk::Verb verb)
     verb_ = verb;
 }
 
-bool& obelisk::Fact::getIsTrue()
+double& obelisk::Fact::getIsTrue()
 {
     return isTrue_;
 }
 
-void obelisk::Fact::setIsTrue(bool isTrue)
+void obelisk::Fact::setIsTrue(double isTrue)
 {
     isTrue_ = isTrue;
 }

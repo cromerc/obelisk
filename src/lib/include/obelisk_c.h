@@ -15,9 +15,10 @@ extern "C"
     /**
      * @brief Create an obelisk object.
      *
+     * @param[in] filename The obelisk KnowledgeBase file to use.
      * @return CObelisk* Returns an obelisk object.
      */
-    extern CObelisk* obelisk_open();
+    extern CObelisk* obelisk_open(const char* filename);
 
     /**
      * @brief Delete an obelisk object.
@@ -34,6 +35,20 @@ extern "C"
      * freed by the caller.
      */
     extern char* obelisk_get_version(CObelisk* obelisk);
+
+    /**
+     * @brief Query the obelisk KnowledgeBase to see if a Fact is true or false.
+     *
+     * @param[in] obelisk The obelisk object.
+     * @param[in] left_entity The left entity.
+     * @param[in] verb The verb.
+     * @param[in] right_entity The right entity.
+     * @return double Returns whether the Fact is true or false.
+     */
+    extern double obelisk_query(CObelisk* obelisk,
+        const char* left_entity,
+        const char* verb,
+        const char* right_entity);
 
     /**
      * @brief Get the obelisk library so version.

@@ -806,9 +806,9 @@ void obelisk::Parser::handleRule(std::unique_ptr<obelisk::KnowledgeBase>& kb)
         insertFact(kb, rule.getReason());
 
         // The rule is true, so the fact must be true to.
-        if (rule.getReason().getIsTrue())
+        if (rule.getReason().getIsTrue() > 0)
         {
-            rule.getFact().setIsTrue(true);
+            rule.getFact().setIsTrue(1.0);
         }
 
         insertEntity(kb, rule.getFact().getLeftEntity());
@@ -957,7 +957,7 @@ void obelisk::Parser::insertFact(std::unique_ptr<obelisk::KnowledgeBase>& kb,
         {
             if (updateIsTrue)
             {
-                fact.setIsTrue(true);
+                fact.setIsTrue(1.0);
                 kb->updateIsTrue(fact);
             }
         }

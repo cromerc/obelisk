@@ -1,6 +1,9 @@
 #ifndef OBELISK_INCLUDE_OBELISK_H
 #define OBELISK_INCLUDE_OBELISK_H
 
+#include "knowledge_base.h"
+
+#include <memory>
 #include <string>
 
 /**
@@ -17,12 +20,15 @@ namespace obelisk
      */
     class Obelisk
     {
+        private:
+            std::unique_ptr<obelisk::KnowledgeBase> kb_;
+
         public:
             /**
              * @brief Construct a new Obelisk object.
              *
              */
-            Obelisk() = default;
+            Obelisk(std::string filename);
 
             /**
              * @brief Destroy the Obelisk object.
@@ -45,14 +51,14 @@ namespace obelisk
             int getLibVersion();
 
             /**
-             * @brief Query the Obelisk KnowledgeBase to see if the Fact is true
+             * @brief Query the obelisk KnowledgeBase to see if a Fact is true
              * or not.
              *
-             * @param[in] leftEntity The left entity.
+             * @param[in] p_obelisk The obelisk object pointer.
+             * @param[in] left_entity The left entity.
              * @param[in] verb The verb.
-             * @param[in] rightEntity The right entity.
-             * @return double Returns a value between 0 and 1 depending on
-             * whether it is true or false.
+             * @param[in] right_entity The right entity.
+             * @return double Returns whether or not the Fact is true.
              */
             double query(const std::string& leftEntity,
                 const std::string& verb,

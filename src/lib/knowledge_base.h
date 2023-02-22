@@ -200,6 +200,8 @@ namespace obelisk
              */
             void updateIsTrue(obelisk::Fact& fact);
 
+            void queryFact(obelisk::Fact& fact);
+
             /**
              * @brief Take a float and divide it into 2 floats.
              *

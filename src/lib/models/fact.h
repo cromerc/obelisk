@@ -46,7 +46,7 @@ namespace obelisk
              * @brief Whether or not the fact is considered true or not.
              *
              */
-            bool isTrue_;
+            double isTrue_;
 
         public:
             /**
@@ -89,7 +89,7 @@ namespace obelisk
             Fact(obelisk::Entity leftEntity,
                 obelisk::Entity rightEntity,
                 obelisk::Verb verb,
-                bool isTrue = false) :
+                double isTrue = 0) :
                 id_(0),
                 leftEntity_(leftEntity),
                 rightEntity_(rightEntity),
@@ -113,7 +113,7 @@ namespace obelisk
                 obelisk::Entity leftEntity,
                 obelisk::Entity rightEntity,
                 obelisk::Verb verb,
-                bool isTrue = false) :
+                double isTrue = 0) :
                 id_(id),
                 leftEntity_(leftEntity),
                 rightEntity_(rightEntity),
@@ -191,14 +191,14 @@ namespace obelisk
              * @return true If the Fact is considered true.
              * @return false If the Fact is considered false.
              */
-            bool& getIsTrue();
+            double& getIsTrue();
 
             /**
              * @brief Set the Fact as true or false.
              *
              * @param[in] isTrue Whether or not the Fact is true.
              */
-            void setIsTrue(bool isTrue);
+            void setIsTrue(double isTrue);
 
             /**
              * @brief Select the Fact from the KnowledgeBase by IDs of the
@@ -207,6 +207,14 @@ namespace obelisk
              * @param[in] dbConnection The database connection to use.
              */
             void selectById(sqlite3* dbConnection);
+
+            /**
+             * @brief Select the Fact from the KnowledgeBase by the name's of
+             * the entities and verb.
+             *
+             * @param[in] dbConnection The database connection to use.
+             */
+            void selectByName(sqlite3* dbConnection);
 
             /**
              * @brief Insert the Fact into the KnowledgeBase.
