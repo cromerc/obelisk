@@ -1,6 +1,8 @@
 #include "obelisk.h"
 #include "obelisk_wrapper.h"
 
+#include <string.h>
+
 extern "C"
 {
     CObelisk* create_obelisk()
@@ -9,11 +11,12 @@ extern "C"
         return reinterpret_cast<CObelisk*>(obelisk);
     }
 
-    const char* call_obelisk_getVersion(CObelisk* p_obelisk)
+    char* call_obelisk_getVersion(CObelisk* p_obelisk)
     {
         obelisk::Obelisk* obelisk
             = reinterpret_cast<obelisk::Obelisk*>(p_obelisk);
-        return obelisk->getVersion().c_str();
+        auto version = strdup(obelisk->getVersion().c_str());
+        return version;
     }
 
     int call_obelisk_getLibVersion(CObelisk* p_obelisk)

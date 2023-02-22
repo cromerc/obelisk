@@ -1,7 +1,7 @@
 #ifndef OBELISK_INCLUDE_OBELISK_WRAPPER_H
 #define OBELISK_INCLUDE_OBELISK_WRAPPER_H
 
-typedef struct CObelisk CObelisk;
+#include "include/obelisk_c.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -19,9 +19,10 @@ extern "C"
      * @brief Calls the obelisk method getVersion.
      *
      * @param[in] p_obelisk The obelisk object pointer.
-     * @return const char* Returns the version. Must be freed by caller.
+     * @return const char* Returns the version. This must be freed by the
+     * caller.
      */
-    const char *call_obelisk_getVersion(CObelisk *p_obelisk);
+    char *call_obelisk_getVersion(CObelisk *p_obelisk);
 
     /**
      * @brief Calls the obelisk method getLibVersion.
