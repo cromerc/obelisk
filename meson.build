@@ -1,4 +1,5 @@
 project('obelisk',
+    'c',
     'cpp',
     version : '1.0.0',
     license : 'BSD-3-Clause',
@@ -8,6 +9,8 @@ project('obelisk',
         'cpp_std=c++17'
     ]
 )
+
+project_version_lib = '0'
 
 llvm = dependency('llvm', version: '>= 14.0.0', modules : ['core', 'target', 'mcjit', 'nativecodegen'], required : true, method: 'config-tool')
 

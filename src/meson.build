@@ -1,24 +1,15 @@
-conf_data = configuration_data()
-conf_data.set('version', meson.project_version())
-configure_file(input : 'version.h.in',
-    output : 'version.h',
-    configuration : conf_data
-)
+subdir('lib')
 
 obelisk_sources = files(
-    'obelisk.cpp',
+    'main.cpp',
     'lexer.cpp',
-    'parser.cpp',
-    'knowledge_base.cpp'
+    'parser.cpp'
 )
 
 sqlite3 = dependency('sqlite3')
 
 subdir('ast')
 obelisk_sources += obelisk_ast_sources
-
-subdir('models')
-obelisk_sources += obelisk_model_sources
 
 r = run_command('llvm-config', '--cppflags', check : true)
 cpp_args = ' ' + r.stdout().replace('\n', ' ').replace('-I', '-isystem')
@@ -28,7 +19,7 @@ link_args = ' ' + r.stdout().replace('\n', ' ')
 
 executable('obelisk',
     obelisk_sources,
-    dependencies : [sqlite3],
+    dependencies : [libobelisk, sqlite3],
     cpp_args : cpp_args.split(),
     link_args : link_args.split(),
     install : true

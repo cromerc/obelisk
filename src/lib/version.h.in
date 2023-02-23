@@ -1,0 +1,21 @@
+#ifndef OBELISK_VERSION_H
+#define OBELISK_VERSION_H
+
+namespace obelisk
+{
+    /**
+     * @brief The current version of obelisk.
+     *
+     */
+    const std::string version = "@version@";
+
+    /**
+     * @brief The current library version of obelisk.
+     *
+     */
+    // clang-format off
+    const int soVersion = @so_version@;
+    // clang-format on
+} // namespace obelisk
+
+#endif

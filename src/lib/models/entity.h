@@ -16,10 +16,11 @@ namespace obelisk
     {
         private:
             /**
-             * @brief The ID of the Entity.
+             * @brief The ID of the Entity in the KnowledgeBase.
              *
              */
             int id_;
+
             /**
              * @brief The name of the Entity.
              *
@@ -72,7 +73,7 @@ namespace obelisk
             }
 
             /**
-             * @brief Create the table in the knowledge base.
+             * @brief Create the table in the KnowledgeBase.
              *
              * @return const char* Returns the query used to create the table.
              */
@@ -107,20 +108,20 @@ namespace obelisk
             void setName(std::string name);
 
             /**
-             * @brief Select an Entity from the database based on the object's
-             * ID.
+             * @brief Select an Entity from the KnowledgeBase based on the
+             * object's name.
              *
              * @param[in] dbConnection The database connection to use.
              */
-            void selectEntity(sqlite3* dbConnection);
+            void selectByName(sqlite3* dbConnection);
 
             /**
-             * @brief Insert an Entity into the database based on the object's
-             * fields.
+             * @brief Insert an Entity into the KnowledgeBase based on the
+             * object's fields.
              *
              * @param[in] dbConnection The database connection to use.
              */
-            void insertEntity(sqlite3* dbConnection);
+            void insert(sqlite3* dbConnection);
     };
 } // namespace obelisk
 

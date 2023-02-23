@@ -1,7 +1,10 @@
+#ifndef OBELISK_MAIN_H
+#define OBELISK_MAIN_H
+
 #include <getopt.h>
 
 /**
- * @brief The obelisk namespace contains everything needed to compile obelisk.
+ * @brief The obelisk namespace contains everything needed to compile obelisk
  * code.
  *
  */
@@ -38,9 +41,13 @@ Options:
 
     /**
      * @brief This is the main loop for obelisk.
+     *
      * This loop handles lexing and parsing of obelisk source code.
      *
      * @return int Returns EXIT_SUCCESS or EXIT_FAILURE.
      */
-    int mainLoop(const std::vector<std::string> &sourceFiles, const std::string &kbFile);
+    int mainLoop(const std::vector<std::string> &sourceFiles,
+        const std::string &kbFile);
 } // namespace obelisk
+
+#endif

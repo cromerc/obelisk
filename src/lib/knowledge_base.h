@@ -1,8 +1,11 @@
 #ifndef OBELISK_KNOWLEDGE_BASE_H
 #define OBELISK_KNOWLEDGE_BASE_H
 
+#include "models/action.h"
 #include "models/entity.h"
 #include "models/fact.h"
+#include "models/rule.h"
+#include "models/suggest_action.h"
 #include "models/verb.h"
 
 #include <sqlite3.h>
@@ -23,7 +26,7 @@ namespace obelisk
     {
         private:
             /**
-             * @brief The filename of the opened knowledge base.
+             * @brief The filename of the opened KnowledgeBase.
              *
              */
             const char* filename_;
@@ -61,7 +64,7 @@ namespace obelisk
              *
              * @param[in] filename The name of the file to save the knowledge
              * base as.
-             * @param[in] flags The flags to open the knowledge base with.
+             * @param[in] flags The flags to open the KnowledgeBase with.
              */
             KnowledgeBase(const char* filename, int flags);
 
@@ -72,19 +75,20 @@ namespace obelisk
              * base as.
              */
             KnowledgeBase(const char* filename) :
-                KnowledgeBase(filename, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE)
+                KnowledgeBase(filename,
+                    SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE)
             {
             }
 
             /**
              * @brief Destroy the KnowledgeBase object.
              *
-             * This will close the opened knowledge base before destroying it.
+             * This will close the opened KnowledgeBase before destroying it.
              */
             ~KnowledgeBase();
 
             /**
-             * @brief Add entities to the knowledge base.
+             * @brief Add entities to the KnowledgeBase.
              *
              * @param[in,out] entities The entities to add. If the insert is
              * successful it will have a row ID, if not the ID will be 0.
@@ -92,7 +96,7 @@ namespace obelisk
             void addEntities(std::vector<obelisk::Entity>& entities);
 
             /**
-             * @brief Add verbs to the knowledge base.
+             * @brief Add verbs to the KnowledgeBase.
              *
              * @param[in,out] verbs The verbs to add. If the insert is
              * successful it will have a row ID, if not the ID will be 0.
@@ -100,7 +104,15 @@ namespace obelisk
             void addVerbs(std::vector<obelisk::Verb>& verbs);
 
             /**
-             * @brief Add facts to the database.
+             * @brief Add actions to the KnowledgeBase.
+             *
+             * @param[in,out] actions The actions to add. If the insert is
+             * successful it will have a row ID, if nto the ID will be 0.
+             */
+            void addActions(std::vector<obelisk::Action>& actions);
+
+            /**
+             * @brief Add facts to the KnowledgeBase.
              *
              * @param[in,out] facts The facts to add. If the insert is
              * successful it will have a row ID, if not the ID will be 0.
@@ -108,7 +120,25 @@ namespace obelisk
             void addFacts(std::vector<obelisk::Fact>& facts);
 
             /**
-             * @brief Get an entity object based on the ID it contains.
+             * @brief Add suggested actions to the KnowledgeBase.
+             *
+             * @param[in,out] suggestActions The suggested actions to add. If
+             * the insert is successful it will have a row ID, if not the ID
+             * will be 0.
+             */
+            void addSuggestActions(
+                std::vector<obelisk::SuggestAction>& suggestActions);
+
+            /**
+             * @brief Add rules to the KnowledgeBase.
+             *
+             * @param[in,out] rules The rules to add. If the insert is
+             * successful it will have a row ID, if not the ID will be 0.
+             */
+            void addRules(std::vector<obelisk::Rule>& rules);
+
+            /**
+             * @brief Get an Entity object based on the ID it contains.
              *
              * @param[in,out] entity The Entity object should contain just the
              * ID and the rest will be filled in.
@@ -116,7 +146,7 @@ namespace obelisk
             void getEntity(obelisk::Entity& entity);
 
             /**
-             * @brief Get a verb object based on the ID it contains.
+             * @brief Get a Verb object based on the ID it contains.
              *
              * @param[in,out] verb The Verb object should contain just the ID
              * and the rest will be filled in.
@@ -124,20 +154,76 @@ namespace obelisk
             void getVerb(obelisk::Verb& verb);
 
             /**
-             * @brief Get a fact object based on the ID it contains.
+             * @brief Get an Action based on the ID it contains.
              *
-             * @param[in,out] fact The fact object should contain just the ID
+             * @param[in] action The Action object should contain just the ID
+             * and the rest will be filled in.
+             */
+            void getAction(obelisk::Action& action);
+
+            /**
+             * @brief Get a Fact object based on the ID it contains.
+             *
+             * @param[in,out] fact The Fact object should contain just the ID
              * and the rest will be filled in.
              */
             void getFact(obelisk::Fact& fact);
 
             /**
+             * @brief Get a SuggestAction based on the ID it contains.
+             *
+             * @param[in,out] suggestAction The SuggestAction object should
+             * contain just the ID and the rest will be filled in.
+             */
+            void getSuggestAction(obelisk::SuggestAction& suggestAction);
+
+            /**
+             * @brief Get a Rule based on the ID it contains.
+             *
+             * @param[in,out] rule The Rule object should  contain just the ID
+             * and the rest will be filled in.
+             */
+            void getRule(obelisk::Rule& rule);
+
+            /**
+             * @brief Check if a rule looks for this Fact, if so update its
+             * truth.
+             *
+             * @param[in,out] fact The Fact to check for existing rules.
+             */
+            void checkRule(obelisk::Fact& fact);
+
+            /**
+             * @brief Update the is true field in the KnowledgeBase.
+             *
+             * @param[in,out] fact The fact to update.
+             */
+            void updateIsTrue(obelisk::Fact& fact);
+
+            /**
+             * @brief Query the KnowledgeBase to see if a Fact is true or false.
+             *
+             * @param[in] fact The Fact to check.
+             */
+            void queryFact(obelisk::Fact& fact);
+
+            /**
+             * @brief Query the KnowledgeBase to get a suggested action based
+             * on a Fact.
+             * If a SuggestAction doesn't exist, it will return an empty Action.
+             *
+             * @param[in] fact The Fact to search for.
+             * @param[out] action The Action that is suggested to take.
+             */
+            void querySuggestAction(obelisk::Fact& fact,
+                obelisk::Action& action);
+
+            /**
              * @brief Take a float and divide it into 2 floats.
              *
              * This is useful to store doubles in SQLite since SQLite doesn't
-             * have a double type.
-             * Instead just store the 2 floats in the database. Then after
-             * selecting them combine them.
+             * have a double type. Instead just store the 2 floats in the
+             * database. Then after selecting them combine them.
              *
              * @param[out] result1 The first float generated from the double.
              * @param[out] result2 The second float generated from the double.

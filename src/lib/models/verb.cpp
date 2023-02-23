@@ -1,18 +1,20 @@
-#include "models/entity.h"
 #include "models/error.h"
+#include "models/verb.h"
 
-const char* obelisk::Entity::createTable()
+#include <iostream>
+
+const char* obelisk::Verb::createTable()
 {
     return R"(
-        CREATE TABLE "entity" (
+        CREATE TABLE "verb" (
             "id"   INTEGER NOT NULL UNIQUE,
-            "name" TEXT NOT NULL CHECK(trim(name) != '') UNIQUE,
+            "name" TEXT NOT NULL CHECK(trim(name) != "") UNIQUE,
             PRIMARY KEY("id" AUTOINCREMENT)
         );
     )";
 }
 
-void obelisk::Entity::selectEntity(sqlite3* dbConnection)
+void obelisk::Verb::selectByName(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)
     {
@@ -21,8 +23,11 @@ void obelisk::Entity::selectEntity(sqlite3* dbConnection)
 
     sqlite3_stmt* ppStmt = nullptr;
 
-    auto result = sqlite3_prepare_v2(dbConnection, "SELECT id, name FROM entity WHERE name=?", -1, &ppStmt, nullptr);
-
+    auto result = sqlite3_prepare_v2(dbConnection,
+        "SELECT id, name FROM verb WHERE name=?",
+        -1,
+        &ppStmt,
+        nullptr);
     if (result != SQLITE_OK)
     {
         throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -69,14 +74,13 @@ void obelisk::Entity::selectEntity(sqlite3* dbConnection)
     }
 
     result = sqlite3_finalize(ppStmt);
-
     if (result != SQLITE_OK)
     {
         throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
     }
 }
 
-void obelisk::Entity::insertEntity(sqlite3* dbConnection)
+void obelisk::Verb::insert(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)
     {
@@ -85,13 +89,18 @@ void obelisk::Entity::insertEntity(sqlite3* dbConnection)
 
     sqlite3_stmt* ppStmt = nullptr;
 
-    auto result = sqlite3_prepare_v2(dbConnection, "INSERT INTO entity (name) VALUES (?)", -1, &ppStmt, nullptr);
+    auto result = sqlite3_prepare_v2(dbConnection,
+        "INSERT INTO verb (name) VALUES (?)",
+        -1,
+        &ppStmt,
+        nullptr);
     if (result != SQLITE_OK)
     {
         throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
     }
 
-    result = sqlite3_bind_text(ppStmt, 1, getName().c_str(), -1, SQLITE_TRANSIENT);
+    result
+        = sqlite3_bind_text(ppStmt, 1, getName().c_str(), -1, SQLITE_TRANSIENT);
     switch (result)
     {
         case SQLITE_OK :
@@ -118,7 +127,8 @@ void obelisk::Entity::insertEntity(sqlite3* dbConnection)
             sqlite3_set_last_insert_rowid(dbConnection, 0);
             break;
         case SQLITE_CONSTRAINT :
-            throw obelisk::DatabaseConstraintException(sqlite3_errmsg(dbConnection));
+            throw obelisk::DatabaseConstraintException(
+                sqlite3_errmsg(dbConnection));
         case SQLITE_BUSY :
             throw obelisk::DatabaseBusyException();
             break;
@@ -137,22 +147,22 @@ void obelisk::Entity::insertEntity(sqlite3* dbConnection)
     }
 }
 
-int& obelisk::Entity::getId()
+int& obelisk::Verb::getId()
 {
     return id_;
 }
 
-void obelisk::Entity::setId(int id)
+void obelisk::Verb::setId(int id)
 {
     id_ = id;
 }
 
-std::string& obelisk::Entity::getName()
+std::string& obelisk::Verb::getName()
 {
     return name_;
 }
 
-void obelisk::Entity::setName(std::string name)
+void obelisk::Verb::setName(std::string name)
 {
     name_ = name;
 }

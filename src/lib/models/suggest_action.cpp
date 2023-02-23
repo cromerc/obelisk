@@ -1,25 +1,24 @@
 #include "models/error.h"
-#include "models/fact.h"
+#include "models/suggest_action.h"
 
-const char* obelisk::Fact::createTable()
+const char* obelisk::SuggestAction::createTable()
 {
     return R"(
-        CREATE TABLE "fact" (
+        CREATE TABLE "suggest_action" (
             "id"           INTEGER NOT NULL UNIQUE,
-            "left_entity"  INTEGER NOT NULL,
-            "verb"         INTEGER NOT NULL,
-            "right_entity" INTEGER NOT NULL,
-            "is_true"      INTEGER NOT NULL DEFAULT 0,
+            "fact"         INTEGER NOT NULL,
+            "true_action"  INTEGER NOT NULL,
+            "false_action" INTEGER NOT NULL,
             PRIMARY KEY("id" AUTOINCREMENT),
-            UNIQUE("left_entity", "right_entity", "verb")
-            FOREIGN KEY("verb") REFERENCES "verb"("id") ON DELETE RESTRICT,
-            FOREIGN KEY("right_entity") REFERENCES "entity"("id") ON DELETE RESTRICT,
-            FOREIGN KEY("left_entity") REFERENCES "entity"("id") ON DELETE RESTRICT
+            UNIQUE("fact", "true_action", "false_action"),
+            FOREIGN KEY("fact") REFERENCES "fact"("id") ON DELETE RESTRICT,
+            FOREIGN KEY("true_action") REFERENCES "action"("id") ON DELETE RESTRICT,
+            FOREIGN KEY("false_action") REFERENCES "action"("id") ON DELETE RESTRICT
         );
     )";
 }
 
-void obelisk::Fact::selectFact(sqlite3* dbConnection)
+void obelisk::SuggestAction::selectById(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)
     {
@@ -29,7 +28,7 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
     sqlite3_stmt* ppStmt = nullptr;
 
     auto result = sqlite3_prepare_v2(dbConnection,
-        "SELECT id, left_entity, right_entity, verb FROM fact WHERE (left_entity=? AND right_entity=? AND verb=?)",
+        "SELECT id, fact, true_action, false_action FROM suggest_action WHERE (fact=? AND true_action=? AND false_action=?)",
         -1,
         &ppStmt,
         nullptr);
@@ -38,7 +37,7 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
         throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
     }
 
-    result = sqlite3_bind_int(ppStmt, 1, getLeftEntity().getId());
+    result = sqlite3_bind_int(ppStmt, 1, getFact().getId());
     switch (result)
     {
         case SQLITE_OK :
@@ -57,7 +56,7 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
             break;
     }
 
-    result = sqlite3_bind_int(ppStmt, 2, getRightEntity().getId());
+    result = sqlite3_bind_int(ppStmt, 2, getTrueAction().getId());
     switch (result)
     {
         case SQLITE_OK :
@@ -76,7 +75,7 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
             break;
     }
 
-    result = sqlite3_bind_int(ppStmt, 3, getVerb().getId());
+    result = sqlite3_bind_int(ppStmt, 3, getFalseAction().getId());
     switch (result)
     {
         case SQLITE_OK :
@@ -103,9 +102,9 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
             break;
         case SQLITE_ROW :
             setId(sqlite3_column_int(ppStmt, 0));
-            getLeftEntity().setId(sqlite3_column_int(ppStmt, 1));
-            getRightEntity().setId(sqlite3_column_int(ppStmt, 2));
-            getVerb().setId(sqlite3_column_int(ppStmt, 3));
+            getFact().setId(sqlite3_column_int(ppStmt, 1));
+            getTrueAction().setId(sqlite3_column_int(ppStmt, 2));
+            getFalseAction().setId(sqlite3_column_int(ppStmt, 3));
             break;
         case SQLITE_BUSY :
             throw obelisk::DatabaseBusyException();
@@ -125,7 +124,7 @@ void obelisk::Fact::selectFact(sqlite3* dbConnection)
     }
 }
 
-void obelisk::Fact::insertFact(sqlite3* dbConnection)
+void obelisk::SuggestAction::insert(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)
     {
@@ -135,7 +134,7 @@ void obelisk::Fact::insertFact(sqlite3* dbConnection)
     sqlite3_stmt* ppStmt = nullptr;
 
     auto result = sqlite3_prepare_v2(dbConnection,
-        "INSERT INTO fact (left_entity, right_entity, verb) VALUES (?, ?, ?)",
+        "INSERT INTO suggest_action (fact, true_action, false_action) VALUES (?, ?, ?)",
         -1,
         &ppStmt,
         nullptr);
@@ -144,7 +143,7 @@ void obelisk::Fact::insertFact(sqlite3* dbConnection)
         throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
     }
 
-    result = sqlite3_bind_int(ppStmt, 1, getLeftEntity().getId());
+    result = sqlite3_bind_int(ppStmt, 1, getFact().getId());
     switch (result)
     {
         case SQLITE_OK :
@@ -163,7 +162,7 @@ void obelisk::Fact::insertFact(sqlite3* dbConnection)
             break;
     }
 
-    result = sqlite3_bind_int(ppStmt, 2, getRightEntity().getId());
+    result = sqlite3_bind_int(ppStmt, 2, getTrueAction().getId());
     switch (result)
     {
         case SQLITE_OK :
@@ -182,7 +181,7 @@ void obelisk::Fact::insertFact(sqlite3* dbConnection)
             break;
     }
 
-    result = sqlite3_bind_int(ppStmt, 3, getVerb().getId());
+    result = sqlite3_bind_int(ppStmt, 3, getFalseAction().getId());
     switch (result)
     {
         case SQLITE_OK :
@@ -209,7 +208,8 @@ void obelisk::Fact::insertFact(sqlite3* dbConnection)
             sqlite3_set_last_insert_rowid(dbConnection, 0);
             break;
         case SQLITE_CONSTRAINT :
-            throw obelisk::DatabaseConstraintException(sqlite3_errmsg(dbConnection));
+            throw obelisk::DatabaseConstraintException(
+                sqlite3_errmsg(dbConnection));
         case SQLITE_BUSY :
             throw obelisk::DatabaseBusyException();
             break;
@@ -228,42 +228,42 @@ void obelisk::Fact::insertFact(sqlite3* dbConnection)
     }
 }
 
-int& obelisk::Fact::getId()
+int& obelisk::SuggestAction::getId()
 {
     return id_;
 }
 
-void obelisk::Fact::setId(int id)
+void obelisk::SuggestAction::setId(int id)
 {
     id_ = id;
 }
 
-obelisk::Entity& obelisk::Fact::getLeftEntity()
+obelisk::Fact& obelisk::SuggestAction::getFact()
 {
-    return leftEntity_;
+    return fact_;
 }
 
-void obelisk::Fact::setLeftEntity(obelisk::Entity leftEntity)
+void obelisk::SuggestAction::setFact(obelisk::Fact fact)
 {
-    leftEntity_ = leftEntity;
+    fact_ = fact;
 }
 
-obelisk::Entity& obelisk::Fact::getRightEntity()
+obelisk::Action& obelisk::SuggestAction::getTrueAction()
 {
-    return rightEntity_;
+    return trueAction_;
 }
 
-void obelisk::Fact::setRightEntity(obelisk::Entity rightEntity)
+void obelisk::SuggestAction::setTrueAction(obelisk::Action trueAction)
 {
-    rightEntity_ = rightEntity;
+    trueAction_ = trueAction;
 }
 
-obelisk::Verb& obelisk::Fact::getVerb()
+obelisk::Action& obelisk::SuggestAction::getFalseAction()
 {
-    return verb_;
+    return falseAction_;
 }
 
-void obelisk::Fact::setVerb(obelisk::Verb verb)
+void obelisk::SuggestAction::setFalseAction(obelisk::Action falseAction)
 {
-    verb_ = verb;
+    falseAction_ = falseAction;
 }
