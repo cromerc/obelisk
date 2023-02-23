@@ -30,9 +30,18 @@ double obelisk::Obelisk::query(const std::string& leftEntity,
     return fact.getIsTrue();
 }
 
-std::string obelisk::Obelisk::query_action(const std::string& leftEntity,
+std::string obelisk::Obelisk::queryAction(const std::string& leftEntity,
     const std::string& verb,
     const std::string& rightEntity)
 {
-    return "yes";
+    obelisk::Fact fact = obelisk::Fact(obelisk::Entity(leftEntity),
+        obelisk::Entity(rightEntity),
+        obelisk::Verb(verb));
+
+    kb_->queryFact(fact);
+
+    obelisk::Action action;
+    kb_->querySuggestAction(fact, action);
+
+    return action.getName();
 }

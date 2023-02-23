@@ -276,6 +276,72 @@ void obelisk::Fact::selectByName(sqlite3* dbConnection)
     }
 }
 
+void obelisk::Fact::selectActionByFact(sqlite3* dbConnection,
+    obelisk::Action& action)
+{
+    if (dbConnection == nullptr)
+    {
+        throw obelisk::DatabaseException("database isn't open");
+    }
+
+    sqlite3_stmt* ppStmt = nullptr;
+
+    auto result = sqlite3_prepare_v2(dbConnection,
+        "SELECT CASE f.is_true WHEN 0 THEN (SELECT name FROM action WHERE id = fa.id) WHEN 1 THEN (SELECT name from action WHERE id = ta.id) END action FROM suggest_action LEFT JOIN action ta ON ta.id = suggest_action.true_action LEFT JOIN action fa ON fa.id = suggest_action.false_action LEFT JOIN fact f ON f.id = suggest_action.fact WHERE (f.id = ?)",
+        -1,
+        &ppStmt,
+        nullptr);
+    if (result != SQLITE_OK)
+    {
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+    }
+
+    result = sqlite3_bind_int(ppStmt, 1, getId());
+    switch (result)
+    {
+        case SQLITE_OK :
+            break;
+        case SQLITE_TOOBIG :
+            throw obelisk::DatabaseSizeException();
+            break;
+        case SQLITE_RANGE :
+            throw obelisk::DatabaseRangeException();
+            break;
+        case SQLITE_NOMEM :
+            throw obelisk::DatabaseMemoryException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_step(ppStmt);
+    switch (result)
+    {
+        case SQLITE_DONE :
+            // no rows in the database
+            break;
+        case SQLITE_ROW :
+            action.setName((char*) sqlite3_column_text(ppStmt, 0));
+            break;
+        case SQLITE_BUSY :
+            throw obelisk::DatabaseBusyException();
+            break;
+        case SQLITE_MISUSE :
+            throw obelisk::DatabaseMisuseException();
+            break;
+        default :
+            throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+            break;
+    }
+
+    result = sqlite3_finalize(ppStmt);
+    if (result != SQLITE_OK)
+    {
+        throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
+    }
+}
+
 void obelisk::Fact::insert(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)

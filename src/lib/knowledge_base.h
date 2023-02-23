@@ -200,7 +200,23 @@ namespace obelisk
              */
             void updateIsTrue(obelisk::Fact& fact);
 
+            /**
+             * @brief Query the KnowledgeBase to see if a Fact is true or false.
+             *
+             * @param[in] fact The Fact to check.
+             */
             void queryFact(obelisk::Fact& fact);
+
+            /**
+             * @brief Query the KnowledgeBase to get a suggested action based
+             * on a Fact.
+             * If a SuggestAction doesn't exist, it will return an empty Action.
+             *
+             * @param[in] fact The Fact to search for.
+             * @param[out] action The Action that is suggested to take.
+             */
+            void querySuggestAction(obelisk::Fact& fact,
+                obelisk::Action& action);
 
             /**
              * @brief Take a float and divide it into 2 floats.

@@ -264,6 +264,12 @@ void obelisk::KnowledgeBase::queryFact(obelisk::Fact& fact)
     fact.selectByName(dbConnection_);
 }
 
+void obelisk::KnowledgeBase::querySuggestAction(obelisk::Fact& fact,
+    obelisk::Action& action)
+{
+    fact.selectActionByFact(dbConnection_, action);
+}
+
 void obelisk::KnowledgeBase::getFloat(float& result1,
     float& result2,
     double var)

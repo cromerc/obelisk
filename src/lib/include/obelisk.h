@@ -73,7 +73,7 @@ namespace obelisk
              * @param[in] rightEntity The right entity.
              * @return std::string Returns the suggested action.
              */
-            std::string query_action(const std::string& leftEntity,
+            std::string queryAction(const std::string& leftEntity,
                 const std::string& verb,
                 const std::string& rightEntity);
     };

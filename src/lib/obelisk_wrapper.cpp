@@ -38,6 +38,20 @@ extern "C"
             std::string(right_entity));
     }
 
+    char* call_obelisk_queryAction(CObelisk* p_obelisk,
+        const char* left_entity,
+        const char* verb,
+        const char* right_entity)
+    {
+        obelisk::Obelisk* obelisk
+            = reinterpret_cast<obelisk::Obelisk*>(p_obelisk);
+        auto temp   = obelisk->queryAction(std::string(left_entity),
+            std::string(verb),
+            std::string(right_entity));
+        auto action = strdup(temp.c_str());
+        return action;
+    }
+
     void destroy_obelisk(CObelisk* p_obelisk)
     {
         obelisk::Obelisk* obelisk

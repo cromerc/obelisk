@@ -31,3 +31,11 @@ double obelisk_query(CObelisk* obelisk,
 {
     return call_obelisk_query(obelisk, left_entity, verb, right_entity);
 }
+
+char* obelisk_query_action(CObelisk* obelisk,
+    const char* left_entity,
+    const char* verb,
+    const char* right_entity)
+{
+    return call_obelisk_queryAction(obelisk, left_entity, verb, right_entity);
+}

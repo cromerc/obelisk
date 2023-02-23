@@ -1,6 +1,7 @@
 #ifndef OBELISK_MODELS_FACT_H
 #define OBELISK_MODELS_FACT_H
 
+#include "models/action.h"
 #include "models/entity.h"
 #include "models/fact.h"
 #include "models/verb.h"
@@ -215,6 +216,16 @@ namespace obelisk
              * @param[in] dbConnection The database connection to use.
              */
             void selectByName(sqlite3* dbConnection);
+
+            /**
+             * @brief Select an Action from the KnowledgeBase using the provided
+             * Fact.
+             *
+             * @param[in] dbConnection The database connection to use.
+             * @param[out] action The Action to take based on the provided fact.
+             */
+            void selectActionByFact(sqlite3* dbConnection,
+                obelisk::Action& action);
 
             /**
              * @brief Insert the Fact into the KnowledgeBase.

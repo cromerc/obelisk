@@ -20,7 +20,7 @@ extern "C"
      * @brief Calls the obelisk method getVersion.
      *
      * @param[in] p_obelisk The obelisk object pointer.
-     * @return const char* Returns the version. This must be freed by the
+     * @return char* Returns the version. This must be freed by the
      * caller.
      */
     char *call_obelisk_getVersion(CObelisk *p_obelisk);
@@ -43,6 +43,21 @@ extern "C"
      * @return double Returns whether or not the Fact is true.
      */
     double call_obelisk_query(CObelisk *p_obelisk,
+        const char *left_entity,
+        const char *verb,
+        const char *right_entity);
+
+    /**
+     * @brief Calls the obelisk method queryAction.
+     *
+     * @param[in] p_obelisk The obelisk object pointer.
+     * @param[in] left_entity The left entity.
+     * @param[in] verb The verb.
+     * @param[in] right_entity The right entity.
+     * @return char* Returns the sugggested action to take or an empty string if
+     * no action is found. This must be freed by the caller.
+     */
+    char *call_obelisk_queryAction(CObelisk *p_obelisk,
         const char *left_entity,
         const char *verb,
         const char *right_entity);

@@ -51,6 +51,21 @@ extern "C"
         const char* right_entity);
 
     /**
+     * @brief Query the obelisk KnowledgeBase to get a suggested Action to do.
+     *
+     * @param[in] obelisk The obelisk object.
+     * @param[in] left_entity The left entity.
+     * @param[in] verb The verb.
+     * @param[in] right_entity The right entity.
+     * @return char* Returns the Action to do or an empty string if there is no
+     * action.
+     */
+    extern char* obelisk_query_action(CObelisk* obelisk,
+        const char* left_entity,
+        const char* verb,
+        const char* right_entity);
+
+    /**
      * @brief Get the obelisk library so version.
      *
      * @param[in] obelisk The obelisk object.
