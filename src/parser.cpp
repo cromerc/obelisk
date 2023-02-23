@@ -542,7 +542,7 @@ void obelisk::Parser::parseRule(obelisk::Rule& rule)
 
                 if (rightEntity == "")
                 {
-                    throw obelisk::ParserException("missing left entity");
+                    throw obelisk::ParserException("missing right entity");
                 }
 
                 if (verb == "")
