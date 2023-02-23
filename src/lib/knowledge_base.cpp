@@ -1,11 +1,5 @@
 #include "knowledge_base.h"
-#include "models/action.h"
-#include "models/entity.h"
 #include "models/error.h"
-#include "models/fact.h"
-#include "models/rule.h"
-#include "models/suggest_action.h"
-#include "models/verb.h"
 
 #include <cstring>
 #include <filesystem>
@@ -23,7 +17,7 @@ obelisk::KnowledgeBase::KnowledgeBase(const char* filename, int flags)
     auto result = sqlite3_open_v2(filename, &dbConnection_, flags, NULL);
     if (result != SQLITE_OK)
     {
-        logSqliteError(result);
+        throw new KnowledgeBaseException("database could not be opened");
     }
 
     enableForeignKeys();
@@ -47,12 +41,6 @@ obelisk::KnowledgeBase::~KnowledgeBase()
     }
 }
 
-/**
- * @brief Enable foreign key functionality in the open database.
- *
- * This must always be done when the connection is opened or it will not
- * enforce the foreign key constraints.
- */
 void obelisk::KnowledgeBase::enableForeignKeys()
 {
     char* errmsg;
@@ -63,7 +51,6 @@ void obelisk::KnowledgeBase::enableForeignKeys()
         &errmsg);
     if (result != SQLITE_OK)
     {
-        logSqliteError(result);
         if (errmsg)
         {
             throw obelisk::KnowledgeBaseException(errmsg);
@@ -81,7 +68,6 @@ void obelisk::KnowledgeBase::createTable(std::function<const char*()> function)
     int result = sqlite3_exec(dbConnection_, function(), NULL, NULL, &errmsg);
     if (result != SQLITE_OK)
     {
-        logSqliteError(result);
         if (errmsg)
         {
             throw obelisk::KnowledgeBaseException(errmsg);
@@ -99,9 +85,9 @@ void obelisk::KnowledgeBase::addEntities(std::vector<obelisk::Entity>& entities)
     {
         try
         {
-            entity.insertEntity(dbConnection_);
+            entity.insert(dbConnection_);
         }
-        catch (obelisk::DatabaseException::ConstraintException& exception)
+        catch (obelisk::DatabaseConstraintException& exception)
         {
             // ignore unique constraint error
             if (std::strcmp(exception.what(),
@@ -120,13 +106,34 @@ void obelisk::KnowledgeBase::addVerbs(std::vector<obelisk::Verb>& verbs)
     {
         try
         {
-            verb.insertVerb(dbConnection_);
+            verb.insert(dbConnection_);
         }
-        catch (obelisk::DatabaseException::ConstraintException& exception)
+        catch (obelisk::DatabaseConstraintException& exception)
         {
             // ignore unique constraint error
             if (std::strcmp(exception.what(),
                     "UNIQUE constraint failed: verb.name")
+                != 0)
+            {
+                throw;
+            }
+        }
+    }
+}
+
+void obelisk::KnowledgeBase::addActions(std::vector<obelisk::Action>& actions)
+{
+    for (auto& action : actions)
+    {
+        try
+        {
+            action.insert(dbConnection_);
+        }
+        catch (obelisk::DatabaseConstraintException& exception)
+        {
+            // ignore unique constraint error
+            if (std::strcmp(exception.what(),
+                    "UNIQUE constraint failed: action.name")
                 != 0)
             {
                 throw;
@@ -141,9 +148,9 @@ void obelisk::KnowledgeBase::addFacts(std::vector<obelisk::Fact>& facts)
     {
         try
         {
-            fact.insertFact(dbConnection_);
+            fact.insert(dbConnection_);
         }
-        catch (obelisk::DatabaseException::ConstraintException& exception)
+        catch (obelisk::DatabaseConstraintException& exception)
         {
             // ignore unique constraint error
             if (std::strcmp(exception.what(),
@@ -156,25 +163,111 @@ void obelisk::KnowledgeBase::addFacts(std::vector<obelisk::Fact>& facts)
     }
 }
 
+void obelisk::KnowledgeBase::addSuggestActions(
+    std::vector<obelisk::SuggestAction>& suggestActions)
+{
+    for (auto& suggestAction : suggestActions)
+    {
+        try
+        {
+            suggestAction.insert(dbConnection_);
+        }
+        catch (obelisk::DatabaseConstraintException& exception)
+        {
+            // ignore unique constraint error
+            if (std::strcmp(exception.what(),
+                    "UNIQUE constraint failed: suggest_action.fact, suggest_action.true_action, suggest_action.false_action")
+                != 0)
+            {
+                throw;
+            }
+        }
+    }
+}
+
+void obelisk::KnowledgeBase::addRules(std::vector<obelisk::Rule>& rules)
+{
+    for (auto& rule : rules)
+    {
+        try
+        {
+            rule.insert(dbConnection_);
+        }
+        catch (obelisk::DatabaseConstraintException& exception)
+        {
+            // ignore unique constraint error
+            if (std::strcmp(exception.what(),
+                    "UNIQUE constraint failed: rule.fact, rule.reason")
+                != 0)
+            {
+                throw;
+            }
+        }
+    }
+}
+
 void obelisk::KnowledgeBase::getEntity(obelisk::Entity& entity)
 {
-    entity.selectEntity(dbConnection_);
+    entity.selectByName(dbConnection_);
 }
 
 void obelisk::KnowledgeBase::getVerb(obelisk::Verb& verb)
 {
-    verb.selectVerb(dbConnection_);
+    verb.selectByName(dbConnection_);
+}
+
+void obelisk::KnowledgeBase::getAction(obelisk::Action& action)
+{
+    action.selectByName(dbConnection_);
 }
 
 void obelisk::KnowledgeBase::getFact(obelisk::Fact& fact)
 {
-    fact.selectFact(dbConnection_);
+    fact.selectById(dbConnection_);
 }
 
-// TODO: log files? or just throw an error?
-void obelisk::KnowledgeBase::logSqliteError(int result)
+void obelisk::KnowledgeBase::getSuggestAction(
+    obelisk::SuggestAction& suggestAction)
 {
-    std::cout << sqlite3_errstr(result) << std::endl;
+    suggestAction.selectById(dbConnection_);
+}
+
+void obelisk::KnowledgeBase::getRule(obelisk::Rule& rule)
+{
+    rule.selectById(dbConnection_);
+}
+
+void obelisk::KnowledgeBase::checkRule(obelisk::Fact& fact)
+{
+    std::vector<obelisk::Rule> rules;
+    obelisk::Rule::selectByReason(dbConnection_, fact.getId(), rules);
+    for (auto& rule : rules)
+    {
+        auto reason = rule.getReason();
+        getFact(reason);
+        if (reason.getIsTrue() > 0)
+        {
+            auto updateFact = rule.getFact();
+            updateFact.setIsTrue(1.0);
+            updateFact.updateIsTrue(dbConnection_);
+        }
+    }
+}
+
+void obelisk::KnowledgeBase::updateIsTrue(obelisk::Fact& fact)
+{
+    fact.updateIsTrue(dbConnection_);
+}
+
+void obelisk::KnowledgeBase::queryFact(obelisk::Fact& fact)
+{
+    fact.selectByName(dbConnection_);
+}
+
+void obelisk::KnowledgeBase::querySuggestAction(obelisk::Fact& fact,
+    obelisk::Action& action)
+{
+    fact.selectActionByFact(dbConnection_, action);
 }
 
 void obelisk::KnowledgeBase::getFloat(float& result1,

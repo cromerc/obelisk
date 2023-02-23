@@ -167,7 +167,7 @@ RawStringFormats:
       - PROTO
     CanonicalDelimiter: pb
 ReferenceAlignment: Left
-ReflowComments: false
+ReflowComments: true
 RemoveBracesLLVM: false
 SeparateDefinitionBlocks: Always
 ShortNamespaceLines: 0

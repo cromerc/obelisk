@@ -1,9 +1,6 @@
 #include "ast/call_expression_ast.h"
 #include "ast/number_expression_ast.h"
 #include "ast/variable_expression_ast.h"
-#include "models/entity.h"
-#include "models/fact.h"
-#include "models/verb.h"
 #include "parser.h"
 
 #include <memory>
@@ -11,14 +8,15 @@
 #include <string>
 #include <vector>
 
-obelisk::Parser::Parser()
-{
-    lexer_ = std::unique_ptr<obelisk::Lexer> {new obelisk::Lexer()};
-}
-
-std::unique_ptr<obelisk::Lexer>& obelisk::Parser::getLexer()
+std::shared_ptr<obelisk::Lexer> obelisk::Parser::getLexer()
 {
     return lexer_;
+}
+
+void obelisk::Parser::setLexer(std::shared_ptr<obelisk::Lexer> lexer)
+{
+    lexer_        = lexer;
+    currentToken_ = 0;
 }
 
 int obelisk::Parser::getNextToken()
@@ -222,18 +220,416 @@ std::unique_ptr<obelisk::PrototypeAST> obelisk::Parser::parseExtern()
     return parsePrototype();
 }
 
-//action("martin" is "dangerous" then "avoid" or "ignore");
-std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseAction()
+void obelisk::Parser::parseAction(obelisk::SuggestAction& suggestAction)
 {
+    std::stack<char> syntax;
+
+    getNextToken();
+    if (getCurrentToken() != '(')
+    {
+        throw obelisk::ParserException(
+            "expected '(' but got '" + std::to_string(getCurrentToken()) + "'");
+    }
+
+    syntax.push('(');
+
+    getNextToken();
+    if (getLexer()->getIdentifier() != "if")
+    {
+        throw obelisk::ParserException(
+            "expected 'if' but got '" + getLexer()->getIdentifier() + "'");
+    }
+
+    bool getEntity {true};
+    std::string leftEntity {""};
+    std::string rightEntity {""};
+    std::string trueAction {""};
+    std::string falseAction {""};
+    std::string entityName {""};
+    std::string verb {""};
+    getNextToken();
+
+    // get the entity side of statement
+    while (true)
+    {
+        if (getEntity)
+        {
+            if (getCurrentToken() == '"')
+            {
+                if (syntax.top() != '"')
+                {
+                    // open a double quote
+                    syntax.push('"');
+                    getNextToken();
+                }
+                else if (syntax.top() == '"')
+                {
+                    // close a double quote
+                    syntax.pop();
+                    if (verb == "")
+                    {
+                        leftEntity = std::move(entityName);
+                    }
+                    else
+                    {
+                        rightEntity = std::move(entityName);
+                    }
+                    getEntity = false;
+                    getNextToken();
+                    continue;
+                }
+            }
+
+            if (syntax.top() == '"')
+            {
+                if (entityName != "")
+                {
+                    entityName += " ";
+                }
+                entityName += getLexer()->getIdentifier();
+            }
+            getNextToken();
+        }
+        else
+        {
+            if (getCurrentToken() == ')')
+            {
+                throw obelisk::ParserException("unexpected ')'");
+            }
+
+            if (getCurrentToken() == '"')
+            {
+                throw obelisk::ParserException("unexpected '\"'");
+            }
+
+            if (getLexer()->getIdentifier() == "then")
+            {
+                break;
+            }
+            else
+            {
+                verb = getLexer()->getIdentifier();
+                for (const auto& letter : verb)
+                {
+                    if (!isalpha(letter))
+                    {
+                        throw new obelisk::ParserException(
+                            "non alphabetic symbol in verb");
+                    }
+                }
+                getEntity = true;
+                continue;
+            }
+        }
+    }
+
+    // get the action side of statement
+    bool getAction {true};
+    while (true)
+    {
+        if (getAction)
+        {
+            if (getCurrentToken() == '"')
+            {
+                if (syntax.top() != '"')
+                {
+                    // open a double quote
+                    syntax.push('"');
+                    getNextToken();
+                }
+                else if (syntax.top() == '"')
+                {
+                    // close a double quote
+                    syntax.pop();
+                    if (trueAction == "")
+                    {
+                        trueAction = std::move(entityName);
+                    }
+                    else
+                    {
+                        falseAction = std::move(entityName);
+                    }
+                    getAction = false;
+                    getNextToken();
+                    continue;
+                }
+            }
+
+            if (syntax.top() == '"')
+            {
+                if (entityName != "")
+                {
+                    entityName += " ";
+                }
+                entityName += getLexer()->getIdentifier();
+            }
+            getNextToken();
+        }
+        else
+        {
+            if (getCurrentToken() == ')')
+            {
+                // closing parenthesis found, make sure we have everything
+                // needed
+                if (syntax.top() != '(')
+                {
+                    throw obelisk::ParserException("unexpected ')'");
+                }
+                else
+                {
+                    syntax.pop();
+                }
+
+                if (leftEntity == "")
+                {
+                    throw obelisk::ParserException("missing left entity");
+                }
+
+                if (rightEntity == "")
+                {
+                    throw obelisk::ParserException("missing left entity");
+                }
+
+                if (verb == "")
+                {
+                    throw obelisk::ParserException("missing verb");
+                }
+
+                if (trueAction == "")
+                {
+                    throw obelisk::ParserException("missing true action");
+                }
+
+                if (falseAction == "")
+                {
+                    throw obelisk::ParserException("missing false action");
+                }
+
+                getNextToken();
+                if (getCurrentToken() != ';')
+                {
+                    throw obelisk::ParserException("missing ';'");
+                }
+
+                break;
+            }
+
+            if (getCurrentToken() == '"')
+            {
+                throw obelisk::ParserException("unexpected '\"'");
+                break;
+            }
+
+            if (getLexer()->getIdentifier() == "else")
+            {
+                getNextToken();
+                getAction = true;
+                continue;
+            }
+            else
+            {
+                getAction = true;
+                continue;
+            }
+        }
+    }
+
+    suggestAction.setFact(obelisk::Fact(obelisk::Entity(leftEntity),
+        obelisk::Entity(rightEntity),
+        obelisk::Verb(verb)));
+    suggestAction.setTrueAction(obelisk::Action(trueAction));
+    suggestAction.setFalseAction(obelisk::Action(falseAction));
 }
 
-//rule("chris" and "martin" is "happy" if "chris" plays "playstation");
-std::unique_ptr<obelisk::ExpressionAST> obelisk::Parser::parseRule()
+void obelisk::Parser::parseRule(obelisk::Rule& rule)
 {
+    std::stack<char> syntax;
+
+    getNextToken();
+    if (getCurrentToken() != '(')
+    {
+        throw obelisk::ParserException(
+            "expected '(' but got '" + std::to_string(getCurrentToken()) + "'");
+    }
+
+    syntax.push('(');
+
+    bool getEntity {true};
+    bool getReason {false};
+    std::string leftEntity {""};
+    std::string rightEntity {""};
+    std::string verb {""};
+    std::string leftReasonEntity {""};
+    std::string rightReasonEntity {""};
+    std::string reasonVerb {""};
+    std::string entityName {""};
+    getNextToken();
+
+    // get the entity side of statement
+    while (true)
+    {
+        if (getEntity)
+        {
+            if (getCurrentToken() == '"')
+            {
+                if (syntax.top() != '"')
+                {
+                    // open a double quote
+                    syntax.push('"');
+                    getNextToken();
+                }
+                else if (syntax.top() == '"')
+                {
+                    // close a double quote
+                    syntax.pop();
+                    if (!getReason)
+                    {
+                        if (verb == "")
+                        {
+                            leftEntity = std::move(entityName);
+                        }
+                        else
+                        {
+                            rightEntity = std::move(entityName);
+                        }
+                    }
+                    else
+                    {
+                        if (reasonVerb == "")
+                        {
+                            leftReasonEntity = std::move(entityName);
+                        }
+                        else
+                        {
+                            rightReasonEntity = std::move(entityName);
+                        }
+                    }
+                    getEntity = false;
+                    getNextToken();
+                    continue;
+                }
+            }
+
+            if (syntax.top() == '"')
+            {
+                if (entityName != "")
+                {
+                    entityName += " ";
+                }
+                entityName += getLexer()->getIdentifier();
+            }
+            getNextToken();
+        }
+        else
+        {
+            if (getCurrentToken() == ')')
+            {
+                // closing parenthesis found, make sure we have everything
+                // needed
+                if (syntax.top() != '(')
+                {
+                    throw obelisk::ParserException("unexpected ')'");
+                }
+                else
+                {
+                    syntax.pop();
+                }
+
+                if (leftEntity == "")
+                {
+                    throw obelisk::ParserException("missing left entity");
+                }
+
+                if (rightEntity == "")
+                {
+                    throw obelisk::ParserException("missing right entity");
+                }
+
+                if (verb == "")
+                {
+                    throw obelisk::ParserException("missing verb");
+                }
+
+                if (leftReasonEntity == "")
+                {
+                    throw obelisk::ParserException(
+                        "missing left reason entity");
+                }
+
+                if (rightReasonEntity == "")
+                {
+                    throw obelisk::ParserException(
+                        "missing right reason entity");
+                }
+
+                if (reasonVerb == "")
+                {
+                    throw obelisk::ParserException("missing reason verb");
+                }
+
+                getNextToken();
+                if (getCurrentToken() != ';')
+                {
+                    throw obelisk::ParserException("missing ';'");
+                }
+
+                break;
+            }
+
+            if (getCurrentToken() == '"')
+            {
+                throw obelisk::ParserException("unexpected '\"'");
+            }
+
+            if (getLexer()->getIdentifier() == "if")
+            {
+                getReason = true;
+                getEntity = true;
+                getNextToken();
+                continue;
+            }
+            else
+            {
+                if (!getReason)
+                {
+                    verb = getLexer()->getIdentifier();
+                    for (const auto& letter : verb)
+                    {
+                        if (!isalpha(letter))
+                        {
+                            throw new obelisk::ParserException(
+                                "non alphabetic symbol in verb");
+                        }
+                    }
+                    getEntity = true;
+                    continue;
+                }
+                else
+                {
+                    reasonVerb = getLexer()->getIdentifier();
+                    for (const auto& letter : reasonVerb)
+                    {
+                        if (!isalpha(letter))
+                        {
+                            throw new obelisk::ParserException(
+                                "non alphabetic symbol in verb");
+                        }
+                    }
+                    getEntity = true;
+                    continue;
+                }
+            }
+        }
+    }
+
+    rule.setFact(obelisk::Fact(obelisk::Entity(leftEntity),
+        obelisk::Entity(rightEntity),
+        obelisk::Verb(verb)));
+    rule.setReason(obelisk::Fact(obelisk::Entity(leftReasonEntity),
+        obelisk::Entity(rightReasonEntity),
+        obelisk::Verb(reasonVerb)));
 }
 
-// fact("chris cromer" and "martin" and "Isabella" can "program" and "speak english");
-// fact("" and "martin")
 void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
 {
     std::stack<char> syntax;
@@ -247,15 +643,13 @@ void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
 
     syntax.push('(');
 
-    // ("
-
     bool getEntity {true};
     std::vector<std::string> leftEntities;
     std::vector<std::string> rightEntities;
     std::string entityName {""};
     std::string verb {""};
     getNextToken();
-    while (true) //left side of fact
+    while (true)
     {
         if (getEntity)
         {
@@ -300,7 +694,17 @@ void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
         {
             if (getCurrentToken() == ')')
             {
-                // closing parenthesis found, make sure we have everything needed
+                // closing parenthesis found, make sure we have everything
+                // needed
+                if (syntax.top() != '(')
+                {
+                    throw obelisk::ParserException("unexpected ')'");
+                }
+                else
+                {
+                    syntax.pop();
+                }
+
                 if (verb == "")
                 {
                     throw obelisk::ParserException("verb is empty");
@@ -317,13 +721,19 @@ void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
                     throw obelisk::ParserException(
                         "missing right side entities");
                 }
+
+                getNextToken();
+                if (getCurrentToken() != ';')
+                {
+                    throw obelisk::ParserException("missing ';'");
+                }
+
                 break;
             }
 
             if (getCurrentToken() == '"')
             {
                 throw obelisk::ParserException("unexpected '\"'");
-                break;
             }
 
             if (getLexer()->getIdentifier() == "and")
@@ -334,8 +744,15 @@ void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
             }
             else
             {
-                verb      = getLexer()->getIdentifier();
-                // TODO: make sure verb is alphabetic
+                verb = getLexer()->getIdentifier();
+                for (const auto& letter : verb)
+                {
+                    if (!isalpha(letter))
+                    {
+                        throw new obelisk::ParserException(
+                            "non alphabetic symbol in verb");
+                    }
+                }
                 getEntity = true;
                 continue;
             }
@@ -348,110 +765,240 @@ void obelisk::Parser::parseFact(std::vector<obelisk::Fact>& facts)
         {
             facts.push_back(obelisk::Fact(obelisk::Entity(leftEntity),
                 obelisk::Entity(rightEntity),
-                obelisk::Verb(verb)));
+                obelisk::Verb(verb),
+                true));
         }
     }
 }
 
 void obelisk::Parser::handleAction(std::unique_ptr<obelisk::KnowledgeBase>& kb)
 {
+    obelisk::SuggestAction suggestAction;
+
+    try
+    {
+        parseAction(suggestAction);
+        insertEntity(kb, suggestAction.getFact().getLeftEntity());
+        insertEntity(kb, suggestAction.getFact().getRightEntity());
+        insertVerb(kb, suggestAction.getFact().getVerb());
+        insertFact(kb, suggestAction.getFact());
+        insertAction(kb, suggestAction.getTrueAction());
+        insertAction(kb, suggestAction.getFalseAction());
+        insertSuggestAction(kb, suggestAction);
+    }
+    catch (obelisk::ParserException& exception)
+    {
+        throw;
+    }
 }
 
 void obelisk::Parser::handleRule(std::unique_ptr<obelisk::KnowledgeBase>& kb)
 {
+    obelisk::Rule rule;
+
+    try
+    {
+        parseRule(rule);
+
+        insertEntity(kb, rule.getReason().getLeftEntity());
+        insertEntity(kb, rule.getReason().getRightEntity());
+        insertVerb(kb, rule.getReason().getVerb());
+        insertFact(kb, rule.getReason());
+
+        // The rule is true, so the fact must be true to.
+        if (rule.getReason().getIsTrue() > 0)
+        {
+            rule.getFact().setIsTrue(1.0);
+        }
+
+        insertEntity(kb, rule.getFact().getLeftEntity());
+        insertEntity(kb, rule.getFact().getRightEntity());
+        insertVerb(kb, rule.getFact().getVerb());
+        insertFact(kb, rule.getFact());
+
+        insertRule(kb, rule);
+    }
+    catch (obelisk::ParserException& exception)
+    {
+        throw;
+    }
 }
 
 void obelisk::Parser::handleFact(std::unique_ptr<obelisk::KnowledgeBase>& kb)
 {
     std::vector<obelisk::Fact> facts;
-    parseFact(facts);
+    try
+    {
+        parseFact(facts);
+    }
+    catch (obelisk::ParserException& exception)
+    {
+        throw;
+    }
 
     int verbId = 0;
     for (auto& fact : facts)
     {
-        std::vector<obelisk::Entity> entities {fact.getLeftEntity()};
-        kb->addEntities(entities);
-        fact.setLeftEntity(entities.front());
-
-        // the id was not inserted, so check if it exists in the database
-        if (fact.getLeftEntity().getId() == 0)
+        try
         {
-            obelisk::Entity entity = fact.getLeftEntity();
-            kb->getEntity(entity);
-            if (entity.getId() == 0)
-            {
-                throw obelisk::ParserException(
-                    "left entity could not be inserted into the database");
-            }
-            else
-            {
-                fact.setLeftEntity(entity);
-            }
+            insertEntity(kb, fact.getLeftEntity());
+            insertEntity(kb, fact.getRightEntity());
         }
-
-        entities = {fact.getRightEntity()};
-        kb->addEntities(entities);
-        fact.setRightEntity(entities.front());
-
-        if (fact.getRightEntity().getId() == 0)
+        catch (obelisk::ParserException& exception)
         {
-            obelisk::Entity entity = fact.getRightEntity();
-            kb->getEntity(entity);
-            if (entity.getId() == 0)
-            {
-                throw obelisk::ParserException(
-                    "right entity could not be inserted into the database");
-            }
-            else
-            {
-                fact.setRightEntity(entity);
-            }
+            throw;
         }
 
         if (verbId == 0)
         {
-            std::vector<obelisk::Verb> verbs = {fact.getVerb()};
-            kb->addVerbs(verbs);
-            if (verbs.front().getId() != 0)
+            try
             {
-                fact.setVerb(verbs.front());
-                verbId = fact.getVerb().getId();
+                insertVerb(kb, fact.getVerb());
             }
-            else
+            catch (obelisk::ParserException& exception)
             {
-                obelisk::Verb verb = fact.getVerb();
-                kb->getVerb(verb);
-                if (verb.getId() == 0)
-                {
-                    throw obelisk::ParserException(
-                        "verb could not be inserted into the database");
-                }
-                else
-                {
-                    fact.setVerb(verb);
-                    verbId = fact.getVerb().getId();
-                }
+                throw;
             }
+            verbId = fact.getVerb().getId();
         }
         else
         {
             fact.getVerb().setId(verbId);
         }
 
-        std::vector<obelisk::Fact> facts {fact};
-        kb->addFacts(facts);
-        fact = facts.front();
+        try
+        {
+            insertFact(kb, fact, true);
+        }
+        catch (obelisk::ParserException& exception)
+        {
+            throw;
+        }
 
+        kb->checkRule(fact);
+    }
+}
+
+void obelisk::Parser::insertEntity(std::unique_ptr<obelisk::KnowledgeBase>& kb,
+    obelisk::Entity& entity)
+{
+    std::vector<obelisk::Entity> entities {entity};
+    kb->addEntities(entities);
+    entity = std::move(entities.front());
+
+    // the id was not inserted, so check if it exists in the database
+    if (entity.getId() == 0)
+    {
+        kb->getEntity(entity);
+        if (entity.getId() == 0)
+        {
+            throw obelisk::ParserException(
+                "entity could not be inserted into the database");
+        }
+    }
+}
+
+void obelisk::Parser::insertVerb(std::unique_ptr<obelisk::KnowledgeBase>& kb,
+    obelisk::Verb& verb)
+{
+    std::vector<obelisk::Verb> verbs {verb};
+    kb->addVerbs(verbs);
+    verb = std::move(verbs.front());
+
+    // the id was not inserted, so check if it exists in the database
+    if (verb.getId() == 0)
+    {
+        kb->getVerb(verb);
+        if (verb.getId() == 0)
+        {
+            throw obelisk::ParserException(
+                "verb could not be inserted into the database");
+        }
+    }
+}
+
+void obelisk::Parser::insertAction(std::unique_ptr<obelisk::KnowledgeBase>& kb,
+    obelisk::Action& action)
+{
+    std::vector<obelisk::Action> actions {action};
+    kb->addActions(actions);
+    action = std::move(actions.front());
+
+    // the id was not inserted, so check if it exists in the database
+    if (action.getId() == 0)
+    {
+        kb->getAction(action);
+        if (action.getId() == 0)
+        {
+            throw obelisk::ParserException(
+                "action could not be inserted into the database");
+        }
+    }
+}
+
+void obelisk::Parser::insertFact(std::unique_ptr<obelisk::KnowledgeBase>& kb,
+    obelisk::Fact& fact,
+    bool updateIsTrue)
+{
+    std::vector<obelisk::Fact> facts {fact};
+    kb->addFacts(facts);
+    fact = std::move(facts.front());
+
+    // the id was not inserted, so check if it exists in the database
+    if (fact.getId() == 0)
+    {
+        kb->getFact(fact);
         if (fact.getId() == 0)
         {
-            kb->getFact(fact);
-            if (fact.getId() == 0)
+            throw obelisk::ParserException(
+                "fact could not be inserted into the database");
+        }
+        else
+        {
+            if (updateIsTrue)
             {
-                throw obelisk::ParserException(
-                    "fact could not be inserted into the database");
+                fact.setIsTrue(1.0);
+                kb->updateIsTrue(fact);
             }
         }
     }
 }
 
-// fact("chris cromer" and "martin" and "Isabella" can "program" and "speak english");
+void obelisk::Parser::insertSuggestAction(
+    std::unique_ptr<obelisk::KnowledgeBase>& kb,
+    obelisk::SuggestAction& suggestAction)
+{
+    std::vector<obelisk::SuggestAction> suggestActions {suggestAction};
+    kb->addSuggestActions(suggestActions);
+    suggestAction = std::move(suggestActions.front());
+
+    // the id was not inserted, so check if it exists in the database
+    if (suggestAction.getId() == 0)
+    {
+        kb->getSuggestAction(suggestAction);
+        if (suggestAction.getId() == 0)
+        {
+            throw obelisk::ParserException(
+                "suggest_action could not be inserted into the database");
+        }
+    }
+}
+
+void obelisk::Parser::insertRule(std::unique_ptr<obelisk::KnowledgeBase>& kb,
+    obelisk::Rule& rule)
+{
+    std::vector<obelisk::Rule> rules {rule};
+    kb->addRules(rules);
+    rule = std::move(rules.front());
+
+    // the id was not inserted, so check if it exists in the database
+    if (rule.getId() == 0)
+    {
+        kb->getRule(rule);
+        if (rule.getId() == 0)
+        {
+            throw obelisk::ParserException(
+                "rule could not be inserted into the database");
+        }
+    }
+}

@@ -1,20 +1,18 @@
+#include "models/action.h"
 #include "models/error.h"
-#include "models/verb.h"
 
-#include <iostream>
-
-const char* obelisk::Verb::createTable()
+const char* obelisk::Action::createTable()
 {
     return R"(
-        CREATE TABLE "verb" (
+        CREATE TABLE "action" (
             "id"   INTEGER NOT NULL UNIQUE,
-            "name" TEXT NOT NULL CHECK(trim(name) != "") UNIQUE,
+            "name" TEXT NOT NULL CHECK(trim(name) != '') UNIQUE,
             PRIMARY KEY("id" AUTOINCREMENT)
         );
     )";
 }
 
-void obelisk::Verb::selectVerb(sqlite3* dbConnection)
+void obelisk::Action::selectByName(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)
     {
@@ -24,10 +22,11 @@ void obelisk::Verb::selectVerb(sqlite3* dbConnection)
     sqlite3_stmt* ppStmt = nullptr;
 
     auto result = sqlite3_prepare_v2(dbConnection,
-        "SELECT id, name FROM verb WHERE name=?",
+        "SELECT id, name FROM action WHERE name=?",
         -1,
         &ppStmt,
         nullptr);
+
     if (result != SQLITE_OK)
     {
         throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -39,13 +38,13 @@ void obelisk::Verb::selectVerb(sqlite3* dbConnection)
         case SQLITE_OK :
             break;
         case SQLITE_TOOBIG :
-            throw obelisk::DatabaseException::SizeException();
+            throw obelisk::DatabaseSizeException();
             break;
         case SQLITE_RANGE :
-            throw obelisk::DatabaseException::RangeException();
+            throw obelisk::DatabaseRangeException();
             break;
         case SQLITE_NOMEM :
-            throw obelisk::DatabaseException::MemoryException();
+            throw obelisk::DatabaseMemoryException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -63,10 +62,10 @@ void obelisk::Verb::selectVerb(sqlite3* dbConnection)
             setName((char*) sqlite3_column_text(ppStmt, 1));
             break;
         case SQLITE_BUSY :
-            throw obelisk::DatabaseException::BusyException();
+            throw obelisk::DatabaseBusyException();
             break;
         case SQLITE_MISUSE :
-            throw obelisk::DatabaseException::MisuseException();
+            throw obelisk::DatabaseMisuseException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -74,13 +73,14 @@ void obelisk::Verb::selectVerb(sqlite3* dbConnection)
     }
 
     result = sqlite3_finalize(ppStmt);
+
     if (result != SQLITE_OK)
     {
         throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
     }
 }
 
-void obelisk::Verb::insertVerb(sqlite3* dbConnection)
+void obelisk::Action::insert(sqlite3* dbConnection)
 {
     if (dbConnection == nullptr)
     {
@@ -90,7 +90,7 @@ void obelisk::Verb::insertVerb(sqlite3* dbConnection)
     sqlite3_stmt* ppStmt = nullptr;
 
     auto result = sqlite3_prepare_v2(dbConnection,
-        "INSERT INTO verb (name) VALUES (?)",
+        "INSERT INTO action (name) VALUES (?)",
         -1,
         &ppStmt,
         nullptr);
@@ -106,13 +106,13 @@ void obelisk::Verb::insertVerb(sqlite3* dbConnection)
         case SQLITE_OK :
             break;
         case SQLITE_TOOBIG :
-            throw obelisk::DatabaseException::SizeException();
+            throw obelisk::DatabaseSizeException();
             break;
         case SQLITE_RANGE :
-            throw obelisk::DatabaseException::RangeException();
+            throw obelisk::DatabaseRangeException();
             break;
         case SQLITE_NOMEM :
-            throw obelisk::DatabaseException::MemoryException();
+            throw obelisk::DatabaseMemoryException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -127,13 +127,13 @@ void obelisk::Verb::insertVerb(sqlite3* dbConnection)
             sqlite3_set_last_insert_rowid(dbConnection, 0);
             break;
         case SQLITE_CONSTRAINT :
-            throw obelisk::DatabaseException::ConstraintException(
+            throw obelisk::DatabaseConstraintException(
                 sqlite3_errmsg(dbConnection));
         case SQLITE_BUSY :
-            throw obelisk::DatabaseException::BusyException();
+            throw obelisk::DatabaseBusyException();
             break;
         case SQLITE_MISUSE :
-            throw obelisk::DatabaseException::MisuseException();
+            throw obelisk::DatabaseMisuseException();
             break;
         default :
             throw obelisk::DatabaseException(sqlite3_errmsg(dbConnection));
@@ -147,22 +147,22 @@ void obelisk::Verb::insertVerb(sqlite3* dbConnection)
     }
 }
 
-int& obelisk::Verb::getId()
+int& obelisk::Action::getId()
 {
     return id_;
 }
 
-void obelisk::Verb::setId(int id)
+void obelisk::Action::setId(int id)
 {
     id_ = id;
 }
 
-std::string& obelisk::Verb::getName()
+std::string& obelisk::Action::getName()
 {
     return name_;
 }
 
-void obelisk::Verb::setName(std::string name)
+void obelisk::Action::setName(std::string name)
 {
     name_ = name;
 }
