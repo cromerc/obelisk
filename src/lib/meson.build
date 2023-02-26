@@ -16,14 +16,21 @@ obelisk_lib_sources = files(
 )
 
 obelisk_lib_sources += obelisk_model_sources
-
-sqlite3 = dependency('sqlite3')
+obelisk_lib_sources += sqlite_sources
 
 incdirs = include_directories(['.', 'include'])
-lib = library('obelisk',
+
+lib = static_library('obelisk',
     obelisk_lib_sources,
+    c_args : sqlite_args,
+    include_directories: [incdirs, sqlite_include_directories],
+    install : true
+)
+
+shared_library('obelisk',
+    obelisk_lib_sources,
+    c_args : sqlite_args,
     include_directories: incdirs,
-    dependencies : [sqlite3],
     version : meson.project_version(),
     soversion : project_version_lib,
     install : true
