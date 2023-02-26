@@ -30,4 +30,5 @@ if docs_enabled
     endif
 endif
 
+subdir('sqlite')
 subdir('src')

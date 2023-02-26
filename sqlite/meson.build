@@ -1,0 +1,20 @@
+sqlite_sources = files(
+    'sqlite3.c'
+)
+
+sqlite_include_directories = include_directories(['.'])
+
+sqlite_args = [
+    '-DSQLITE_OMIT_DESERIALIZE',
+    '-DSQLITE_OMIT_DEPRECATED',
+    '-DSQLITE_OMIT_JSON',
+    '-DSQLITE_OMIT_LOAD_EXTENSION',
+    '-DSQLITE_OMIT_PROGRESS_CALLBACK',
+    '-DSQLITE_DEFAULT_FOREIGN_KEYS=1',
+    '-DSQLITE_DEFAULT_AUTOVACUUM=1',
+    '-DSQLITE_DISABLE_LFS',
+    '-DSQLITE_OMIT_TEMPDB',
+    '-DSQLITE_OMIT_GET_TABLE',
+    '-DSQLITE_OMIT_COMPLETE',
+    '-DSQLITE_OMIT_COMPILEOPTION_DIAGS'
+]
