@@ -80,23 +80,27 @@ namespace obelisk
                  * @brief A fact which is a relationship between 2 entities.
                  *
                  */
-                kTokenFact   = -2,
+                kTokenFact = -2,
+
                 /**
                  * @brief A rule which is a relationship between a new fact a
                  * existing fact.
                  *
                  */
-                kTokenRule   = -3,
+                kTokenRule = -3,
+
                 /**
                  * @brief An action to take if a fact is true.
                  *
                  */
                 kTokenAction = -4,
+
                 /**
                  * @brief A definition of a new function.
                  *
                  */
-                kTokenDef    = -5,
+                kTokenDef = -5,
+
                 /**
                  * @brief An external function that will be linked to.
                  *
@@ -108,16 +112,18 @@ namespace obelisk
                  *
                  */
                 kTokenIdentifier = -7,
+
                 /**
                  * @brief A double floating point value.
                  *
                  */
-                kTokenNumber     = -8,
+                kTokenNumber = -8,
+
                 /**
                  * @brief A string.
                  *
                  */
-                kTokenString     = -9
+                kTokenString = -9
             };
 
             /**
