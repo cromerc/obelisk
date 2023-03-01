@@ -56,10 +56,10 @@ int obelisk::Lexer::getToken()
 
         if (getIdentifier() == "extern")
         {
-            return kTokenExtern;
+            return Token::kTokenExtern;
         }
 
-        return kTokenIdentifier;
+        return Token::kTokenIdentifier;
     }
 
     if (isdigit(lastChar))
