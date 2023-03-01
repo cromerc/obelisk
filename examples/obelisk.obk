@@ -1,0 +1,19 @@
+// an incomplete rule, this one stays false
+rule("chris" is "happy" if "chris" plays "playstation");
+
+// a rule that gets inserted as true right away
+fact("this" is "madness");
+rule("this" is "sparta" if "this" is "madness");
+
+// a rule that is inserted as false then updated at a later stage
+rule("bruce" is "batman" if "the waynes" are "dead");
+fact("the waynes" are "dead");
+
+// an action that will be false because the fact doesn't exist, should return ignore
+action(if "tom" is "dangerous" then "avoid" else "ignore");
+
+// an action that will be true, should return die
+action(if "this" is "sparta" then "die" else "live");
+
+fact("what" is "love");
+rule("baby" dont "hurt me" if "what" is "love");
