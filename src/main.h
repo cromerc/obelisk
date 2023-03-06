@@ -15,7 +15,7 @@ namespace obelisk
      *
      */
     std::string usageMessage = R"(Usage: obelisk [OPTION]... [FILE]...
-Compile the obelisk source FILE(s) into knoweldge base and library.
+Compile the obelisk source FILE(s) into knowledge base and library.
 
 Options:
   -h, --help            shows this help/usage message
