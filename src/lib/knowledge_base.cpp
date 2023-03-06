@@ -250,6 +250,7 @@ void obelisk::KnowledgeBase::checkRule(obelisk::Fact& fact)
             auto updateFact = rule.getFact();
             updateFact.setIsTrue(1.0);
             updateFact.updateIsTrue(dbConnection_);
+            checkRule(updateFact);
         }
     }
 }
