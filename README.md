@@ -14,6 +14,7 @@ The Obelisk project is a declarative language designed to help with the implemen
 ## Build
 
 ```
+./sqlite.sh
 meson builddir
 cd buildir
 ninja

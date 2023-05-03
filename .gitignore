@@ -4,3 +4,5 @@ builddir
 *.kb
 *.obk
 !examples/*.obk
+sqlite/*.c
+sqlite/*.h
