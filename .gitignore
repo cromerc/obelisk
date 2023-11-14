@@ -6,3 +6,4 @@ builddir
 !examples/*.obk
 sqlite/*.c
 sqlite/*.h
+out
