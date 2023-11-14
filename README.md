@@ -7,7 +7,7 @@ The Obelisk project is a declarative language designed to help with the implemen
  - Meson
  - Ninja
  - LLVM 14
- - sqlite 3
+ - sqlite 3 library and headers(in debian libsqlite3-dev)
  - C++ 17
  - C 17
 
